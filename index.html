@@ -64,6 +64,16 @@
   .copy-ok.show{opacity:1;}
   .hint{font-size:11px;color:var(--suave);margin-top:3px;font-style:italic;line-height:1.4;}
   .sticky{position:sticky;top:20px;}
+  .ajuda-btn{margin-left:auto;z-index:1;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.45);padding:8px 14px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;}
+  .ajuda-btn:hover{background:rgba(255,255,255,.28);}
+  .overlay{position:fixed;inset:0;background:rgba(10,28,61,.55);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:30px 16px;overflow:auto;}
+  .overlay.show{display:flex;}
+  .ajuda-box{background:#fff;max-width:700px;width:100%;border-radius:12px;padding:22px 26px;box-shadow:0 12px 44px rgba(0,0,0,.32);}
+  .ajuda-box h3{margin:0 0 6px;color:var(--navy);font-size:18px;}
+  .ajuda-box h4{margin:15px 0 3px;color:var(--accent);font-size:12px;text-transform:uppercase;letter-spacing:.5px;}
+  .ajuda-box p{margin:3px 0;font-size:13px;line-height:1.5;color:var(--texto);}
+  .ajuda-close{float:right;background:var(--navy);color:#fff;border:none;border-radius:7px;padding:6px 12px;cursor:pointer;font-weight:600;font-size:12px;}
+  .rodape{text-align:center;color:var(--suave);font-size:11px;padding:16px;}
 </style>
 </head>
 <body>
@@ -73,6 +83,7 @@
     <h1>Financeiro IBFT</h1>
     <p>Monta propostas de reparcelamento e quitação prontas para o atendimento</p>
   </div>
+  <button class="ajuda-btn" onclick="toggleAjuda()">❓ Como usar</button>
 </header>
 
 <div class="wrap">
@@ -200,7 +211,28 @@
   </div>
 </div>
 
+<div class="overlay" id="ajudaOverlay" onclick="if(event.target===this)toggleAjuda()">
+  <div class="ajuda-box">
+    <button class="ajuda-close" onclick="toggleAjuda()">Fechar ✕</button>
+    <h3>Como usar a calculadora</h3>
+    <p>Preencha as seções da esquerda; a proposta é montada sozinha à direita, pronta para copiar e colar no Kommo.</p>
+    <h4>1 · Tipo &amp; Produto</h4>
+    <p>Escolha 1º/2º Reparcelamento ou Quitação. Na Quitação, marque <b>"Quita toda a dívida"</b> para quitação total (com descontos) ou desmarque para <b>parcial</b> (sem desconto — paga só algumas parcelas, inclusive de produtos diferentes). Ao escolher o produto, o tipo de acesso se ajusta sozinho.</p>
+    <h4>2 · Parcelas em atraso</h4>
+    <p>Informe quantidade, vencimento da mais antiga e valor — as parcelas mensais aparecem automaticamente. Edite o valor/vencimento de cada linha (aceita vírgula) ou apague as que não baterem. Multa de 2% e juros de 2%/mês (pró-rata por dia, até a data de pagamento) são calculados sozinhos. Na quitação, marque <b>"Negat."</b> nas parcelas negativadas. No reparcelamento há o campo opcional <b>"Desconto nos juros (%)"</b> para dívidas antigas.</p>
+    <h4>3 · Parcelas a vencer</h4>
+    <p>Quantidade e valor das que ainda não venceram (sem juros).</p>
+    <h4>4 e 5 · Descontos / Acesso &amp; extensão</h4>
+    <p>Na quitação total, siga a orientação em azul para aplicar os descontos. Em curso de 12 meses, informe a data de liberação do acesso para calcular a expiração e, se for o caso, os dias de extensão (acima de 90 dias → análise da Lays).</p>
+    <h4>Proposta gerada</h4>
+    <p>Confira o texto e a pré-visualização (como o aluno vê). Dá para editar o texto à mão — use <b>"Regerar do zero"</b> para voltar ao automático. <b>"Copiar"</b> leva pro Kommo; <b>"Nova proposta"</b> limpa tudo (com opção de recuperar a anterior). Sempre revise a proposta antes de enviar.</p>
+  </div>
+</div>
+
+<div class="rodape">Financeiro IBFT · Calculadora de Reparcelamento · v9 · jun/2026</div>
+
 <script>
+function toggleAjuda(){document.getElementById('ajudaOverlay').classList.toggle('show');}
 const PRODUTOS=[
  {n:"Formação de Terapeutas - TRG",a:"12m"},
  {n:"Formação de Terapeutas - TRG + Formação em Leitura Corporal e Comportamental",a:"12m"},
@@ -657,6 +689,7 @@ function novaProposta(){
   render();
 }
 
+try{var _fav=document.createElement('link');_fav.rel='icon';_fav.href=document.querySelector('.logo-ibft').src;document.head.appendChild(_fav);}catch(e){}
 initProdutos();
 document.getElementById('genVenc').value=hojeISO();
 setVencDefault();
