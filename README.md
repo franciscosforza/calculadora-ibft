@@ -1,4 +1,4 @@
-# Calculadora de Reparcelamento — Financeiro IBFT
+# Calculadora de Propostas — Financeiro IBFT
 
 Ferramenta interna do Financeiro IBFT para montar **propostas de reparcelamento e quitação** de forma rápida e padronizada, prontas para copiar e colar no Kommo.
 
