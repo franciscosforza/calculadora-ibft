@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Financeiro IBFT — Calculadora de Reparcelamento</title>
+<style>
+  :root{
+    --navy:#102a56; --navy-deep:#0a1c3d; --navy-mid:#1a3a6b;
+    --accent:#2b6cb0; --accent2:#3b82d6;
+    --trg-red:#e23b3b; --trg-yellow:#f5b321; --trg-green:#3bb273; --trg-blue:#3b7de2;
+    --cinza:#eef2f7; --borda:#d4dce6; --texto:#152238; --suave:#5a6b7e;
+    --alerta:#b7791f; --alerta-bg:#fffaf0; --vermelho:#c53030; --verde:#2f855a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:"Segoe UI",system-ui,Arial,sans-serif;background:var(--cinza);color:var(--texto);font-size:14px;}
+  header{
+    background:linear-gradient(110deg,var(--navy-deep) 0%,var(--navy) 45%,var(--navy-mid) 100%);
+    color:#fff;padding:18px 28px;display:flex;align-items:center;gap:16px;
+    box-shadow:0 2px 12px rgba(10,28,61,.35);position:relative;overflow:hidden;
+  }
+  header::after{content:"";position:absolute;right:0;top:0;bottom:0;width:42%;
+    background:repeating-linear-gradient(90deg,transparent 0 18px,rgba(59,178,115,.06) 18px 20px);
+    -webkit-mask:linear-gradient(90deg,transparent,#000);mask:linear-gradient(90deg,transparent,#000);}
+  .logo-ibft{height:46px;width:auto;flex:none;position:relative;z-index:1;}
+  header .ttl{z-index:1;}
+  header h1{margin:0;font-size:22px;font-weight:700;line-height:1.1;}
+  header p{margin:3px 0 0;font-size:12px;opacity:.78;}
+  .wrap{max-width:1200px;margin:0 auto;padding:22px;display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:940px){.wrap{grid-template-columns:1fr;}}
+  .card{background:#fff;border:1px solid var(--borda);border-radius:12px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,42,86,.05);}
+  .card h2{margin:0 0 14px;font-size:13px;text-transform:uppercase;letter-spacing:.6px;color:var(--navy);
+    border-bottom:2px solid var(--cinza);padding-bottom:9px;display:flex;align-items:center;gap:8px;}
+  .card h2 .num{background:var(--navy);color:#fff;width:20px;height:20px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;}
+  label{display:block;font-size:12px;font-weight:600;color:var(--suave);margin:10px 0 4px;}
+  input,select{width:100%;padding:8px 10px;border:1px solid var(--borda);border-radius:7px;font-size:14px;font-family:inherit;background:#fff;}
+  input:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(43,108,176,.13);}
+  .row{display:flex;gap:10px;}.row>div{flex:1;}
+  .btn{background:var(--accent);color:#fff;border:none;padding:9px 14px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;transition:.15s;}
+  .btn:hover{background:var(--navy);}
+  .btn-sm{padding:6px 11px;font-size:12px;}
+  .btn-ghost{background:#e7eef7;color:var(--accent);}.btn-ghost:hover{background:#d8e4f2;color:var(--navy);}
+  .btn-del{background:#fde2e2;color:var(--vermelho);}.btn-del:hover{background:#fbcaca;}
+  table{width:100%;border-collapse:collapse;margin-top:8px;}
+  th,td{padding:6px 4px;text-align:left;font-size:12px;}
+  th{color:var(--suave);font-weight:600;border-bottom:1px solid var(--borda);}
+  .val-atual{font-weight:600;color:var(--navy);white-space:nowrap;}
+  .check{display:flex;align-items:center;justify-content:center;gap:4px;}
+  .check input{width:auto;}
+  .gen-box{background:var(--cinza);border-radius:9px;padding:12px;margin-bottom:6px;}
+  .resumo{background:linear-gradient(160deg,#f5f8fc,#eaf1f9);border:1px solid #dbe6f2;border-radius:9px;padding:13px;margin-top:8px;}
+  .resumo .lin{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;}
+  .resumo .tot{border-top:2px solid #c8d6e8;margin-top:6px;padding-top:8px;font-weight:700;font-size:17px;color:var(--navy);}
+  .parc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;}
+  .parc-op{border:1px solid var(--borda);border-radius:7px;padding:8px 4px;text-align:center;cursor:pointer;font-size:12px;background:#fff;transition:.12s;}
+  .parc-op:hover{border-color:var(--accent);}
+  .parc-op.sel{background:var(--navy);color:#fff;border-color:var(--navy);}
+  .parc-op b{display:block;font-size:14px;margin-top:2px;}
+  .alerta{background:var(--alerta-bg);border:1px solid #f6c668;color:var(--alerta);padding:9px 11px;border-radius:7px;font-size:12px;margin-top:9px;display:none;}
+  .alerta.show{display:block;}
+  #saida{width:100%;min-height:440px;font-family:"Segoe UI",sans-serif;font-size:13px;line-height:1.55;border:1px solid var(--borda);border-radius:9px;padding:15px;white-space:pre-wrap;resize:vertical;background:#fcfdfe;}
+  .out-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:11px;}
+  .copy-ok{color:var(--verde);font-size:12px;font-weight:600;opacity:0;transition:.2s;margin-right:6px;}
+  .copy-ok.show{opacity:1;}
+  .hint{font-size:11px;color:var(--suave);margin-top:3px;font-style:italic;line-height:1.4;}
+  .sticky{position:sticky;top:20px;}
+</style>
+</head>
+<body>
+<header>
+  <img class="logo-ibft" src="data:image/webp;base64,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" alt="IBFT">
+  <div class="ttl">
+    <h1>Financeiro IBFT</h1>
+    <p>Monta propostas de reparcelamento e quitação prontas para o atendimento</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <div>
+    <div class="card">
+      <h2><span class="num">1</span> Tipo &amp; Produto</h2>
+      <label>Tipo de proposta</label>
+      <select id="tipoProposta" onchange="onTipoChange()">
+        <option value="rep1">1º Reparcelamento</option>
+        <option value="rep2">2º Reparcelamento</option>
+        <option value="quit">Quitação</option>
+      </select>
+      <div id="quitTotalWrap" style="display:none">
+        <label class="chk-line" style="display:flex;align-items:center;gap:7px;margin:10px 0 4px;font-size:13px;font-weight:600;color:var(--texto)"><input type="checkbox" id="quitTotal" checked style="width:auto" onchange="render()"> Quita toda a dívida (encerra o parcelamento)</label>
+        <p class="hint" style="margin:0 0 4px">Desmarque para <b>quitação parcial</b> — pagar só algumas parcelas (do meio do parcelamento ou de produtos diferentes) num único link, mantendo o restante do parcelamento ativo.</p>
+      </div>
+      <label>Produto / curso</label>
+      <select id="produto" onchange="onProdutoChange()"></select>
+      <div id="produtosExtraWrap" style="display:none">
+        <div id="produtosExtra"></div>
+        <a onclick="addProdutoExtra()" style="font-size:12px;color:var(--accent);cursor:pointer;text-decoration:underline;display:inline-block;margin-top:8px">+ adicionar outro produto</a>
+        <p class="hint">Na quitação parcial, adicione aqui se as parcelas forem de produtos diferentes — a proposta lista todos.</p>
+      </div>
+      <div id="tipoAcessoWrap">
+        <label>Tipo de acesso</label>
+        <select id="tipoAcesso" onchange="render()">
+          <option value="12m">Curso com acesso de 12 meses</option>
+          <option value="vital">Acesso vitalício (não expira)</option>
+          <option value="livro">Livro / material físico (sem acesso)</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">2</span> <span id="lblSec2">Parcelas em atraso</span></h2>
+      <div class="gen-box">
+        <div class="row">
+          <div><label>Quantidade</label><input type="number" id="genQtd" min="0" value="1" oninput="gerarParcelas()"></div>
+          <div><label>Venc. da mais antiga</label><input type="date" id="genVenc" oninput="gerarParcelas()"></div>
+          <div><label>Valor original (R$)</label><input type="text" inputmode="decimal" id="genVal" value="0" oninput="gerarParcelas()"></div>
+        </div>
+        <p class="hint">As parcelas são geradas automaticamente (vencimentos mensais a partir da mais antiga) conforme você preenche. Apagar a Quantidade zera tudo. Depois é só editar/apagar as linhas que não baterem — ex.: parcela paga no meio.</p>
+      </div>
+      <table>
+        <thead><tr><th>Valor orig.</th><th>Vencimento</th><th id="thNegat">Negat.</th><th>Atualizado</th><th></th></tr></thead>
+        <tbody id="atrasoBody"></tbody>
+      </table>
+      <button class="btn btn-ghost btn-sm" onclick="addAtraso()" style="margin-top:8px">+ Adicionar parcela manual</button>
+      <div id="descJurosWrap" style="margin-top:14px;display:none">
+        <label>Desconto nos juros das parcelas em atraso (%) — opcional</label>
+        <input type="number" id="descJurosPerc" min="0" max="100" step="1" value="0" oninput="render()" style="max-width:220px">
+        <p class="hint">Para negociar dívidas antigas com juros altos. Incide só sobre os juros (não sobre a multa nem o valor original).</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2><span class="num">3</span> Parcelas a vencer</h2>
+      <div class="row">
+        <div><label>Quantidade</label><input type="number" id="vincQtd" min="0" value="0" oninput="render()"></div>
+        <div><label>Valor unitário (R$)</label><input type="text" inputmode="decimal" id="vincVal" value="0" oninput="render()"></div>
+        <div id="vincVencWrap" style="display:none"><label>Venc. da 1ª a vencer</label><input type="date" id="vincVenc" oninput="render()"></div>
+      </div>
+      <p class="hint">Sem juros enquanto não vencem.</p>
+      <div class="alerta" id="warnCross">⚠️ A data de pagamento é futura e você tem parcelas a vencer. Informe o <b>vencimento da próxima parcela a vencer</b> (campo que apareceu acima) para o sistema mover automaticamente para "em atraso" qualquer uma que vença antes do pagamento.</div>
+    </div>
+
+    <div class="card" id="cardDesconto" style="display:none">
+      <h2><span class="num">4</span> Quitação — descontos</h2>
+      <div class="alerta" id="quitGuide" style="display:block;background:#eef5ff;border-color:#b9d4f2;color:var(--navy)"></div>
+      <div id="ctlJurosMulta" style="display:none">
+        <label class="chk-line" style="display:flex;align-items:center;gap:7px;margin-top:12px;font-size:13px;font-weight:600;color:var(--texto)"><input type="checkbox" id="retJuros" style="width:auto" onchange="render()"> Retirar os juros das parcelas em atraso</label>
+        <label class="chk-line" style="display:flex;align-items:center;gap:7px;margin-top:8px;font-size:13px;font-weight:600;color:var(--texto)"><input type="checkbox" id="retMulta" style="width:auto" onchange="render()"> Retirar a multa das parcelas em atraso</label>
+      </div>
+      <div id="ctlVinc" style="display:none">
+        <label>Desconto nas parcelas a vencer (%) — máx. 10%</label>
+        <input type="number" id="descVincPerc" min="0" max="10" step="0.5" value="0" oninput="render()">
+      </div>
+      <div id="ctlNeg" style="display:none">
+        <label>Desconto na dívida negativada (%)</label>
+        <input type="number" id="descNegPerc" min="0" max="100" step="1" value="0" oninput="render()">
+        <div class="alerta" id="alertaNeg">⚠️ Limite atingido: a dívida negativada não pode ficar abaixo de R$ 500,00. O valor foi travado nesse piso.</div>
+      </div>
+    </div>
+
+    <div class="card" id="cardAcesso">
+      <h2><span class="num" id="numAcesso">5</span> Acesso &amp; extensão</h2>
+      <div class="row">
+        <div><label>Data de liberação do acesso</label><input type="date" id="dataLib" oninput="render()"></div>
+        <div><label>Extensão (dias)</label><input type="number" id="extDias" min="0" value="0" oninput="render()"></div>
+      </div>
+      <div class="alerta" id="alertaExt">⚠️ Extensão acima de 90 dias — levar para análise da Lays antes de conceder.</div>
+      <div id="acessoInfo" class="hint" style="margin-top:8px"></div>
+      <p class="hint" id="notaConclusao"></p>
+    </div>
+  </div>
+
+  <div>
+    <div class="sticky">
+      <div class="card">
+        <h2>Resumo financeiro</h2>
+        <div class="resumo" id="resumo"></div>
+        <label style="margin-top:14px">Vencimento da 1ª parcela do acordo</label>
+        <input type="date" id="dataVenc" oninput="render()">
+        <div id="vencHint" class="hint"></div>
+        <div id="parcWrap">
+          <label style="margin-top:10px">Parcelamento (clique para escolher)</label>
+          <div class="parc-grid" id="parcGrid"></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="out-head">
+          <h2 style="margin:0;border:none">Proposta gerada</h2>
+          <div><span class="copy-ok" id="copyOk">✓ Copiado!</span><button class="btn btn-ghost btn-sm" onclick="novaProposta()" style="margin-right:6px">🔄 Nova proposta</button><button class="btn btn-sm" onclick="copiar()">📋 Copiar</button></div>
+        </div>
+        <div style="background:#fffaf0;border:1px solid #f6c668;color:#b7791f;padding:8px 11px;border-radius:7px;font-size:12px;margin-bottom:10px">⚠️ Antes de enviar, revise a proposta com atenção e confira se ela corresponde à real situação do aluno.</div>
+        <textarea id="saida" oninput="onSaidaInput()"></textarea>
+        <div id="editNotice" style="display:none;background:#eef5ff;border:1px solid #b9d4f2;color:var(--navy);padding:7px 10px;border-radius:7px;font-size:11px;margin-top:6px">✍️ Você editou o texto manualmente — mudanças nos campos não vão sobrescrever sua edição. <a onclick="regerar()" style="cursor:pointer;text-decoration:underline;font-weight:600">Regerar do zero</a></div>
+        <a id="desfazer" onclick="desfazer()" style="display:none;font-size:11px;color:var(--suave);cursor:pointer;text-decoration:underline;margin-top:6px">↩ recuperar proposta anterior</a>
+        <div style="margin-top:14px">
+          <div style="font-size:11px;font-weight:600;color:var(--suave);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Pré-visualização (como o aluno vê)</div>
+          <div id="preview" style="background:#e8f5e9;border:1px solid #c8e6c9;border-radius:10px 10px 10px 2px;padding:12px 14px;font-size:13px;line-height:1.5;color:#1a2e1a;white-space:pre-wrap;word-break:break-word"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PRODUTOS=[
+ {n:"Formação de Terapeutas - TRG",a:"12m"},
+ {n:"Formação de Terapeutas - TRG + Formação em Leitura Corporal e Comportamental",a:"12m"},
+ {n:"Formação Avançada em Master Terapeuta",a:"12m"},
+ {n:"Formação Avançada em Transtornos Graves",a:"12m"},
+ {n:"Formação Avançada em Transtorno de Ansiedade e Sonoros",a:"12m"},
+ {n:"Formação Avançada em Transtornos Alimentares e de Imagem",a:"12m"},
+ {n:"Formação Avançada em Traumas e Fobias",a:"12m"},
+ {n:"Formação Avançada em Transtornos Sexuais",a:"12m"},
+ {n:"Formação de Terapeutas - TRG + Mentoria da Prosperidade",a:"12m"},
+ {n:"Formação Avançada em Master Terapeuta + Formação em Leitura Corporal e Comportamental",a:"12m"},
+ {n:"Formação em Leitura Corporal e Comportamental",a:"12m"},
+ {n:"Mentoria da Prosperidade",a:"12m"},
+ {n:"TRG Kids",a:"12m"},
+ {n:"O Caminho para Prosperidade",a:"12m"},
+ {n:"Marketing e Vendas para Terapeutas",a:"12m"},
+ {n:"Programa Livre da Depressão",a:"12m"},
+ {n:"Formação de Terapeutas - TRG (Renovação)",a:"12m"},
+ {n:"Livro - Entendendo e Superando Traumas Emocionais com a TRG",a:"livro"},
+ {n:"Black Friday 2025 - Vitalício",a:"vital"},
+];
+
+let atrasos=[]; let parcelasEscolhidas=2; let editadoManual=false; let produtosExtra=[];
+const JUROS_MES=0.02, MULTA=0.02, NEG_PISO=500;
+const jurosRate=d=>(JUROS_MES/30)*d;   // 2%/mês pró-rata por dia corrido, sem teto (juros correm cheios)
+const hojeISO=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);};   // data LOCAL (não UTC)
+const brl=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+const floor2=v=>Math.floor(v*100)/100;   // trunca centavos, igual ao Asaas (ex.: 2,3976 → 2,39)
+function parseV(v){v=String(v==null?'':v).trim();if(v==='')return 0;if(v.indexOf(',')>=0)v=v.replace(/\./g,'').replace(',','.');const n=parseFloat(v);return isNaN(n)?0:n;}   // aceita vírgula (pt-BR) e ponto
+function dataBR(iso){if(!iso)return 'xxxx';const[a,m,d]=iso.split('-');return `${d}/${m}/${a}`;}
+function addDays(iso,n){const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+function addMonths(iso,n){const d=new Date(iso+'T00:00:00');d.setMonth(d.getMonth()+n);return d.toISOString().slice(0,10);}
+
+function refCalc(){const v=document.getElementById('dataVenc').value;return v||hojeISO();}
+function diasAtraso(venc,ref){if(!venc)return 0;ref=ref||refCalc();const v=new Date(venc+'T00:00:00'),h=new Date(ref+'T00:00:00');return Math.max(0,Math.round((h-v)/86400000));}
+// desconto nos juros (só reparcelamento; não se aplica em quitação, que tem motor próprio)
+function jurosDescFrac(){ if(ehQuit()) return 0; const p=parseFloat(document.getElementById('descJurosPerc')?.value)||0; return Math.min(Math.max(p,0),100)/100; }
+const jurosParcelaBruto=p=>{const o=parseV(p.valor);return (p.negativada||!p.venc)?0:floor2(o*jurosRate(diasAtraso(p.venc)));};
+const descJurosParcela=p=>floor2(jurosParcelaBruto(p)*jurosDescFrac());
+function valorAtualizado(p){const o=parseV(p.valor);if(p.negativada||!p.venc)return o;return o+floor2(o*MULTA)+(jurosParcelaBruto(p)-descJurosParcela(p));}
+
+function initProdutos(){
+  const s=document.getElementById('produto');
+  s.innerHTML='<option value="-1">— selecione o produto —</option>';
+  PRODUTOS.forEach((p,i)=>{s.innerHTML+=`<option value="${i}">${i+1}. ${p.n}</option>`;});
+}
+function onProdutoChange(){const i=parseInt(document.getElementById('produto').value);if(i>=0)document.getElementById('tipoAcesso').value=PRODUTOS[i].a;render();}
+
+// multi-produto (quitação parcial)
+function optionsProdutos(sel){return PRODUTOS.map((p,i)=>`<option value="${i}" ${i===sel?'selected':''}>${i+1}. ${p.n}</option>`).join('');}
+function addProdutoExtra(){produtosExtra.push(-1);render();}
+function delProdutoExtra(i){produtosExtra.splice(i,1);render();}
+function updProdutoExtra(i,v){produtosExtra[i]=parseInt(v);render();}
+function renderProdutosExtra(){
+  const c=document.getElementById('produtosExtra');c.innerHTML='';
+  produtosExtra.forEach((idx,i)=>{
+    const div=document.createElement('div');div.style.cssText='display:flex;gap:8px;align-items:center;margin-top:8px';
+    div.innerHTML=`<select onchange="updProdutoExtra(${i},this.value)" style="flex:1"><option value="-1">— produto adicional —</option>${optionsProdutos(idx)}</select><button class="btn btn-del btn-sm" onclick="delProdutoExtra(${i})">✕</button>`;
+    c.appendChild(div);
+  });
+}
+function nomesProdutos(){
+  const arr=[]; const pi=parseInt(document.getElementById('produto').value); if(pi>=0)arr.push(PRODUTOS[pi].n);
+  if(ehQuit() && !document.getElementById('quitTotal').checked) produtosExtra.forEach(idx=>{if(idx>=0)arr.push(PRODUTOS[idx].n);});
+  return arr;
+}
+function fraseProdutos(){
+  const nomes=nomesProdutos();
+  if(nomes.length===0) return 'referente ao seu curso de *(NOME DO PRODUTO)*';
+  if(nomes.length===1) return `referente ao seu curso de *${nomes[0]}*`;
+  return `referente aos seus cursos de ${nomes.map(n=>'*'+n+'*').join(', ').replace(/, ([^,]*)$/,' e $1')}`;
+}
+
+function onTipoChange(){setVencDefault();render();}
+function setVencDefault(){const t=document.getElementById('tipoProposta').value;document.getElementById('dataVenc').value=(t==='rep2')?addDays(hojeISO(),7):hojeISO();}
+
+function gerarParcelas(){
+  const raw=document.getElementById('genQtd').value.trim();
+  const q=parseInt(raw)||0;
+  const venc=document.getElementById('genVenc').value;
+  const val=document.getElementById('genVal').value;
+  if(raw===''||q<=0){atrasos=[];render();return;}
+  if(!venc){render();return;}
+  atrasos=[];
+  for(let i=0;i<q;i++) atrasos.push({valor:val,venc:addMonths(venc,i),negativada:false});
+  render();
+}
+function addAtraso(){atrasos.push({valor:'',venc:'',negativada:false});render();}
+function delAtraso(i){atrasos.splice(i,1);render();}
+function updAtraso(i,c,v){atrasos[i][c]=v;render();}                 // venc/negat → render completo
+function updValor(i,v){atrasos[i].valor=v;renderLeve();}             // valor → atualização leve (preserva foco/cursor)
+function atualCellHTML(p){
+  return `${brl(valorAtualizado(p))}${(!p.negativada&&p.venc)?`<br><span style="font-weight:400;color:var(--suave);font-size:10px">${diasAtraso(p.venc)} dias</span>`:''}${descJurosParcela(p)>0?`<br><span style="font-weight:600;color:var(--verde);font-size:10px">− ${brl(descJurosParcela(p))} juros</span>`:''}`;
+}
+function renderAtrasos(){
+  const showNeg=ehQuit();
+  document.getElementById('thNegat').style.display=showNeg?'':'none';
+  if(!showNeg) atrasos.forEach(p=>p.negativada=false);
+  const tb=document.getElementById('atrasoBody');tb.innerHTML='';
+  atrasos.forEach((p,i)=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><input type="text" inputmode="decimal" value="${p.valor}" oninput="updValor(${i},this.value)"></td>
+      <td><input type="date" value="${p.venc}" oninput="updAtraso(${i},'venc',this.value)"></td>
+      <td class="check" style="${showNeg?'':'display:none'}"><input type="checkbox" ${p.negativada?'checked':''} onchange="updAtraso(${i},'negativada',this.checked)"></td>
+      <td class="val-atual" id="atual${i}">${atualCellHTML(p)}</td>
+      <td><button class="btn btn-del btn-sm" onclick="delAtraso(${i})">✕</button></td>`;
+    tb.appendChild(tr);
+  });
+}
+// atualização leve: recalcula tudo SEM recriar os inputs da tabela (mantém o foco no campo)
+function renderLeve(){
+  atrasos.forEach((p,i)=>{const c=document.getElementById('atual'+i);if(c)c.innerHTML=atualCellHTML(p);});
+  renderResumo();renderParcGrid();atualizarSaida();
+}
+
+function ehQuit(){return document.getElementById('tipoProposta').value==='quit';}
+function ehQuitTotal(){return ehQuit() && document.getElementById('quitTotal').checked;}
+
+// parcelas a vencer: se houver data informada, divide em "já cruzaram a data de pagamento" (viram atraso) e "ainda a vencer"
+const vincQtdRaw=()=>parseInt(document.getElementById('vincQtd').value)||0;
+const vincValRaw=()=>parseV(document.getElementById('vincVal').value);
+function vincSplit(){
+  const q=vincQtdRaw(), v0=document.getElementById('vincVenc').value, val=vincValRaw(), ref=refCalc();
+  const ativo = q>0 && ref>hojeISO();   // o campo de data só vale quando está visível (pagamento futuro + há vincendas)
+  if(!ativo||!v0) return {temDatas:false,vencidas:[],avencer:[]};
+  const vencidas=[],avencer=[];
+  for(let i=0;i<q;i++){const venc=addMonths(v0,i);(venc<=ref?vencidas:avencer).push({valor:val,venc,negativada:false});}
+  return {temDatas:true,vencidas,avencer};
+}
+const crossedVinc=()=>vincSplit().vencidas;        // a vencer que cruzaram a data de pagamento
+function aVencer(){const s=vincSplit();return s.temDatas?s.avencer:Array.from({length:vincQtdRaw()},()=>({valor:vincValRaw()}));}
+
+const pAtrasoTable=()=>atrasos.filter(p=>!p.negativada && p.venc);
+const pAtraso=()=>pAtrasoTable().concat(crossedVinc());   // em atraso efetivo = tabela + vincendas que cruzaram
+const pNeg=()=>atrasos.filter(p=>p.negativada);
+const sumOrig=arr=>arr.reduce((s,p)=>s+parseV(p.valor),0);
+const atrasoOriginal=()=>sumOrig(pAtraso());
+const atrasoMultaV=()=>pAtraso().reduce((s,p)=>s+floor2(parseV(p.valor)*MULTA),0);
+const atrasoJurosV=()=>pAtraso().reduce((s,p)=>s+jurosParcelaBruto(p),0);   // juros BRUTO (antes do desconto)
+const descJurosTotal=()=>pAtraso().reduce((s,p)=>s+descJurosParcela(p),0);
+const atrasoComEnc=()=>atrasoOriginal()+atrasoMultaV()+atrasoJurosV();      // bruto (original + multa + juros cheio)
+const negOriginal=()=>sumOrig(pNeg());
+
+const qtdAtraso=()=>pAtraso().length;
+const totalAtraso=()=>pAtraso().reduce((s,p)=>s+valorAtualizado(p),0);
+const totalMulta=()=>atrasoMultaV();
+const totalJuros=()=>atrasoJurosV();
+const qtdVinc=()=>aVencer().length;
+const totalVinc=()=>aVencer().reduce((s,p)=>s+parseV(p.valor),0);
+
+let negClamped=false;
+function quitModel(){
+  const N=pNeg().length,A=pAtraso().length,V=qtdVinc();
+  const soNeg=N>0&&A===0&&V===0;
+  const comDesconto=ehQuitTotal();   // descontos só na quitação TOTAL; na parcial soma com valores cheios
+  const el=id=>document.getElementById(id);
+  const retJ=comDesconto&&el('retJuros')?.checked,retM=comDesconto&&el('retMulta')?.checked;
+  let dv=comDesconto?(parseFloat(el('descVincPerc')?.value)||0):0; dv=Math.min(Math.max(dv,0),10);
+  let dn=comDesconto?(parseFloat(el('descNegPerc')?.value)||0):0; dn=Math.min(Math.max(dn,0),100);
+  const jurosRem=(A>0&&retJ)?atrasoJurosV():0;
+  const multaRem=(A>0&&retM)?atrasoMultaV():0;
+  const atrasoCalc=atrasoOriginal()+(atrasoMultaV()-multaRem)+(atrasoJurosV()-jurosRem);
+  const vincFull=totalVinc();
+  const vincDesc=floor2(vincFull*(dv/100));
+  const vincCalc=vincFull-vincDesc;
+  let negCalc=negOriginal(),negDesc=0; negClamped=false;
+  if(comDesconto && soNeg && negOriginal()>0){
+    let cand=floor2(negOriginal()*(1-dn/100));
+    if(cand<NEG_PISO){cand=Math.min(NEG_PISO,negOriginal());negClamped=(negOriginal()>NEG_PISO);}
+    negCalc=cand; negDesc=negOriginal()-negCalc;
+  }
+  const negPct=negOriginal()>0?Math.round(negDesc/negOriginal()*100):0;
+  const total=negCalc+atrasoCalc+vincCalc;
+  return {N,A,V,soNeg,jurosRem,multaRem,vincDesc,dv,negDesc,negPct,total,descTotal:jurosRem+multaRem+vincDesc+negDesc};
+}
+function totalGeral(){return ehQuit()?quitModel().total:(totalAtraso()+totalVinc());}
+
+function expBase(){const l=document.getElementById('dataLib').value;return l?addMonths(l,12):null;}
+
+function renderParcGrid(){
+  const total=totalGeral(),g=document.getElementById('parcGrid');g.innerHTML='';
+  for(let n=2;n<=12;n++){const d=document.createElement('div');   // reparcelamento: 2x a 12x (1x = quitação)
+    d.className='parc-op'+(n===parcelasEscolhidas?' sel':'');d.onclick=()=>{parcelasEscolhidas=n;render();};
+    d.innerHTML=`${n}x<b>${total>0?brl(total/n):'—'}</b>`;g.appendChild(d);}
+}
+
+function renderResumo(){
+  const lin=(l,v,c)=>`<div class="lin"${c?` style="color:${c}"`:''}><span>${l}</span><b>${brl(v)}</b></div>`;
+  const sub=(l,v,c)=>`<div class="lin" style="color:${c||'var(--suave)'};font-size:12px;padding-left:8px"><span>${l}</span><b>${brl(v)}</b></div>`;
+  const RED='var(--vermelho)', GREEN='var(--verde)';
+  const nCross=crossedVinc().length, tbl=pAtrasoTable().length;
+  const lblAtraso = nCross>0 ? `em atraso (${tbl} vencida(s) + ${nCross} que venceu até o pagamento)` : 'em atraso';
+  let h='';
+  if(ehQuit()){
+    const m=quitModel();
+    if(pNeg().length) h+=lin(`${pNeg().length} negativada(s)`,negOriginal());
+    if(pAtraso().length){h+=lin(`${pAtraso().length} ${lblAtraso}`,atrasoComEnc());h+=sub('↳ juros',atrasoJurosV(),RED);h+=sub('↳ multa',atrasoMultaV(),RED);}
+    if(qtdVinc()) h+=lin(`${qtdVinc()} a vencer`,totalVinc());
+    if(m.descTotal>0){
+      h+=lin('Descontos aplicados',-m.descTotal,GREEN);
+      if(m.jurosRem>0) h+=sub('↳ juros isentos',-m.jurosRem,GREEN);
+      if(m.multaRem>0) h+=sub('↳ multa isenta',-m.multaRem,GREEN);
+      if(m.vincDesc>0) h+=sub(`↳ ${m.dv}% nas parcelas a vencer`,-m.vincDesc,GREEN);
+      if(m.negDesc>0)  h+=sub(`↳ ${m.negPct}% na dívida negativada (mín. R$ 500,00)`,-m.negDesc,GREEN);
+    }
+  }else{
+    h+=lin(`${qtdAtraso()} parcela(s) ${lblAtraso}`,atrasoComEnc());
+    h+=sub('↳ juros',atrasoJurosV(),RED);h+=sub('↳ multa',atrasoMultaV(),RED);
+    if(descJurosTotal()>0) h+=sub(`↳ desconto nos juros (${Math.round(jurosDescFrac()*100)}%)`,-descJurosTotal(),GREEN);
+    if(qtdVinc()) h+=lin(`${qtdVinc()} parcela(s) a vencer`,totalVinc());
+  }
+  if(nCross>0) h+=`<div class="lin" style="color:var(--alerta);font-size:11px;font-style:italic;border-top:1px dashed #f6c668;margin-top:4px;padding-top:5px"><span>⚠️ ${nCross} parcela(s) que estava(m) "a vencer" passou(aram) a contar como atraso, pois vence(m) até a data de pagamento escolhida.</span></div>`;
+  h+=`<div class="lin tot"><span>TOTAL</span><span>${brl(totalGeral())}</span></div>`;
+  if(!ehQuit() && parcelasEscolhidas>0 && totalGeral()>0)
+    h+=`<div class="lin" style="margin-top:4px"><span>${parcelasEscolhidas}x de</span><b>${brl(totalGeral()/parcelasEscolhidas)}</b></div>`;
+  document.getElementById('resumo').innerHTML=h;
+}
+
+function gerarTexto(){
+  const tipoAc=document.getElementById('tipoAcesso').value;
+  const tipoProp=document.getElementById('tipoProposta').value;
+  const quit=ehQuit();
+  const parcial = quit && !document.getElementById('quitTotal').checked;
+  const vencISO=document.getElementById('dataVenc').value;
+  const ext=parseInt(document.getElementById('extDias').value)||0;
+  const tituloMap={rep1:'1º Reparcelamento',rep2:'2º Reparcelamento',quit:'Quitação'};
+  const titulo=tituloMap[tipoProp]||'Reparcelamento';
+
+  let t=`Sua *simulação de ${titulo}* ${fraseProdutos()} ficou da seguinte maneira:\n\n`;
+
+  if(quit){
+    const m=quitModel();
+    const totQ=m.N+m.A+m.V;
+    // detalhamento do que é cada parcela
+    if(m.N>0) t+=`• *${m.N}* ${m.N===1?'parcela negativada':'parcelas negativadas'} no valor de *${brl(negOriginal())}*;\n`;
+    if(m.A>0) t+=`• *${m.A}* ${m.A===1?'parcela em atraso':'parcelas em atraso'} no valor de *${brl(atrasoComEnc())}*;\n`;
+    if(m.V>0) t+=`• *${m.V}* ${m.V===1?'parcela a vencer':'parcelas a vencer'} no valor de *${brl(totalVinc())}*;\n`;
+    t+=`\n`;
+    const parts=[];
+    if(m.jurosRem>0) parts.push(`isenção dos juros das parcelas em atraso (${brl(m.jurosRem)})`);
+    if(m.multaRem>0) parts.push(`isenção da multa das parcelas em atraso (${brl(m.multaRem)})`);
+    if(m.vincDesc>0) parts.push(`${m.dv}% de desconto nas parcelas a vencer (${brl(m.vincDesc)})`);
+    if(m.negDesc>0)  parts.push(`${m.negPct}% de desconto na dívida negativada (${brl(m.negDesc)})`);
+    const desc = parts.length ? `, com *${parts.join(', ')}*,` : '';
+    const subst = totQ===1 ? 'parcela a ser regularizada' : 'parcelas a serem regularizadas';
+    t+=`📌 No total, *${totQ}* ${subst}${desc} no valor de *${brl(m.total)}*.\n`;
+    if(m.descTotal>0) t+=`💰 Desconto total aplicado: *${brl(m.descTotal)}*.\n`;
+    t+=`\n`;
+  }else{
+    const total=totalGeral(),parc=parcelasEscolhidas,vParc=parc>0?total/parc:0;
+    const nA=qtdAtraso(), nV=qtdVinc();
+    if(nA>0)t+=`• *${nA}* ${nA===1?'parcela em atraso':'parcelas em atraso'} no valor de *${brl(totalAtraso())}*;\n`;
+    if(nV>0) t+=`• *${nV}* ${nV===1?'parcela a vencer':'parcelas a vencer'} no valor de *${brl(totalVinc())}*;\n`;
+    t+=`\n`;
+    if(descJurosTotal()>0) t+=`💰 Já aplicamos *${Math.round(jurosDescFrac()*100)}% de desconto nos juros das parcelas em atraso* (economia de *${brl(descJurosTotal())}*).\n\n`;
+    if(parc>1) t+=`📌 O *total* fica em *${brl(total)}* que pode ser parcelado em até *${parc}x de ${brl(vParc)}* no boleto bancário, PIX ou cartão de crédito.\n\n`;
+    else        t+=`📌 O *total* fica em *${brl(total)}*, à vista no boleto bancário, PIX ou cartão de crédito.\n\n`;
+  }
+
+  const labelVenc = quit ? 'O *vencimento para pagamento* desse acordo' : 'O *vencimento da primeira parcela* desse acordo';
+  if(vencISO===hojeISO()) t+=`🗓️ ${labelVenc} fica para hoje mesmo, dia *${dataBR(vencISO).slice(0,5)}*.\n\n`;
+  else                    t+=`🗓️ ${labelVenc} fica para *${dataBR(vencISO)}*.\n\n`;
+
+  const exp=expBase(), expirou = exp && exp<hojeISO();
+  if(parcial){
+    // quitação parcial pode envolver produtos com acessos/datas distintos → não afirma expiração
+    t+=`🔎 Nosso acordo é *exclusivamente financeiro*.\n\n`;
+  }else if(tipoAc==='12m'){
+    const verbo = expirou ? 'expirou no dia' : 'expira no dia';
+    t+=`🔎 Nosso acordo é *exclusivamente financeiro* e não altera o prazo do material pedagógico que expira com os 12 meses conforme previsto em contrato. Ou seja, *seu acesso à plataforma de aulas ${verbo} ${exp?dataBR(exp):'XXXX'}*.\n\n`;
+    if(ext>0){
+      const refPag = quit ? 'o pagamento deste acordo' : 'o pagamento da primeira parcela deste acordo';
+      if(!expirou){
+        t+=`Assim que o sistema identificar ${refPag}, consigo liberar para você uma extensão de mais *${ext} dias* de acesso à plataforma, estendendo seu acesso até *${dataBR(addDays(exp,ext))}*. Isso te dá a oportunidade de concluir sua formação com mais tranquilidade e garantir seu certificado dentro de um prazo mais confortável.\n\n`;
+      }else{
+        t+=`Assim que o sistema identificar ${refPag}, consigo liberar para você uma extensão de *${ext} dias* de acesso à plataforma, contados a partir da data em que o pagamento for identificado. Isso te dá a oportunidade de concluir sua formação com mais tranquilidade e garantir seu certificado dentro de um prazo mais confortável.\n\n`;
+      }
+    }
+  }else if(tipoAc==='vital'){
+    t+=`🔎 Nosso acordo é *exclusivamente financeiro*. Seu acesso ao material desse produto é *vitalício* e permanece disponível normalmente.\n\n`;
+  }else{
+    t+=`🔎 Nosso acordo é *exclusivamente financeiro*.\n\n`;
+  }
+
+  if(!quit){   // bloco aparece só no reparcelamento; em qualquer quitação não entra
+    t+=`Enquanto houver um reparcelamento ativo:\n\n`;
+    t+=`• *Produtos do IBFT* → só podem ser comprados à vista. O parcelamento só será liberado depois da quitação total do reparcelamento.\n\n`;
+    t+=`• *Filiação ao CITRG* → pode ser comprada de forma parcelada normalmente, mesmo durante um reparcelamento ativo.\n\n`;
+  }
+
+  t+=`Gostaria de saber se há interesse em seguir com a oferta acima?`;
+
+  let mantem;
+  if(parcial) mantem=false;             // acesso ambíguo entre produtos → não promete liberação
+  else if(tipoAc==='livro') mantem=false;
+  else if(tipoAc==='vital') mantem=true;
+  else mantem = !(expirou && ext===0);
+  if(mantem){
+    const refPag = quit ? 'o pagamento deste acordo' : 'o pagamento da primeira parcela';
+    t+=`\n\nLembrando que, após o sistema identificar ${refPag}, o seu acesso será liberado automaticamente. Dessa forma, é possível retomar os estudos e alinhar os pagamentos.`;
+  }
+  return t;
+}
+
+function render(){
+  renderAtrasos();
+  const quit=ehQuit();
+  if(!quit && parcelasEscolhidas<2) parcelasEscolhidas=2;   // reparcelamento começa em 2x
+  document.getElementById('quitTotalWrap').style.display = quit ? 'block' : 'none';
+  document.getElementById('cardDesconto').style.display=quit?'block':'none';
+  document.getElementById('numAcesso').textContent = quit ? '5' : '4';
+  // desconto nos juros: só no reparcelamento
+  document.getElementById('descJurosWrap').style.display = quit ? 'none' : 'block';
+  // multi-produto: só na quitação parcial
+  const parcial = quit && !document.getElementById('quitTotal').checked;
+  document.getElementById('produtosExtraWrap').style.display = parcial ? 'block' : 'none';
+  document.getElementById('tipoAcessoWrap').style.display = parcial ? 'none' : 'block';   // acesso irrelevante na parcial
+  renderProdutosExtra();
+  const ext=parseInt(document.getElementById('extDias').value)||0;
+  document.getElementById('alertaExt').classList.toggle('show',ext>90);
+
+  if(quit){
+    const total=ehQuitTotal();
+    const N=pNeg().length,A=pAtraso().length,V=qtdVinc();
+    const soNeg=N>0&&A===0&&V===0;
+    // controles de desconto só na quitação TOTAL
+    document.getElementById('ctlJurosMulta').style.display=(total&&A>0)?'block':'none';
+    document.getElementById('ctlVinc').style.display=(total&&V>0)?'block':'none';
+    document.getElementById('ctlNeg').style.display=(total&&soNeg)?'block':'none';
+    quitModel();
+    document.getElementById('alertaNeg').classList.toggle('show',negClamped);
+    let g='';
+    if(!total){
+      g='💡 <b>Quitação parcial</b> — soma as parcelas selecionadas com os valores cheios (juros e multa), sem desconto. Use para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link.';
+    }
+    else if(!N&&!A&&!V) g='Adicione as parcelas para ver a estratégia sugerida.';
+    else if(N&&!A&&!V) g='💡 Apenas parcelas <b>negativadas</b>. Conceda desconto até o piso de R$ 500,00.';
+    else if(!N&&A&&!V) g='💡 Apenas parcelas <b>em atraso</b>. 1ª oferta: valor cheio (com juros e multa). Se o aluno achar caro, marque retirar juros e multa (cobra só o valor original).';
+    else if(!N&&!A&&V) g='💡 Apenas parcelas <b>a vencer</b>. Conceda até 10% de desconto.';
+    else if(!N&&A&&V) g='💡 Atraso + a vencer. Estratégia: retirar os juros do atraso e até 10% de desconto nas parcelas a vencer.';
+    else if(N&&A&&!V) g='💡 Negativadas + atraso. Estratégia: retirar os juros do atraso (as negativadas permanecem no valor original).';
+    else g='💡 Combinação: negativadas no valor original, retire os juros do atraso e até 10% nas parcelas a vencer.';
+    document.getElementById('quitGuide').innerHTML=g;
+  }
+
+  document.getElementById('lblSec2').textContent = quit ? 'Parcelas em atraso / Parcelas negativadas' : 'Parcelas em atraso';
+
+  const tipoAc=document.getElementById('tipoAcesso').value,info=document.getElementById('acessoInfo'),nota=document.getElementById('notaConclusao');
+  document.getElementById('cardAcesso').style.display = (tipoAc==='12m' && !parcial) ? 'block' : 'none';
+  if(tipoAc==='12m'){
+    const exp=expBase(), expirou=exp&&exp<hojeISO();
+    if(exp){
+      info.textContent = expirou
+        ? `Acesso já expirou em ${dataBR(exp)}.${ext>0?' Extensão será contada a partir do pagamento.':''}`
+        : `Expira em ${dataBR(exp)}.${ext>0?` Com extensão: ${dataBR(addDays(exp,ext))}.`:''}`;
+    } else info.textContent='Informe a data de liberação para calcular a expiração.';
+    nota.textContent = (exp&&expirou&&ext===0)
+      ? 'Acesso expirado e sem extensão → a proposta assume curso concluído e remove a parte de liberação de acesso.'
+      : 'A proposta inclui a liberação de acesso após o pagamento.';
+  }
+
+  const tp=document.getElementById('tipoProposta').value;
+  document.getElementById('vencHint').innerHTML = (tp==='rep1'?'Padrão: hoje (1º reparcelamento). ':tp==='rep2'?'Padrão: +7 dias (2º reparcelamento). ':'Padrão: hoje. ')+'<b>Os valores em atraso são atualizados até esta data de vencimento (o campo logo acima).</b>';
+
+  // campo de venc. das vincendas só aparece quando é relevante (pagamento futuro + há parcelas a vencer)
+  const futuro = refCalc()>hojeISO();
+  const temVinc = vincQtdRaw()>0;
+  document.getElementById('vincVencWrap').style.display = (futuro && temVinc) ? 'block' : 'none';
+  const semData = temVinc && !document.getElementById('vincVenc').value;
+  document.getElementById('warnCross').classList.toggle('show', futuro && semData);
+
+  renderResumo();renderParcGrid();
+  document.getElementById('parcWrap').style.display=quit?'none':'block';
+  atualizarSaida();
+}
+
+// gera o texto/preview (progressivo); chamado pelo render completo e pela atualização leve
+function atualizarSaida(){
+  const falta=[];
+  if(parseInt(document.getElementById('produto').value)<0) falta.push('selecione o produto');
+  if(totalGeral()<=0) falta.push('informe as parcelas / valores');
+  if(!document.getElementById('dataVenc').value) falta.push('defina o vencimento da 1ª parcela');
+  const txt = falta.length
+    ? '📝 A proposta vai sendo montada automaticamente conforme você preenche os campos.\n\nPara começar, falta:\n• '+falta.join('\n• ')
+    : gerarTexto();
+  const saidaEl=document.getElementById('saida');
+  if(!editadoManual) saidaEl.value=txt;   // preserva edição manual do atendente
+  document.getElementById('preview').innerHTML=renderPreview(saidaEl.value);
+}
+
+function onSaidaInput(){ editadoManual=true; document.getElementById('editNotice').style.display='block'; document.getElementById('preview').innerHTML=renderPreview(document.getElementById('saida').value); }
+function regerar(){ editadoManual=false; document.getElementById('editNotice').style.display='none'; render(); }
+function renderPreview(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*(.+?)\*/g,'<b>$1</b>'); }
+
+function copiar(){
+  // guarda-corpos: confere o essencial antes de copiar
+  const probs=[];
+  if(parseInt(document.getElementById('produto').value)<0) probs.push('selecionar o produto');
+  if(totalGeral()<=0) probs.push('informar valores (parcelas em atraso, negativadas ou a vencer)');
+  if(!document.getElementById('dataVenc').value) probs.push('definir o vencimento da 1ª parcela');
+  if(probs.length){ alert('Antes de copiar, falta:\n\n• '+probs.join('\n• ')); return; }
+  navigator.clipboard.writeText(document.getElementById('saida').value).then(()=>{const o=document.getElementById('copyOk');o.classList.add('show');setTimeout(()=>o.classList.remove('show'),1500);});
+}
+
+// recuperação sutil da proposta anterior (guardada na própria página)
+function snapshot(){
+  const g=id=>document.getElementById(id).value;
+  return {tipoProposta:g('tipoProposta'),produto:g('produto'),tipoAcesso:g('tipoAcesso'),
+    genQtd:g('genQtd'),genVenc:g('genVenc'),genVal:g('genVal'),vincQtd:g('vincQtd'),vincVal:g('vincVal'),vincVenc:g('vincVenc'),
+    retJuros:document.getElementById('retJuros').checked,retMulta:document.getElementById('retMulta').checked,
+    descVincPerc:g('descVincPerc'),descNegPerc:g('descNegPerc'),descJurosPerc:g('descJurosPerc'),quitTotal:document.getElementById('quitTotal').checked,
+    dataLib:g('dataLib'),extDias:g('extDias'),dataVenc:g('dataVenc'),
+    atrasos:JSON.parse(JSON.stringify(atrasos)),parcelasEscolhidas,produtosExtra:[...produtosExtra]};
+}
+function restore(s){
+  const set=(id,v)=>document.getElementById(id).value=v;
+  set('tipoProposta',s.tipoProposta);set('produto',s.produto);set('tipoAcesso',s.tipoAcesso);
+  set('genQtd',s.genQtd);set('genVenc',s.genVenc);set('genVal',s.genVal);set('vincQtd',s.vincQtd);set('vincVal',s.vincVal);set('vincVenc',s.vincVenc);
+  document.getElementById('retJuros').checked=s.retJuros;document.getElementById('retMulta').checked=s.retMulta;
+  set('descVincPerc',s.descVincPerc);set('descNegPerc',s.descNegPerc);set('dataLib',s.dataLib);set('extDias',s.extDias);set('dataVenc',s.dataVenc);
+  if(s.descJurosPerc!==undefined)set('descJurosPerc',s.descJurosPerc);
+  if(s.quitTotal!==undefined)document.getElementById('quitTotal').checked=s.quitTotal;
+  produtosExtra=s.produtosExtra||[];
+  atrasos=s.atrasos||[];parcelasEscolhidas=s.parcelasEscolhidas||2;editadoManual=false;document.getElementById('editNotice').style.display='none';render();
+}
+function desfazer(){
+  try{const b=localStorage.getItem('ibft_backup'); if(b) restore(JSON.parse(b)); document.getElementById('desfazer').style.display='none';}catch(e){}
+}
+
+function novaProposta(){
+  if(!confirm('Limpar todos os campos para iniciar uma nova proposta?')) return;
+  try{ localStorage.setItem('ibft_backup',JSON.stringify(snapshot())); document.getElementById('desfazer').style.display='inline-block'; }catch(e){}
+  document.getElementById('tipoProposta').value='rep1';
+  document.getElementById('produto').value='-1';
+  document.getElementById('tipoAcesso').value='12m';
+  document.getElementById('genQtd').value='';
+  document.getElementById('genVenc').value=hojeISO();
+  document.getElementById('genVal').value='0';
+  document.getElementById('vincQtd').value='0';
+  document.getElementById('vincVal').value='0';
+  document.getElementById('vincVenc').value='';
+  document.getElementById('retJuros').checked=false;
+  document.getElementById('retMulta').checked=false;
+  document.getElementById('descVincPerc').value='0';
+  document.getElementById('descNegPerc').value='0';
+  document.getElementById('dataLib').value='';
+  document.getElementById('extDias').value='0';
+  document.getElementById('descJurosPerc').value='0';
+  document.getElementById('quitTotal').checked=true;
+  atrasos=[]; parcelasEscolhidas=2; editadoManual=false; produtosExtra=[];
+  document.getElementById('editNotice').style.display='none';
+  setVencDefault();
+  render();
+}
+
+initProdutos();
+document.getElementById('genVenc').value=hojeISO();
+setVencDefault();
+addAtraso();
+render();
+</script>
+</body>
+</html>
