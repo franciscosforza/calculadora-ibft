@@ -20,6 +20,7 @@
     background:linear-gradient(110deg,var(--navy-deep) 0%,var(--navy) 45%,var(--navy-mid) 100%);
     color:#fff;padding:18px 28px;display:flex;align-items:center;gap:16px;
     box-shadow:0 2px 12px rgba(10,28,61,.35);position:relative;overflow:hidden;
+    border-width:0 0 3px;border-style:solid;border-image:linear-gradient(90deg,var(--trg-red),var(--trg-yellow),var(--trg-green),var(--trg-blue)) 1;
   }
   header::after{content:"";position:absolute;right:0;top:0;bottom:0;width:42%;
     background:repeating-linear-gradient(90deg,transparent 0 18px,rgba(59,178,115,.06) 18px 20px);
@@ -72,7 +73,8 @@
   .copy-ok.show{opacity:1;}
   .hint{font-size:11px;color:var(--suave);margin-top:3px;font-style:italic;line-height:1.4;}
   .sticky{position:sticky;top:20px;}
-  .ajuda-btn{margin-left:auto;z-index:1;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.45);padding:8px 14px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;}
+  .ajuda-btn{z-index:1;background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.45);padding:8px 14px;border-radius:7px;cursor:pointer;font-size:13px;font-weight:600;}
+  .hdr-acoes{margin-left:auto;display:flex;gap:8px;z-index:1;}
   .ajuda-btn:hover{background:rgba(255,255,255,.28);}
   .overlay{position:fixed;inset:0;background:rgba(10,28,61,.55);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:30px 16px;overflow:auto;}
   .overlay.show{display:flex;}
@@ -82,6 +84,31 @@
   .ajuda-box p{margin:3px 0;font-size:13px;line-height:1.5;color:var(--texto);}
   .ajuda-close{float:right;background:var(--navy);color:#fff;border:none;border-radius:7px;padding:6px 12px;cursor:pointer;font-weight:600;font-size:12px;}
   .rodape{text-align:center;color:var(--suave);font-size:11px;padding:16px;}
+  .card:hover{box-shadow:0 4px 14px rgba(16,42,86,.11);}
+  .badge-sec.show{display:inline-block;animation:popIn .22s ease;}
+  @keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
+  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(150%);background:var(--verde);color:#fff;padding:12px 22px;border-radius:9px;font-weight:600;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25);z-index:100;transition:transform .3s ease;}
+  #toast.show{transform:translateX(-50%) translateY(0);}
+  .info-i{cursor:help;color:var(--accent);font-size:11px;font-weight:700;margin-left:7px;border:1.5px solid var(--accent);border-radius:50%;width:15px;height:15px;display:inline-flex;align-items:center;justify-content:center;line-height:1;font-style:italic;font-family:Georgia,serif;}
+  .progresso{max-width:1200px;margin:12px auto -8px;padding:0 22px;}
+  .progresso .ptxt{display:flex;justify-content:space-between;font-size:12px;color:var(--suave);font-weight:600;margin-bottom:4px;}
+  .progresso .pbarbg{background:#dde5ef;border-radius:6px;height:8px;overflow:hidden;}
+  .progresso .pbar{background:var(--verde);height:100%;width:0;transition:width .25s;}
+  .compo-bar{display:flex;height:14px;border-radius:5px;overflow:hidden;margin-top:8px;border:1px solid #dbe6f2;}
+  .compo-bar span{display:block;height:100%;}
+  .compo-leg{display:flex;gap:12px;flex-wrap:wrap;font-size:10.5px;color:var(--suave);margin-top:4px;}
+  .compo-leg i{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:3px;vertical-align:middle;}
+  body.dark{--cinza:#0e151e;--texto:#e6edf5;--borda:#2a3746;--suave:#9fb2c6;}
+  body.dark .card{background:#161f2b;}
+  body.dark input,body.dark select,body.dark textarea{background:#0e151e;color:#e6edf5;}
+  body.dark .gen-box{background:#0e151e;}
+  body.dark .resumo{background:linear-gradient(160deg,#141d28,#0e151e);border-color:#2a3746;}
+  body.dark #saida{background:#161f2b;color:#e6edf5;}
+  body.dark .parc-op{background:#0e151e;}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .card{animation:fadeUp .3s ease both;}
+  .resumo,.parc-op,.alerta,#preview,#editNotice,#histWrap{transition:background-color .2s,border-color .2s,box-shadow .2s;}
+  header h1,header p{transition:color .2s;}
 </style>
 </head>
 <body>
@@ -91,13 +118,21 @@
     <h1>Financeiro IBFT</h1>
     <p>Calculadora de propostas de reparcelamento e quitação</p>
   </div>
-  <button class="ajuda-btn" onclick="toggleAjuda()">❓ Como usar</button>
+  <div class="hdr-acoes">
+    <button class="ajuda-btn" id="btnDark" onclick="toggleDark()" title="Modo escuro / claro">🌙</button>
+    <button class="ajuda-btn" onclick="toggleAjuda()">❓ Como usar</button>
+  </div>
 </header>
+
+<div class="progresso">
+  <div class="ptxt"><span id="progTxt">Comece preenchendo as seções</span><span id="progPct">0%</span></div>
+  <div class="pbarbg"><div class="pbar" id="progBar"></div></div>
+</div>
 
 <div class="wrap">
   <div>
     <div class="card" id="card1">
-      <h2><span class="num">1</span> Tipo &amp; Produto<span class="badge-sec" id="badge1"></span></h2>
+      <h2><span class="num">1</span> Tipo &amp; Produto<span class="info-i" title="Escolha o tipo de proposta (1º/2º reparcelamento ou quitação) e o produto do aluno. O tipo de acesso ajusta sozinho conforme o produto.">i</span><span class="badge-sec" id="badge1"></span></h2>
       <label>Tipo de proposta</label>
       <select id="tipoProposta" onchange="onTipoChange()">
         <option value="rep1">1º Reparcelamento</option>
@@ -126,7 +161,7 @@
     </div>
 
     <div class="card" id="card2">
-      <h2><span class="num">2</span> <span id="lblSec2">Parcelas em atraso</span><span class="badge-sec" id="badge2"></span></h2>
+      <h2><span class="num">2</span> <span id="lblSec2">Parcelas em atraso</span><span class="info-i" title="Lance as parcelas vencidas: quantidade, vencimento da mais antiga e valor original. A multa (2%) e os juros (2%/mês) são calculados automaticamente até a data de pagamento. Na quitação, marque as negativadas.">i</span><span class="badge-sec" id="badge2"></span></h2>
       <div class="gen-box">
         <div class="row">
           <div><label>Quantidade</label><input type="number" id="genQtd" min="0" value="1" oninput="gerarParcelas()"></div>
@@ -140,6 +175,7 @@
         <tbody id="atrasoBody"></tbody>
       </table>
       <button class="btn btn-ghost btn-sm" onclick="addAtraso()" style="margin-top:8px">+ Adicionar parcela manual</button>
+      <button class="btn btn-ghost btn-sm" id="btnTodasNeg" onclick="toggleTodasNeg()" style="margin-top:8px;margin-left:6px;display:none">Marcar todas como negativadas</button>
       <div id="descJurosWrap" style="margin-top:14px;display:none">
         <label>Desconto nos juros das parcelas em atraso (%) — opcional</label>
         <input type="number" id="descJurosPerc" min="0" max="100" step="1" value="0" oninput="render()" style="max-width:220px">
@@ -148,7 +184,7 @@
     </div>
 
     <div class="card" id="card3">
-      <h2><span class="num">3</span> Parcelas a vencer<span class="badge-sec" id="badge3"></span></h2>
+      <h2><span class="num">3</span> Parcelas a vencer<span class="info-i" title="Parcelas que ainda não venceram (sem juros). É opcional — preencha só se houver parcelas a vencer no acordo.">i</span><span class="badge-sec" id="badge3"></span></h2>
       <div class="row">
         <div><label>Quantidade</label><input type="number" id="vincQtd" min="0" value="0" oninput="render()"></div>
         <div><label>Valor unitário (R$)</label><input type="text" inputmode="decimal" id="vincVal" value="0" oninput="maskMoeda(this);render()"></div>
@@ -159,7 +195,7 @@
     </div>
 
     <div class="card" id="cardDesconto" style="display:none">
-      <h2><span class="num">4</span> Quitação — descontos</h2>
+      <h2><span class="num">4</span> Quitação — descontos<span class="info-i" title="Aplique os descontos da quitação conforme a situação: isenção de juros/multa do atraso, % nas parcelas a vencer, % na dívida negativada e um desconto adicional sobre o total. Siga a orientação em azul.">i</span></h2>
       <div class="alerta" id="quitGuide" style="display:block;background:#eef5ff;border-color:#b9d4f2;color:var(--navy)"></div>
       <div id="ctlJurosMulta" style="display:none">
         <label class="chk-line" style="display:flex;align-items:center;gap:7px;margin-top:12px;font-size:13px;font-weight:600;color:var(--texto)"><input type="checkbox" id="retJuros" style="width:auto" onchange="render()"> Retirar os juros das parcelas em atraso</label>
@@ -170,6 +206,7 @@
         <input type="number" id="descVincPerc" min="0" max="10" step="0.5" value="0" oninput="render()">
       </div>
       <div id="ctlNeg" style="display:none">
+        <label class="chk-line" style="display:flex;align-items:center;gap:7px;margin:4px 0 8px;font-size:13px;font-weight:600;color:var(--texto)"><input type="checkbox" id="isentarJurosNeg" checked style="width:auto" onchange="render()"> Mostrar isenção dos juros (negativadas voltam ao valor original)</label>
         <label>Desconto na dívida negativada (%)</label>
         <input type="number" id="descNegPerc" min="0" max="100" step="1" value="0" oninput="render()">
         <div class="alerta" id="alertaNeg">⚠️ Limite atingido: a dívida negativada não pode ficar abaixo de R$ 500,00. O valor foi travado nesse piso.</div>
@@ -182,7 +219,7 @@
     </div>
 
     <div class="card" id="cardAcesso">
-      <h2><span class="num" id="numAcesso">5</span> Acesso &amp; extensão<span class="badge-sec" id="badge5"></span></h2>
+      <h2><span class="num" id="numAcesso">5</span> Acesso &amp; extensão<span class="info-i" title="Informe a data de liberação do acesso para calcular a expiração dos 12 meses. Se for conceder extensão, informe os dias (acima de 90 → análise da Lays).">i</span><span class="badge-sec" id="badge5"></span></h2>
       <div class="row">
         <div><label>Data de liberação do acesso</label><input type="date" id="dataLib" oninput="render()"></div>
         <div><label>Extensão (dias)</label><input type="number" id="extDias" min="0" value="0" oninput="render()"></div>
@@ -217,7 +254,8 @@
         <div id="editNotice" style="display:none;background:#eef5ff;border:1px solid #b9d4f2;color:var(--navy);padding:7px 10px;border-radius:7px;font-size:11px;margin-top:6px">✍️ Você está editando o texto manualmente — mudanças nos campos não vão sobrescrever sua edição. <a onclick="regerar()" style="cursor:pointer;text-decoration:underline;font-weight:600">Regerar do zero</a></div>
         <div id="histWrap" style="display:none;margin-top:8px">
           <label style="font-size:11px;color:var(--suave);font-weight:600">↩ Recuperar uma proposta gerada antes (últimas 25)</label>
-          <select id="histSel" onchange="restaurarHist()" style="font-size:12px;margin-top:2px"><option value="">— escolher proposta anterior —</option></select>
+          <input type="text" id="histSearch" placeholder="🔎 filtrar por produto, tipo, valor..." oninput="renderHist()" style="font-size:12px;margin-top:2px;margin-bottom:4px">
+          <select id="histSel" onchange="restaurarHist()" style="font-size:12px"><option value="">— escolher proposta anterior —</option></select>
         </div>
       </div>
     </div>
@@ -242,10 +280,12 @@
   </div>
 </div>
 
-<div class="rodape">Financeiro IBFT · Calculadora de Propostas · v12 · jun/2026</div>
+<div class="rodape">Financeiro IBFT · Calculadora de Propostas · v13 · jun/2026</div>
+<div id="toast">✓ Proposta copiada!</div>
 
 <script>
 function toggleAjuda(){document.getElementById('ajudaOverlay').classList.toggle('show');}
+function toggleDark(){const d=document.body.classList.toggle('dark');document.getElementById('btnDark').textContent=d?'☀️':'🌙';try{localStorage.setItem('ibft_dark',d?'1':'0');}catch(e){}}
 const PRODUTOS=[
  {n:"Formação de Terapeutas - TRG",a:"12m"},
  {n:"Formação de Terapeutas - TRG + Formação em Leitura Corporal e Comportamental",a:"12m"},
@@ -336,6 +376,7 @@ function gerarParcelas(){
   render();
 }
 function addAtraso(){atrasos.push({valor:'',venc:'',negativada:false});render();}
+function toggleTodasNeg(){const todas=atrasos.length>0&&atrasos.every(p=>p.negativada);atrasos.forEach(p=>p.negativada=!todas);render();}
 function delAtraso(i){atrasos.splice(i,1);render();}
 function updAtraso(i,c,v){atrasos[i][c]=v;render();}                 // venc/negat → render completo
 function updValor(i,v){atrasos[i].valor=v;renderLeve();}             // valor → atualização leve (preserva foco/cursor)
@@ -415,17 +456,24 @@ function quitModel(){
   const vincDesc=floor2(vincFull*(dv/100));
   const vincCalc=vincFull-vincDesc;
   let negCalc=negOriginal(),negDesc=0; negClamped=false;
-  if(comDesconto && soNeg && negOriginal()>0){
+  if(comDesconto && soNeg && negOriginal()>0 && dn>0){
     let cand=floor2(negOriginal()*(1-dn/100));
     if(cand<NEG_PISO){cand=Math.min(NEG_PISO,negOriginal());negClamped=(negOriginal()>NEG_PISO);}
-    negCalc=cand; negDesc=negOriginal()-negCalc;
+    negCalc=cand; negDesc=floor2(negOriginal()-negCalc);
+  }
+  // isenção de juros da negativada (parcelas estão no valor original; mostra os juros que NÃO incidiram, como desconto)
+  let jurosNeg=0;
+  if(comDesconto && soNeg && document.getElementById('isentarJurosNeg')?.checked){
+    jurosNeg = pNeg().reduce((s,p)=>s+floor2(parseV(p.valor)*jurosRate(diasAtraso(p.venc))),0);
   }
   const negPct=negOriginal()>0?Math.round(negDesc/negOriginal()*100):0;
   const subtotal=negCalc+atrasoCalc+vincCalc;
   let dg=comDesconto?(parseFloat(el('descGeralPerc')?.value)||0):0; dg=Math.min(Math.max(dg,0),100);
   const geralDesc=floor2(subtotal*(dg/100));
   const total=subtotal-geralDesc;
-  return {N,A,V,soNeg,jurosRem,multaRem,vincDesc,dv,negDesc,negPct,dg,geralDesc,total,descTotal:jurosRem+multaRem+vincDesc+negDesc+geralDesc};
+  const bruto=negOriginal()+atrasoComEnc()+totalVinc()+jurosNeg;   // valor atual da dívida (inclui juros hipotéticos da negativada)
+  const descTotal=jurosRem+multaRem+vincDesc+negDesc+geralDesc+jurosNeg;
+  return {N,A,V,soNeg,jurosRem,multaRem,jurosNeg,vincDesc,dv,negDesc,negPct,dg,geralDesc,total,bruto,descTotal};
 }
 function totalGeral(){return ehQuit()?quitModel().total:(totalAtraso()+totalVinc());}
 
@@ -447,11 +495,12 @@ function renderResumo(){
   let h='';
   if(ehQuit()){
     const m=quitModel();
-    if(pNeg().length) h+=lin(`${pNeg().length} negativada(s)`,negOriginal());
+    if(pNeg().length){ h+=lin(`${pNeg().length} negativada(s)`,negOriginal()+m.jurosNeg); if(m.jurosNeg>0) h+=sub('↳ juros',m.jurosNeg,RED); }
     if(pAtraso().length){h+=lin(`${pAtraso().length} ${lblAtraso}`,atrasoComEnc());h+=sub('↳ juros',atrasoJurosV(),RED);h+=sub('↳ multa',atrasoMultaV(),RED);}
     if(qtdVinc()) h+=lin(`${qtdVinc()} a vencer`,totalVinc());
     if(m.descTotal>0){
       h+=lin('Descontos aplicados',-m.descTotal,GREEN);
+      if(m.jurosNeg>0) h+=sub('↳ juros isentos (negativada)',-m.jurosNeg,GREEN);
       if(m.jurosRem>0) h+=sub('↳ juros isentos',-m.jurosRem,GREEN);
       if(m.multaRem>0) h+=sub('↳ multa isenta',-m.multaRem,GREEN);
       if(m.vincDesc>0) h+=sub(`↳ ${m.dv}% nas parcelas a vencer`,-m.vincDesc,GREEN);
@@ -467,11 +516,19 @@ function renderResumo(){
   if(nCross>0) h+=`<div class="lin" style="color:var(--alerta);font-size:11px;font-style:italic;border-top:1px dashed #f6c668;margin-top:4px;padding-top:5px"><span>⚠️ ${nCross} parcela(s) que estava(m) "a vencer" passou(aram) a contar como atraso, pois vence(m) até a data de pagamento escolhida.</span></div>`;
   h+=`<div class="lin tot"><span>TOTAL</span><span>${brl(totalGeral())}</span></div>`;
   const economia = ehQuit()? quitModel().descTotal : descJurosTotal();
-  const baseEcon = ehQuit()? (negOriginal()+atrasoComEnc()+totalVinc()) : (atrasoComEnc()+totalVinc());
+  const baseEcon = ehQuit()? quitModel().bruto : (atrasoComEnc()+totalVinc());
   const econPct = baseEcon>0?Math.round(economia/baseEcon*100):0;
   if(economia>0) h+=`<div class="lin" style="color:var(--verde);font-weight:700;margin-top:2px"><span>💚 Economia (${econPct}%)</span><span>${brl(economia)}</span></div>`;
   if(!ehQuit() && parcelasEscolhidas>0 && totalGeral()>0)
     h+=`<div class="lin" style="margin-top:4px"><span>${parcelasEscolhidas}x de</span><b>${brl(totalGeral()/parcelasEscolhidas)}</b></div>`;
+  // mini-gráfico da composição (mostra que a maior parte é o valor original, não juros)
+  const cOrig=atrasoOriginal()+negOriginal()+totalVinc(), cMulta=atrasoMultaV(), cJuros=atrasoJurosV();
+  const cTot=cOrig+cMulta+cJuros;
+  if(cTot>0 && (cMulta>0||cJuros>0)){
+    const p=v=>Math.round(v/cTot*100);
+    h+=`<div class="compo-bar"><span style="width:${p(cOrig)}%;background:#2b6cb0"></span><span style="width:${p(cMulta)}%;background:#dd9b2e"></span><span style="width:${p(cJuros)}%;background:#c53030"></span></div>`;
+    h+=`<div class="compo-leg"><span><i style="background:#2b6cb0"></i>Original ${p(cOrig)}%</span><span><i style="background:#dd9b2e"></i>Multa ${p(cMulta)}%</span><span><i style="background:#c53030"></i>Juros ${p(cJuros)}%</span></div>`;
+  }
   document.getElementById('resumo').innerHTML=h;
 }
 
@@ -495,14 +552,15 @@ function gerarTexto(){
 
   if(quit){
     const m=quitModel();
-    const bruto = negOriginal()+atrasoComEnc()+totalVinc();   // valor atual da dívida (sem descontos)
+    const bruto = m.bruto;   // valor atual da dívida (inclui juros hipotéticos da negativada, se houver)
     // composição da dívida
-    if(m.N>0) t+=`• *${m.N}* ${m.N===1?'parcela negativada':'parcelas negativadas'}: ${brl(negOriginal())}\n`;
+    if(m.N>0) t+=`• *${m.N}* ${m.N===1?'parcela negativada':'parcelas negativadas'}: ${brl(negOriginal()+m.jurosNeg)}\n`;
     if(m.A>0) t+=`• *${m.A}* ${m.A===1?'parcela em atraso':'parcelas em atraso'}: ${brl(atrasoComEnc())}\n`;
     if(m.V>0) t+=`• *${m.V}* ${m.V===1?'parcela a vencer':'parcelas a vencer'}: ${brl(totalVinc())}\n`;
     if(m.descTotal>0){
       t+=`\n💵 *Valor atual da dívida: ${brl(bruto)}*\n`;
       t+=`\n✅ *Descontos aplicados:*\n`;
+      if(m.jurosNeg>0) t+=`• Isenção dos juros das parcelas negativadas: − ${brl(m.jurosNeg)}\n`;
       if(m.jurosRem>0) t+=`• Isenção dos juros das parcelas em atraso: − ${brl(m.jurosRem)}\n`;
       if(m.multaRem>0) t+=`• Isenção da multa das parcelas em atraso: − ${brl(m.multaRem)}\n`;
       if(m.vincDesc>0) t+=`• ${m.dv}% de desconto nas parcelas a vencer: − ${brl(m.vincDesc)}\n`;
@@ -608,9 +666,24 @@ function aplicarStatus(){
 
   // 5: acesso & extensão — data de liberação obrigatória quando a seção aparece (12m, fora da parcial); extensão é opcional
   let s5='';
-  if(document.getElementById('tipoAcesso').value==='12m' && !parcial)
-    s5 = document.getElementById('dataLib').value ? 'ok' : (engajado ? 'falta':'');
+  if(document.getElementById('tipoAcesso').value==='12m' && !parcial){
+    const ext5=parseInt(document.getElementById('extDias').value)||0;
+    s5 = document.getElementById('dataLib').value ? 'ok' : (ext5>0 ? 'falta' : '');   // vermelho só se mexeu na seção (extensão) sem a data
+  }
   setSec('cardAcesso','badge5',s5);
+}
+
+function atualizarProgresso(){
+  const prodOk=parseInt(document.getElementById('produto').value)>=0;
+  const valOk=totalGeral()>0;
+  const parcial=ehQuit()&&!document.getElementById('quitTotal').checked;
+  const precisaAcesso=(document.getElementById('tipoAcesso').value==='12m' && !parcial);
+  const acessoOk=!!document.getElementById('dataLib').value;
+  const etapas=[prodOk,valOk]; if(precisaAcesso) etapas.push(acessoOk);   // vencimento já vem com padrão, não conta
+  const done=etapas.filter(Boolean).length, total=etapas.length, pct=Math.round(done/total*100);
+  document.getElementById('progBar').style.width=pct+'%';
+  document.getElementById('progPct').textContent=pct+'%';
+  document.getElementById('progTxt').textContent = done===total ? '✓ Tudo preenchido — proposta pronta' : `${done} de ${total} etapas preenchidas`;
 }
 
 function render(){
@@ -656,6 +729,9 @@ function render(){
   }
 
   document.getElementById('lblSec2').textContent = quit ? 'Parcelas em atraso / Parcelas negativadas' : 'Parcelas em atraso';
+  const bN=document.getElementById('btnTodasNeg');
+  if(bN){ bN.style.display = (quit && atrasos.length>0) ? 'inline-block' : 'none';
+    bN.textContent = (atrasos.length>0 && atrasos.every(p=>p.negativada)) ? 'Desmarcar todas as negativadas' : 'Marcar todas como negativadas'; }
 
   const tipoAc=document.getElementById('tipoAcesso').value,info=document.getElementById('acessoInfo'),nota=document.getElementById('notaConclusao');
   document.getElementById('cardAcesso').style.display = (tipoAc==='12m' && !parcial) ? 'block' : 'none';
@@ -682,7 +758,7 @@ function render(){
   const semData = temVinc && !document.getElementById('vincVenc').value;
   document.getElementById('warnCross').classList.toggle('show', futuro && semData);
 
-  renderResumo();renderParcGrid();aplicarStatus();
+  renderResumo();renderParcGrid();aplicarStatus();atualizarProgresso();
   document.getElementById('parcWrap').style.display=quit?'none':'block';
   atualizarSaida();
 }
@@ -715,7 +791,7 @@ function copiar(){
   if(!document.getElementById('dataVenc').value) probs.push('definir o vencimento da 1ª parcela');
   if(probs.length){ alert('Antes de copiar, falta:\n\n• '+probs.join('\n• ')); return; }
   salvarHist();   // guarda no histórico a proposta copiada
-  navigator.clipboard.writeText(document.getElementById('saida').value).then(()=>{const o=document.getElementById('copyOk');o.classList.add('show');setTimeout(()=>o.classList.remove('show'),1500);});
+  navigator.clipboard.writeText(document.getElementById('saida').value).then(()=>{const tt=document.getElementById('toast');tt.classList.add('show');setTimeout(()=>tt.classList.remove('show'),2000);});
 }
 
 // recuperação sutil da proposta anterior (guardada na própria página)
@@ -724,7 +800,7 @@ function snapshot(){
   return {tipoProposta:g('tipoProposta'),produto:g('produto'),tipoAcesso:g('tipoAcesso'),
     genQtd:g('genQtd'),genVenc:g('genVenc'),genVal:g('genVal'),vincQtd:g('vincQtd'),vincVal:g('vincVal'),vincVenc:g('vincVenc'),
     retJuros:document.getElementById('retJuros').checked,retMulta:document.getElementById('retMulta').checked,
-    descVincPerc:g('descVincPerc'),descNegPerc:g('descNegPerc'),descJurosPerc:g('descJurosPerc'),descGeralPerc:g('descGeralPerc'),quitTotal:document.getElementById('quitTotal').checked,
+    descVincPerc:g('descVincPerc'),descNegPerc:g('descNegPerc'),descJurosPerc:g('descJurosPerc'),descGeralPerc:g('descGeralPerc'),quitTotal:document.getElementById('quitTotal').checked,isentarJurosNeg:document.getElementById('isentarJurosNeg').checked,
     dataLib:g('dataLib'),extDias:g('extDias'),dataVenc:g('dataVenc'),
     atrasos:JSON.parse(JSON.stringify(atrasos)),parcelasEscolhidas,produtosExtra:[...produtosExtra]};
 }
@@ -737,6 +813,7 @@ function restore(s){
   if(s.descJurosPerc!==undefined)set('descJurosPerc',s.descJurosPerc);
   if(s.descGeralPerc!==undefined)set('descGeralPerc',s.descGeralPerc);
   if(s.quitTotal!==undefined)document.getElementById('quitTotal').checked=s.quitTotal;
+  if(s.isentarJurosNeg!==undefined)document.getElementById('isentarJurosNeg').checked=s.isentarJurosNeg;
   produtosExtra=s.produtosExtra||[];
   atrasos=s.atrasos||[];parcelasEscolhidas=s.parcelasEscolhidas||2;editadoManual=false;document.getElementById('editNotice').style.display='none';render();
 }
@@ -762,8 +839,9 @@ function renderHist(){
   const wrap=document.getElementById('histWrap'), sel=document.getElementById('histSel');
   if(!historico.length){wrap.style.display='none';return;}
   wrap.style.display='block';
+  const termo=(document.getElementById('histSearch').value||'').toLowerCase();
   let o='<option value="">— escolher proposta anterior —</option>';
-  historico.forEach((s,i)=>{const h=new Date(s._ts||Date.now());const hh=('0'+h.getHours()).slice(-2)+':'+('0'+h.getMinutes()).slice(-2);o+=`<option value="${i}">[${hh}] ${(s._resumo||'').replace(/"/g,'')}</option>`;});
+  historico.forEach((s,i)=>{const r=(s._resumo||'');if(termo && r.toLowerCase().indexOf(termo)<0)return;const h=new Date(s._ts||Date.now());const hh=('0'+h.getHours()).slice(-2)+':'+('0'+h.getMinutes()).slice(-2);o+=`<option value="${i}">[${hh}] ${r.replace(/"/g,'')}</option>`;});
   sel.innerHTML=o;
 }
 function restaurarHist(){
@@ -793,6 +871,7 @@ function novaProposta(){
   document.getElementById('extDias').value='0';
   document.getElementById('descJurosPerc').value='0';
   document.getElementById('descGeralPerc').value='0';
+  document.getElementById('isentarJurosNeg').checked=true;
   document.getElementById('quitTotal').checked=true;
   atrasos=[]; parcelasEscolhidas=2; editadoManual=false; produtosExtra=[];
   document.getElementById('editNotice').style.display='none';
@@ -808,6 +887,17 @@ addAtraso();
 render();
 try{historico=JSON.parse(localStorage.getItem('ibft_hist')||'[]')||[];}catch(e){historico=[];}
 renderHist();
+try{if(localStorage.getItem('ibft_dark')==='1'){document.body.classList.add('dark');document.getElementById('btnDark').textContent='☀️';}}catch(e){}   // preferência de tema
+try{document.getElementById('produto').focus();}catch(e){}   // auto-foco no produto
+// atalho: Ctrl+C copia a proposta quando nada está selecionado na tela
+document.addEventListener('keydown',function(e){
+  if((e.ctrlKey||e.metaKey) && (e.key==='c'||e.key==='C') && (''+window.getSelection()).trim()===''
+     && document.activeElement && ['INPUT','TEXTAREA','SELECT'].indexOf(document.activeElement.tagName)<0){
+    copiar();
+  }
+  if(e.altKey && (e.key==='n'||e.key==='N')){ e.preventDefault(); novaProposta(); }   // Alt+N: nova proposta
+  if(e.altKey && (e.key==='e'||e.key==='E')){ e.preventDefault(); toggleEdit(); }      // Alt+E: editar/ver
+});
 </script>
 </body>
 </html>
