@@ -321,7 +321,7 @@
   </div>
 </div>
 
-<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v16</a> · jun/2026</div>
+<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v17</a> · jun/2026</div>
 
 <div class="overlay" id="regrasOverlay" onclick="if(event.target===this)toggleRegras()">
   <div class="ajuda-box">
@@ -350,6 +350,8 @@
     <button class="ajuda-close" onclick="toggleNovidades()">Fechar ✕</button>
     <h3>Novidades da calculadora</h3>
     <p class="hint" style="margin-top:-6px">O que mudou em cada versão. A mais recente fica no topo.</p>
+    <h4>v17 · jun/2026</h4>
+    <p><b>Correção nos vencimentos:</b> quando o vencimento é dia 31 (ou o último dia do mês), as parcelas seguintes caem no último dia de cada mês (31/03 → 30/04 → 31/05 → 30/06). Antes gerava data errada e chegava a repetir o mês. Vale para todos os tipos de proposta e para o cálculo de expiração do acesso. Produto novo: <b>"BF - Formação Avançada em Master Terapeuta + Formação em Leitura Corporal e Comportamental"</b> (vitalício).</p>
     <h4>v16 · jun/2026</h4>
     <p>Botão <b>"📏 Regras"</b> com resumo da política (encargos, descontos, piso, extensão, fluxo do 2º reparcelamento). Novo seletor de <b>zoom</b> no topo (100% a 200%, igual ao Sheets — escala a tela toda e fica salvo). <b>Modo escuro com contraste corrigido</b> (títulos, totais e valores não ficam mais apagados). Supervisão do setor passou para o Francisco (antes Lays).</p>
     <h4>v15 · jun/2026</h4>
@@ -428,7 +430,16 @@ function parseV(v){v=String(v==null?'':v).trim();if(v==='')return 0;if(v.indexOf
 function maskMoeda(el){var d=el.value.replace(/\D/g,'');if(d===''){el.value='';return;}d=String(parseInt(d,10));while(d.length<3)d='0'+d;el.value=d.slice(0,-2).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+d.slice(-2);}   // máscara de moeda (centavos da direita p/ esquerda)
 function dataBR(iso){if(!iso)return 'xxxx';const[a,m,d]=iso.split('-');return `${d}/${m}/${a}`;}
 function addDays(iso,n){const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
-function addMonths(iso,n){const d=new Date(iso+'T00:00:00');d.setMonth(d.getMonth()+n);return d.toISOString().slice(0,10);}
+function addMonths(iso,n){
+  // avança n meses mantendo o DIA pretendido; se o mês-alvo não tiver esse dia, usa o último dia do mês
+  // (ex.: 31/03 → 30/04 → 31/05 → 30/06; nunca dois vencimentos no mesmo mês)
+  const p=iso.split('-').map(Number), diaPretendido=p[2];
+  const base=new Date(p[0],p[1]-1,1); base.setMonth(base.getMonth()+n);   // dia 1 evita transbordo do setMonth
+  const ty=base.getFullYear(), tm=base.getMonth();
+  const ultimoDia=new Date(ty,tm+1,0).getDate();
+  const dia=Math.min(diaPretendido,ultimoDia);
+  return ty+'-'+String(tm+1).padStart(2,'0')+'-'+String(dia).padStart(2,'0');
+}
 
 function refCalc(){const v=document.getElementById('dataVenc').value;return v||hojeISO();}
 function diasAtraso(venc,ref){if(!venc)return 0;ref=ref||refCalc();const v=new Date(venc+'T00:00:00'),h=new Date(ref+'T00:00:00');return Math.max(0,Math.round((h-v)/86400000));}
