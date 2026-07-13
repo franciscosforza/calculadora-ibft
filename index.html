@@ -321,7 +321,7 @@
   </div>
 </div>
 
-<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v17</a> · jun/2026</div>
+<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v18</a> · jul/2026</div>
 
 <div class="overlay" id="regrasOverlay" onclick="if(event.target===this)toggleRegras()">
   <div class="ajuda-box">
@@ -350,6 +350,8 @@
     <button class="ajuda-close" onclick="toggleNovidades()">Fechar ✕</button>
     <h3>Novidades da calculadora</h3>
     <p class="hint" style="margin-top:-6px">O que mudou em cada versão. A mais recente fica no topo.</p>
+    <h4>v18 · jul/2026</h4>
+    <p><b>Correção na edição manual da data</b> das parcelas em atraso: dava para digitar só o primeiro número porque o campo era recriado a cada dígito. Agora dá para digitar a data inteira normalmente (a atualização acontece quando a data fica completa).</p>
     <h4>v17 · jun/2026</h4>
     <p><b>Correção nos vencimentos:</b> quando o vencimento é dia 31 (ou o último dia do mês), as parcelas seguintes caem no último dia de cada mês (31/03 → 30/04 → 31/05 → 30/06). Antes gerava data errada e chegava a repetir o mês. Vale para todos os tipos de proposta e para o cálculo de expiração do acesso. Produto novo: <b>"BF - Formação Avançada em Master Terapeuta + Formação em Leitura Corporal e Comportamental"</b> (vitalício).</p>
     <h4>v16 · jun/2026</h4>
@@ -500,6 +502,7 @@ function toggleTodasNeg(){const todas=atrasos.length>0&&atrasos.every(p=>p.negat
 function delAtraso(i){atrasos.splice(i,1);render();}
 function updAtraso(i,c,v){atrasos[i][c]=v;render();}                 // venc/negat → render completo
 function updValor(i,v){atrasos[i].valor=v;renderLeve();}             // valor → atualização leve (preserva foco/cursor)
+function updVenc(i,v){atrasos[i].venc=v;renderLeve();aplicarStatus();atualizarProgresso();renderCoerencia();}   // data → atualização leve (não recria a tabela, preserva o foco)
 function atualCellHTML(p){
   return `${brl(valorAtualizado(p))}${(!p.negativada&&p.venc)?`<br><span style="font-weight:400;color:var(--suave);font-size:10px">${diasAtraso(p.venc)} dias</span>`:''}${descJurosParcela(p)>0?`<br><span style="font-weight:600;color:var(--verde);font-size:10px">− ${brl(descJurosParcela(p))} juros</span>`:''}`;
 }
@@ -512,7 +515,7 @@ function renderAtrasos(){
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td><input type="text" inputmode="decimal" value="${p.valor}" oninput="maskMoeda(this);updValor(${i},this.value)"></td>
-      <td><input type="date" value="${p.venc}" oninput="updAtraso(${i},'venc',this.value)"></td>
+      <td><input type="date" value="${p.venc}" onchange="updVenc(${i},this.value)"></td>
       <td class="check" style="${showNeg?'':'display:none'}"><input type="checkbox" ${p.negativada?'checked':''} onchange="updAtraso(${i},'negativada',this.checked)"></td>
       <td class="val-atual" id="atual${i}">${atualCellHTML(p)}</td>
       <td><button class="btn btn-del btn-sm" onclick="delAtraso(${i})">✕</button></td>`;
