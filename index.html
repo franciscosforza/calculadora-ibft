@@ -145,6 +145,40 @@
   .card.col.collapsed{padding-bottom:14px;}
   /* contador do dia (50) */
   .hdr-cont{font-size:12px;color:#fff;opacity:.9;background:rgba(255,255,255,.14);padding:5px 10px;border-radius:20px;white-space:nowrap;align-self:center;}
+  /* ===== pacote visual — rodada 2 ===== */
+  *{scrollbar-width:thin;scrollbar-color:var(--borda) transparent;}
+  ::-webkit-scrollbar{width:10px;height:10px;}
+  ::-webkit-scrollbar-thumb{background:var(--borda);border-radius:8px;border:2px solid transparent;background-clip:content-box;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--suave);background-clip:content-box;}
+  ::selection{background:rgba(43,108,176,.22);}
+  :focus-visible{outline:2px solid var(--accent2);outline-offset:2px;}
+  input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;cursor:pointer;}
+  input[type=date]{accent-color:var(--accent);}
+  /* cabeçalho de seção com sublinhado em gradiente */
+  .card h2{border-bottom:none;position:relative;padding-bottom:11px;}
+  .card h2::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:linear-gradient(90deg,var(--borda),transparent);border-radius:2px;}
+  header h1{letter-spacing:.3px;}
+  .gen-box{border:1px solid var(--borda);}
+  th{text-transform:uppercase;letter-spacing:.4px;font-size:10.5px;}
+  tbody tr{transition:background .12s;}
+  tbody tr:hover{background:rgba(43,108,176,.045);}
+  .parc-op{transition:transform .12s,box-shadow .12s,border-color .12s,background .12s;}
+  .parc-op.sel{background:linear-gradient(135deg,var(--accent),var(--navy));border-color:var(--navy);box-shadow:0 3px 10px rgba(16,42,86,.25);}
+  .badge-sec{box-shadow:0 1px 2px rgba(0,0,0,.06);}
+  .info-i{transition:background .12s,color .12s;}
+  .info-i:hover{background:var(--accent);color:#fff;}
+  .overlay{backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);}
+  .ajuda-box{border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+  #preview{box-shadow:var(--shadow-sm),0 8px 22px rgba(21,60,40,.09);}
+  .btn-ghost{border:1px solid transparent;}
+  .btn-ghost:hover{border-color:rgba(43,108,176,.3);}
+  .btn-del{transition:.15s;}
+  .btn-del:hover{transform:translateY(-1px);}
+  .compo-bar{border-radius:6px;}
+  .compo-bar span:first-child{border-radius:6px 0 0 6px;}
+  .compo-bar span:last-child{border-radius:0 6px 6px 0;}
+  body.dark ::selection{background:rgba(131,179,236,.28);}
+  body.dark tbody tr:hover{background:rgba(131,179,236,.06);}
 </style>
 </head>
 <body>
@@ -233,7 +267,7 @@
       <h2 onclick="toggleCard(this)"><span class="num">3</span> 📅 Parcelas a vencer<span class="info-i" title="Parcelas que ainda não venceram (sem juros). É opcional — preencha só se houver parcelas a vencer no acordo.">i</span><span class="badge-sec" id="badge3"></span><a class="limpar-sec" onclick="event.stopPropagation();limparCard3()" title="Limpar esta seção">🧹 limpar</a><span class="caret">▾</span></h2>
       <div class="row">
         <div><label>Quantidade<span class="info-i" title="Quantas parcelas ainda não venceram. Entram no total sem juros nem multa.">i</span></label><input type="number" id="vincQtd" min="0" value="0" oninput="render()"></div>
-        <div><label>Valor unitário (R$)<span class="info-i" title="Valor de cada parcela a vencer. Aceita vírgula.">i</span></label><input type="text" inputmode="decimal" id="vincVal" value="0" oninput="maskMoeda(this);render()"></div>
+        <div><label>Valor unitário (R$)<span class="info-i" title="Preenche sozinho com o valor da parcela em atraso. Edite se as parcelas a vencer tiverem valor diferente. Aceita vírgula.">i</span></label><input type="text" inputmode="decimal" id="vincVal" value="0" oninput="maskMoeda(this);vincValManual=true;render()"></div>
         <div id="vincVencWrap" style="display:none"><label>Venc. da 1ª a vencer<span class="info-i" title="Aparece quando o pagamento é futuro. Se uma parcela a vencer cair antes do pagamento, vira atraso automaticamente.">i</span></label><input type="date" id="vincVenc" oninput="render()"></div>
       </div>
       <p class="hint">Sem juros enquanto não vencem.</p>
@@ -300,7 +334,7 @@
         <textarea id="saida" oninput="onSaidaInput()" style="display:none"></textarea>
         <div id="editNotice" style="display:none;background:#eef5ff;border:1px solid #b9d4f2;color:var(--navy);padding:7px 10px;border-radius:7px;font-size:11px;margin-top:6px">✍️ Você está editando o texto manualmente — mudanças nos campos não vão sobrescrever sua edição. <a onclick="regerar()" style="cursor:pointer;text-decoration:underline;font-weight:600">Regerar do zero</a></div>
         <div id="histWrap" style="display:none;margin-top:8px">
-          <label style="font-size:11px;color:var(--suave);font-weight:600">↩ Recuperar uma proposta gerada antes (últimas 150)</label>
+          <label style="font-size:11px;color:var(--suave);font-weight:600">↩ Recuperar uma proposta gerada antes (todas ficam salvas)</label>
           <input type="text" id="histSearch" placeholder="🔎 filtrar por produto, tipo, valor..." oninput="renderHist()" style="font-size:12px;margin-top:2px;margin-bottom:4px">
           <div id="histLista" style="max-height:170px;overflow:auto;border:1px solid var(--borda);border-radius:7px"></div>
         </div>
@@ -319,15 +353,15 @@
     <h4>2 · Parcelas em atraso</h4>
     <p>Informe quantidade, vencimento da mais antiga e valor — as parcelas mensais aparecem automaticamente. Edite o valor/vencimento de cada linha (aceita vírgula) ou apague as que não baterem. Multa de 2% e juros de 2%/mês (pró-rata por dia, até a data de pagamento) são calculados sozinhos. Na quitação, marque <b>"Negat."</b> nas parcelas negativadas. No reparcelamento há o campo opcional <b>"Desconto nos juros (%)"</b> para dívidas antigas.</p>
     <h4>3 · Parcelas a vencer</h4>
-    <p>Quantidade e valor das que ainda não venceram (sem juros).</p>
+    <p>Quantidade e valor das que ainda não venceram (sem juros). O <b>valor já vem preenchido</b> com o valor da parcela em atraso (normalmente é o mesmo) — em geral basta informar a <b>quantidade</b>. Se as a vencer tiverem outro valor, é só editar. Sem parcelas a vencer, deixe a quantidade em 0.</p>
     <h4>4 e 5 · Descontos / Acesso &amp; extensão</h4>
     <p>Na quitação total, siga a orientação em azul para aplicar os descontos (isenção de juros/multa, % nas a vencer, % na negativada e um <b>desconto adicional sobre o total</b>, se quiser). Em curso de 12 meses, informe a data de liberação do acesso para calcular a expiração e, se for o caso, os dias de extensão (acima de 90 dias → análise do Francisco).</p>
     <h4>Proposta gerada</h4>
-    <p>A proposta aparece já no formato que o aluno vê. Quando há desconto (isenção de juros, % etc.), ela mostra o <b>valor cheio da dívida</b>, depois os <b>descontos aplicados</b> e por fim o <b>valor final</b>, deixando claro o que o aluno ganha. Use <b>"✏️ Editar"</b> para ajustar o texto à mão (e <b>"Regerar do zero"</b> para voltar ao automático). <b>"Copiar"</b> leva o texto formatado pro Kommo; <b>"Nova proposta"</b> limpa tudo (dá para recuperar as últimas 150). No topo há o seletor de <b>zoom</b>, o modo escuro e o botão <b>"📏 Regras"</b>. Sempre revise a proposta antes de enviar.</p>
+    <p>A proposta aparece já no formato que o aluno vê. Quando há desconto (isenção de juros, % etc.), ela mostra o <b>valor cheio da dívida</b>, depois os <b>descontos aplicados</b> e por fim o <b>valor final</b>, deixando claro o que o aluno ganha. Use <b>"✏️ Editar"</b> para ajustar o texto à mão (e <b>"Regerar do zero"</b> para voltar ao automático). <b>"Copiar"</b> leva o texto formatado pro Kommo; <b>"Nova proposta"</b> limpa tudo (todas as propostas geradas ficam salvas para recuperar depois). No topo há o seletor de <b>zoom</b>, o modo escuro e o botão <b>"📏 Regras"</b>. Sempre revise a proposta antes de enviar.</p>
   </div>
 </div>
 
-<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v20</a> · jul/2026</div>
+<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v21</a> · jul/2026</div>
 
 <div class="overlay" id="regrasOverlay" onclick="if(event.target===this)toggleRegras()">
   <div class="ajuda-box">
@@ -356,6 +390,8 @@
     <button class="ajuda-close" onclick="toggleNovidades()">Fechar ✕</button>
     <h3>Novidades da calculadora</h3>
     <p class="hint" style="margin-top:-6px">O que mudou em cada versão. A mais recente fica no topo.</p>
+    <h4>v21 · jul/2026</h4>
+    <p>A abertura <b>"condição especial"</b> na quitação agora só aparece quando há realmente algum desconto/isenção aplicado. O <b>valor da parcela a vencer</b> é preenchido automaticamente com o valor da parcela em atraso (só edite se for diferente). O <b>histórico</b> passou a guardar <b>todas</b> as propostas (não só 150). Mais uma rodada de <b>refinamento visual</b> (scrollbars, cabeçalhos de seção, tabelas, seleção de parcelas, overlays e micro-interações).</p>
     <h4>v20 · jul/2026</h4>
     <p><b>Visual premium</b> repaginado (tipografia, sombras, botões, cores e resumo mais refinados). <b>Reparcelamento com desconto nos juros</b> agora mostra o valor cheio → descontos → valor final (o aluno enxerga o que ganhou). <b>Quitação parcial</b>: dá para retirar os juros das atrasadas; sem nenhuma isenção, a abertura fica neutra (sem "condição especial"). <b>Quitação total</b>: fim da repetição do valor total quando há só um tipo de parcela.</p>
     <h4>v19 · jul/2026</h4>
@@ -433,6 +469,7 @@ const PRODUTOS=[
 ];
 
 let atrasos=[]; let parcelasEscolhidas=2; let editadoManual=false; let produtosExtra=[]; let historico=[];
+let vincValManual=false;   // vira true quando o atendente edita o valor da parcela a vencer (para o espelhamento parar)
 const JUROS_MES=0.02, MULTA=0.02, NEG_PISO=500;
 const jurosRate=d=>(JUROS_MES/30)*d;   // 2%/mês pró-rata por dia corrido, sem teto (juros correm cheios)
 const hojeISO=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);};   // data LOCAL (não UTC)
@@ -497,6 +534,8 @@ function onTipoChange(){setVencDefault();render();}
 function setVencDefault(){const t=document.getElementById('tipoProposta').value;document.getElementById('dataVenc').value=(t==='rep2')?addDays(hojeISO(),7):hojeISO();}
 
 function gerarParcelas(){
+  // espelha o valor da parcela em atraso no campo "a vencer" enquanto ele não for editado manualmente
+  if(!vincValManual){ document.getElementById('vincVal').value = document.getElementById('genVal').value; }
   const raw=document.getElementById('genQtd').value.trim();
   const q=parseInt(raw)||0;
   const venc=document.getElementById('genVenc').value;
@@ -516,7 +555,7 @@ function updVenc(i,v){atrasos[i].venc=v;renderLeve();aplicarStatus();atualizarPr
 // limpar seções individuais (46) — zera só os campos daquela seção
 function limparCard1(){document.getElementById('produto').value='-1';document.getElementById('tipoAcesso').value='12m';produtosExtra=[];render();}
 function limparCard2(){atrasos=[];document.getElementById('genQtd').value='';document.getElementById('genVenc').value=hojeISO();document.getElementById('genVal').value='0';var dj=document.getElementById('descJurosPerc');if(dj)dj.value='0';render();}
-function limparCard3(){document.getElementById('vincQtd').value='0';document.getElementById('vincVal').value='0';document.getElementById('vincVenc').value='';render();}
+function limparCard3(){vincValManual=false;document.getElementById('vincQtd').value='0';document.getElementById('vincVal').value=document.getElementById('genVal').value;document.getElementById('vincVenc').value='';render();}
 function limparCardDesc(){document.getElementById('retJuros').checked=false;document.getElementById('retMulta').checked=false;document.getElementById('descVincPerc').value='0';document.getElementById('descNegPerc').value='0';document.getElementById('descGeralPerc').value='0';document.getElementById('isentarJurosNeg').checked=true;render();}
 function limparCardAcesso(){document.getElementById('dataLib').value='';document.getElementById('extDias').value='0';render();}
 function atualCellHTML(p){
@@ -688,10 +727,10 @@ function gerarTexto(){
   const m = quit ? quitModel() : null;
   // o aluno vai ter acesso? (vigente, vitalício, ou expirado mas com extensão) — define o tom da abertura/fecho
   const vaiEstudar = (tipoAc==='vital') || (tipoAc==='12m' && !parcial && (!expirou || ext>0));
-  // quitação parcial sem nenhuma isenção não é uma "condição especial" → abertura neutra
-  const parcialSemBeneficio = parcial && !(m && m.jurosRem>0);
+  // qualquer quitação (total ou parcial) SEM desconto/isenção não é "condição especial" → abertura neutra
+  const quitSemBeneficio = quit && !(m && m.descTotal>0);
   let t='';
-  if(!parcialSemBeneficio){
+  if(!quitSemBeneficio){
     t = vaiEstudar
       ? `Preparei uma condição especial pra você regularizar e voltar a focar nos seus estudos com tranquilidade. 😊\n\n`
       : `Preparei uma condição especial pra você regularizar sua situação da melhor forma. 😊\n\n`;
@@ -1019,8 +1058,10 @@ function salvarHist(){
   if(totalGeral()<=0) return;                 // não guarda proposta vazia
   const snap=snapshot(); snap._resumo=resumoSnap(); snap._ts=Date.now();
   historico=historico.filter(s=>s._resumo!==snap._resumo);   // remove duplicadas (mesmo resumo)
-  historico.unshift(snap); historico=historico.slice(0,150);
-  try{localStorage.setItem('ibft_hist',JSON.stringify(historico));}catch(e){}
+  historico.unshift(snap);   // guarda TODAS as propostas (sem limite fixo)
+  // só remove as mais antigas se o armazenamento do navegador encher (quota ~5MB)
+  try{localStorage.setItem('ibft_hist',JSON.stringify(historico));}
+  catch(e){ while(historico.length>1){ historico.pop(); try{ localStorage.setItem('ibft_hist',JSON.stringify(historico)); break; }catch(e2){} } }
   renderHist();
 }
 function renderHist(){
@@ -1059,7 +1100,7 @@ function novaProposta(){
   document.getElementById('descGeralPerc').value='0';
   document.getElementById('isentarJurosNeg').checked=true;
   document.getElementById('quitTotal').checked=true;
-  atrasos=[]; parcelasEscolhidas=2; editadoManual=false; produtosExtra=[];
+  atrasos=[]; parcelasEscolhidas=2; editadoManual=false; produtosExtra=[]; vincValManual=false;
   document.getElementById('editNotice').style.display='none';
   setVencDefault();
   render();
