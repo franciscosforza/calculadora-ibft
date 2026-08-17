@@ -361,7 +361,7 @@
   </div>
 </div>
 
-<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v21</a> · jul/2026</div>
+<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v22</a> · jul/2026</div>
 
 <div class="overlay" id="regrasOverlay" onclick="if(event.target===this)toggleRegras()">
   <div class="ajuda-box">
@@ -390,6 +390,8 @@
     <button class="ajuda-close" onclick="toggleNovidades()">Fechar ✕</button>
     <h3>Novidades da calculadora</h3>
     <p class="hint" style="margin-top:-6px">O que mudou em cada versão. A mais recente fica no topo.</p>
+    <h4>v22 · jul/2026</h4>
+    <p>Correção: no <b>reparcelamento com desconto nos juros</b>, quando havia só parcelas em atraso (um único grupo), o valor total aparecia duplicado. Agora mostra uma linha só, igual à quitação.</p>
     <h4>v21 · jul/2026</h4>
     <p>A abertura <b>"condição especial"</b> na quitação agora só aparece quando há realmente algum desconto/isenção aplicado. O <b>valor da parcela a vencer</b> é preenchido automaticamente com o valor da parcela em atraso (só edite se for diferente). O <b>histórico</b> passou a guardar <b>todas</b> as propostas (não só 150). Mais uma rodada de <b>refinamento visual</b> (scrollbars, cabeçalhos de seção, tabelas, seleção de parcelas, overlays e micro-interações).</p>
     <h4>v20 · jul/2026</h4>
@@ -771,9 +773,14 @@ function gerarTexto(){
     if(descJurosTotal()>0){
       // com desconto nos juros: mostra o valor CHEIO → descontos → valor final (não deixa o desconto invisível)
       const bruto = atrasoComEnc()+totalVinc();
-      if(nA>0) t+=`• *${nA}* ${nA===1?'parcela em atraso':'parcelas em atraso'}: ${brl(atrasoComEnc())}\n`;
-      if(nV>0) t+=`• *${nV}* ${nV===1?'parcela a vencer':'parcelas a vencer'}: ${brl(totalVinc())}\n`;
-      t+=`\n💵 *Valor atual da dívida: ${brl(bruto)}*\n`;
+      const grupos = (nA>0?1:0)+(nV>0?1:0);
+      const descUnico = nA>0 ? `${nA} ${nA===1?'parcela em atraso':'parcelas em atraso'}` : `${nV} ${nV===1?'parcela a vencer':'parcelas a vencer'}`;
+      // itemiza só quando há mais de um grupo (evita repetir o mesmo valor)
+      if(grupos>1){
+        if(nA>0) t+=`• *${nA}* ${nA===1?'parcela em atraso':'parcelas em atraso'}: ${brl(atrasoComEnc())}\n`;
+        if(nV>0) t+=`• *${nV}* ${nV===1?'parcela a vencer':'parcelas a vencer'}: ${brl(totalVinc())}\n`;
+      }
+      t+=`${grupos>1?'\n':''}💵 *Valor atual da dívida: ${brl(bruto)}*${grupos<=1?` (${descUnico})`:''}\n`;
       t+=`\n✅ *Descontos aplicados:*\n`;
       t+=`• ${Math.round(jurosDescFrac()*100)}% de desconto nos juros das parcelas em atraso: − ${brl(descJurosTotal())}\n`;
       if(parc>1) t+=`\n📌 *Valor final: ${brl(total)}* — pode ser parcelado em até *${parc}x de ${brl(vParc)}* no boleto bancário, PIX ou cartão de crédito.\n`;
