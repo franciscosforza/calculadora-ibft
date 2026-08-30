@@ -1,0 +1,18 @@
+# Sistema operacional / sincronização
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+.DS_Store
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*~
+
+# Temporários / backups
+*.tmp
+*.bak
+*.orig
+~$*

@@ -34,6 +34,43 @@ Qualquer ajuste é publicado substituindo o arquivo `index.html` neste repositó
 - A ferramenta roda inteiramente no navegador de cada pessoa; não há servidor nem dados compartilhados. Cada atendente trabalha de forma independente.
 - As regras de cálculo e desconto seguem a política vigente do Financeiro IBFT e devem ser sempre conferidas contra a situação real do aluno antes do envio.
 
+## 🗂️ Histórico de versões
+
+A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **"Novidades"** com o detalhe de cada versão). Cada versão publicada também tem uma **tag** no Git com o resumo do que mudou (`git tag -n99`).
+
+| Versão | Data | Resumo |
+|---|---|---|
+| **v23** | jul/2026 | Redesenho visual completo (fontes Inter + Space Grotesk, tipografia, menus estilizados, botão Copiar dourado, contraste, animações, layout responsivo). Cálculos inalterados. |
+| v22 | jul/2026 | Correção: no reparcelamento com desconto nos juros com só parcelas em atraso, o valor total aparecia duplicado. |
+| v21 | jul/2026 | "Condição especial" só quando há desconto/isenção; parcela a vencer preenchida automaticamente; histórico guarda todas as propostas; refino visual. |
+| v20 | jul/2026 | Visual premium; desconto nos juros mostra valor cheio → descontos → valor final; quitação parcial pode retirar juros. *(inclui v19: botão "🧹 limpar" por seção)* |
+| v18 | jul/2026 | Correção na edição manual da data das parcelas em atraso. |
+| v17 | jun/2026 | Correção nos vencimentos de dia 31/último dia do mês; novo produto BF (vitalício). |
+| v16 | jun/2026 | Botão "Regras", seletor de zoom, modo escuro corrigido. *(inclui v14 e v15: fluxo do 2º reparcelamento, recolher seções, progresso, tooltips, contador do dia)* |
+| v13 | jun/2026 | Ícones nas seções, validação de coerência, pesquisa no histórico. |
+| v12 | jun/2026 | Texto mais persuasivo (CTA, % de economia). *(inclui v11: reformulação da proposta de quitação)* |
+| v9–v10 | jun/2026 | Base validada contra o Asaas: encargos, quitação, multi-produto, acesso & extensão, prévia WhatsApp, tema escuro. |
+
+> Observação: os números de versão são criados no Cowork; alguns foram publicados no GitHub em lote, por isso uma tag pode reunir versões intermediárias (indicado acima).
+
+## 🛠️ Publicação e manutenção
+
+O arquivo-fonte (sempre a versão mais recente) fica no Google Drive, em `07_Paineis_e_Ferramentas/Calculadora de Reparcelamento IBFT.html`. O clone de trabalho fica **fora** do Drive, em `C:\Users\citrg\repos\calculadora-ibft`, para não haver conflito com a pasta `.git`.
+
+Para publicar uma versão nova (feito pelo Claude Code a partir do guia `PUBLICAR_no_GitHub_via_Code.md`):
+
+```bash
+cd C:\Users\citrg\repos\calculadora-ibft
+git pull
+# copiar a fonte por cima de index.html
+git add index.html
+git commit -m "Calculadora vNN — <resumo>"
+git tag -a vNN -m "vNN (mmm/aaaa) — <o que mudou>"
+git push && git push --tags
+```
+
+Autenticação: na 1ª vez em cada computador, o **Git Credential Manager** abre o navegador para logar como `franciscosforza`; depois fica salvo. Isso permite publicar de qualquer dispositivo.
+
 ---
 
 _Uso interno — Financeiro IBFT._
