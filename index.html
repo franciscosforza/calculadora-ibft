@@ -154,8 +154,9 @@
   }
   body.dark{--cinza:#0e151e;--texto:#e6edf5;--borda:#2a3746;--suave:#a7b8cc;--alerta:#f1c879;--alerta-bg:#2c2614;--vermelho:#f08a8a;--verde:#5fd39a;--body-bg:radial-gradient(1100px 560px at 18% -8%, #12233a 0%, transparent 60%), linear-gradient(180deg,#0f1620 0%,#0a1016 100%);--card-bg:#161f2b;}
   body.dark .card{background:#161f2b;}
-  body.dark input,body.dark select,body.dark textarea{background:#0e151e;color:#e6edf5;}
-  body.dark select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a7b8cc' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");}
+  body.dark input,body.dark select,body.dark textarea{background-color:#0e151e;color:#e6edf5;}
+  body.dark select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a7b8cc' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 13px center;}
+  body.dark .hdr-sel{background-color:rgba(255,255,255,.14);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 10px center;}
   body.dark .gen-box{background:#0e151e;}
   body.dark .resumo{background:linear-gradient(165deg,#172230,#0e151e);border-color:#2a3746;border-left-color:var(--gold);box-shadow:none;}
   body.dark #saida{background:#161f2b;color:#e6edf5;}
@@ -366,7 +367,7 @@
   </div>
 </div>
 
-<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v23</a> · jul/2026</div>
+<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v24</a> · ago/2026</div>
 
 <div class="overlay" id="regrasOverlay" onclick="if(event.target===this)toggleRegras()">
   <div class="ajuda-box">
@@ -395,6 +396,8 @@
     <button class="ajuda-close" onclick="toggleNovidades()">Fechar ✕</button>
     <h3>Novidades da calculadora</h3>
     <p class="hint" style="margin-top:-6px">O que mudou em cada versão. A mais recente fica no topo.</p>
+    <h4>v24 · ago/2026</h4>
+    <p><b>Correção do modo escuro.</b> Os menus de seleção (tipo de proposta, produto, tipo de acesso e o seletor de zoom) mostravam um padrão repetido de setas sobre o texto; agora exibem uma seta única e limpa. Também entrou um pequeno reforço de segurança (escape dos valores nos campos gerados). Nenhuma regra de cálculo mudou.</p>
     <h4>v23 · jul/2026</h4>
     <p><b>Redesenho visual completo.</b> Novas fontes (Inter + Space Grotesk), tipografia e espaçamentos revistos, menus de seleção com estilo próprio, botões com mais destaque (o <b>Copiar</b> em dourado da marca), contraste reforçado, animações discretas (entrada das seções, micro-interações, overlays) e layout responsivo para telas menores. Nenhuma regra de cálculo mudou.</p>
     <h4>v22 · jul/2026</h4>
@@ -567,6 +570,8 @@ function limparCard2(){atrasos=[];document.getElementById('genQtd').value='';doc
 function limparCard3(){vincValManual=false;document.getElementById('vincQtd').value='0';document.getElementById('vincVal').value=document.getElementById('genVal').value;document.getElementById('vincVenc').value='';render();}
 function limparCardDesc(){document.getElementById('retJuros').checked=false;document.getElementById('retMulta').checked=false;document.getElementById('descVincPerc').value='0';document.getElementById('descNegPerc').value='0';document.getElementById('descGeralPerc').value='0';document.getElementById('isentarJurosNeg').checked=true;render();}
 function limparCardAcesso(){document.getElementById('dataLib').value='';document.getElementById('extDias').value='0';render();}
+// escapa valores antes de ir para atributos HTML (defesa em profundidade)
+function escAtr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function atualCellHTML(p){
   return `${brl(valorAtualizado(p))}${(!p.negativada&&p.venc)?`<br><span style="font-weight:400;color:var(--suave);font-size:10px">${diasAtraso(p.venc)} dias</span>`:''}${descJurosParcela(p)>0?`<br><span style="font-weight:600;color:var(--verde);font-size:10px">− ${brl(descJurosParcela(p))} juros</span>`:''}`;
 }
@@ -578,8 +583,8 @@ function renderAtrasos(){
   atrasos.forEach((p,i)=>{
     const tr=document.createElement('tr');
     tr.innerHTML=`
-      <td><input type="text" inputmode="decimal" value="${p.valor}" oninput="maskMoeda(this);updValor(${i},this.value)"></td>
-      <td><input type="date" value="${p.venc}" onchange="updVenc(${i},this.value)"></td>
+      <td><input type="text" inputmode="decimal" value="${escAtr(p.valor)}" oninput="maskMoeda(this);updValor(${i},this.value)"></td>
+      <td><input type="date" value="${escAtr(p.venc)}" onchange="updVenc(${i},this.value)"></td>
       <td class="check" style="${showNeg?'':'display:none'}"><input type="checkbox" ${p.negativada?'checked':''} onchange="updAtraso(${i},'negativada',this.checked)"></td>
       <td class="val-atual" id="atual${i}">${atualCellHTML(p)}</td>
       <td><button class="btn btn-del btn-sm" onclick="delAtraso(${i})">✕</button></td>`;

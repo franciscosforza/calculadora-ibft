@@ -4,6 +4,11 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v24 — ago/2026
+- **Correção do modo escuro:** os menus de seleção (tipo de proposta, produto, tipo de acesso e o seletor de zoom no cabeçalho) exibiam um padrão repetido de setas por cima do texto. Causa: a regra `body.dark ... {background:...}` usava o atalho `background`, que zerava `background-repeat`/`background-position`. Corrigido para `background-color` + reforço do `no-repeat`/posição.
+- **Reforço de segurança:** escape (`escAtr`) dos valores interpolados nos campos gerados da tabela de parcelas (defesa em profundidade contra injeção via atributo).
+- Nenhuma regra de cálculo mudou.
+
 ## v23 — jul/2026
 - **Redesenho visual completo.** Novas fontes (Inter + Space Grotesk), tipografia e espaçamentos revistos, menus de seleção com estilo próprio, botões com mais destaque (o **Copiar** em dourado da marca), contraste reforçado, animações discretas (entrada das seções, micro-interações, overlays) e layout responsivo para telas menores.
 - Nenhuma regra de cálculo mudou.
