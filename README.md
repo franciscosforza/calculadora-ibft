@@ -40,7 +40,8 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
-| **v24** | ago/2026 | Correção do modo escuro (menus de seleção mostravam setas repetidas) + reforço de segurança (escape de valores nos campos gerados). Cálculos inalterados. |
+| **v25** | out/2026 | Novo produto **ONION (aplicativo)**: atraso sem multa e sem juros, texto de proposta próprio de aplicativo, acesso de 12 meses. Demais produtos inalterados. |
+| v24 | ago/2026 | Correção do modo escuro (menus de seleção mostravam setas repetidas) + reforço de segurança (escape de valores nos campos gerados). Cálculos inalterados. |
 | v23 | jul/2026 | Redesenho visual completo (fontes Inter + Space Grotesk, tipografia, menus estilizados, botão Copiar dourado, contraste, animações, layout responsivo). Cálculos inalterados. |
 | v22 | jul/2026 | Correção: no reparcelamento com desconto nos juros com só parcelas em atraso, o valor total aparecia duplicado. |
 | v21 | jul/2026 | "Condição especial" só quando há desconto/isenção; parcela a vencer preenchida automaticamente; histórico guarda todas as propostas; refino visual. |

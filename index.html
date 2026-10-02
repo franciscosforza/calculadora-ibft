@@ -231,6 +231,7 @@
       </div>
       <label>Produto / curso<span class="info-i" title="Curso/produto do aluno. Ao escolher, o tipo de acesso (12 meses, vitalício ou livro) ajusta sozinho conforme o catálogo.">i</span></label>
       <select id="produto" onchange="onProdutoChange()"></select>
+      <p class="hint" id="appHint" style="display:none">📱 <b>Aplicativo ONION</b> (ONION - O Novo Inconsciente LTDA): parcelas em atraso <b>sem multa e sem juros</b> — entram pelo valor original. Acesso de 12 meses. Faça proposta separada dos cursos do IBFT.</p>
       <div id="produtosExtraWrap" style="display:none">
         <div id="produtosExtra"></div>
         <a onclick="addProdutoExtra()" style="font-size:12px;color:var(--accent);cursor:pointer;text-decoration:underline;display:inline-block;margin-top:8px">+ adicionar outro produto</a>
@@ -292,7 +293,7 @@
         <input type="number" id="descVincPerc" min="0" max="10" step="0.5" value="0" oninput="render()">
       </div>
       <div id="ctlNeg" style="display:none">
-        <label class="chk-line" style="display:flex;align-items:center;gap:7px;margin:4px 0 8px;font-size:13px;font-weight:600;color:var(--texto)"><input type="checkbox" id="isentarJurosNeg" checked style="width:auto" onchange="render()"> Mostrar isenção dos juros (negativadas voltam ao valor original)</label>
+        <label class="chk-line" id="lblIsentarNeg" style="display:flex;align-items:center;gap:7px;margin:4px 0 8px;font-size:13px;font-weight:600;color:var(--texto)"><input type="checkbox" id="isentarJurosNeg" checked style="width:auto" onchange="render()"> Mostrar isenção dos juros (negativadas voltam ao valor original)</label>
         <label>Desconto na dívida negativada (%)</label>
         <input type="number" id="descNegPerc" min="0" max="100" step="1" value="0" oninput="render()">
         <div class="alerta" id="alertaNeg">⚠️ Limite atingido: a dívida negativada não pode ficar abaixo de R$ 500,00. O valor foi travado nesse piso.</div>
@@ -367,7 +368,7 @@
   </div>
 </div>
 
-<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v24</a> · ago/2026</div>
+<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v25</a> · out/2026</div>
 
 <div class="overlay" id="regrasOverlay" onclick="if(event.target===this)toggleRegras()">
   <div class="ajuda-box">
@@ -388,6 +389,8 @@
     <p>Após o aceite: enviar <b>formulário</b> de dados → montar <b>contrato de confissão de dívida e parcelamento</b> → enviar para <b>assinatura</b> → liberar o boleto da 1ª parcela.</p>
     <h4>Acesso e extensão</h4>
     <p>Curso de 12 meses expira em liberação + 12 meses. Extensão concedida no pagamento, conforme o progresso do aluno. <b>Acima de 90 dias → análise do Francisco</b>.</p>
+    <h4>📱 ONION (aplicativo)</h4>
+    <p>Produto digital da <b>ONION - O Novo Inconsciente LTDA</b> (empresa própria, CNPJ diferente do IBFT). Parcelas em atraso <b>sem multa e sem juros</b> — sempre pelo valor original. Acesso de <b>12 meses</b>, sem renovação automática. A proposta usa texto próprio de aplicativo (sem regras de produtos IBFT/CITRG) e <b>não se mistura</b> com cursos do IBFT na mesma proposta.</p>
   </div>
 </div>
 
@@ -396,6 +399,8 @@
     <button class="ajuda-close" onclick="toggleNovidades()">Fechar ✕</button>
     <h3>Novidades da calculadora</h3>
     <p class="hint" style="margin-top:-6px">O que mudou em cada versão. A mais recente fica no topo.</p>
+    <h4>v25 · out/2026</h4>
+    <p>Novo produto: <b>ONION - O Novo Inconsciente (aplicativo)</b>, acesso de 12 meses. Para ele, as parcelas em atraso <b>não têm multa nem juros</b> (entram pelo valor original) e a proposta tem <b>texto próprio de aplicativo</b> ("acesso ao aplicativo", sem regras de produtos IBFT/CITRG). Os controles de juros/multa somem quando não se aplicam, e o ONION não pode ser combinado com cursos do IBFT na mesma proposta (empresa diferente). Demais produtos: nada mudou.</p>
     <h4>v24 · ago/2026</h4>
     <p><b>Correção do modo escuro.</b> Os menus de seleção (tipo de proposta, produto, tipo de acesso e o seletor de zoom) mostravam um padrão repetido de setas sobre o texto; agora exibem uma seta única e limpa. Também entrou um pequeno reforço de segurança (escape dos valores nos campos gerados). Nenhuma regra de cálculo mudou.</p>
     <h4>v23 · jul/2026</h4>
@@ -478,12 +483,19 @@ const PRODUTOS=[
  {n:"Livro - Entendendo e Superando Traumas Emocionais com a TRG",a:"livro"},
  {n:"Black Friday 2025 - Vitalício",a:"vital"},
  {n:"Formação em Leitura Corporal e Comportamental + Mentoria da Prosperidade",a:"12m"},
-];
+ // aplicativo (empresa própria: ONION - O Novo Inconsciente LTDA) — atraso sem multa e sem juros; texto da proposta próprio
+ {n:"ONION - O Novo Inconsciente (aplicativo)",a:"12m",app:true,semEnc:true,txt:"ONION"},
+];   // novos produtos sempre no FINAL: o histórico guarda o produto pela posição na lista
 
 let atrasos=[]; let parcelasEscolhidas=2; let editadoManual=false; let produtosExtra=[]; let historico=[];
 let vincValManual=false;   // vira true quando o atendente edita o valor da parcela a vencer (para o espelhamento parar)
 const JUROS_MES=0.02, MULTA=0.02, NEG_PISO=500;
-const jurosRate=d=>(JUROS_MES/30)*d;   // 2%/mês pró-rata por dia corrido, sem teto (juros correm cheios)
+// produto principal selecionado (ou null) e suas regras
+function prodSel(){const i=parseInt(document.getElementById('produto').value);return i>=0?PRODUTOS[i]:null;}
+function ehApp(){return !!(prodSel()&&prodSel().app);}            // aplicativo → texto da proposta próprio
+function semEncargos(){return !!(prodSel()&&prodSel().semEnc);}   // atraso sem multa e sem juros (ex.: ONION)
+const jurosRate=d=>semEncargos()?0:(JUROS_MES/30)*d;   // 2%/mês pró-rata por dia corrido, sem teto (juros correm cheios)
+const multaRate=()=>semEncargos()?0:MULTA;
 const hojeISO=()=>{const d=new Date();return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10);};   // data LOCAL (não UTC)
 const brl=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
 const floor2=v=>Math.floor(v*100)/100;   // trunca centavos, igual ao Asaas (ex.: 2,3976 → 2,39)
@@ -508,17 +520,17 @@ function diasAtraso(venc,ref){if(!venc)return 0;ref=ref||refCalc();const v=new D
 function jurosDescFrac(){ if(ehQuit()) return 0; const p=parseFloat(document.getElementById('descJurosPerc')?.value)||0; return Math.min(Math.max(p,0),100)/100; }
 const jurosParcelaBruto=p=>{const o=parseV(p.valor);return (p.negativada||!p.venc)?0:floor2(o*jurosRate(diasAtraso(p.venc)));};
 const descJurosParcela=p=>floor2(jurosParcelaBruto(p)*jurosDescFrac());
-function valorAtualizado(p){const o=parseV(p.valor);if(p.negativada||!p.venc)return o;return o+floor2(o*MULTA)+(jurosParcelaBruto(p)-descJurosParcela(p));}
+function valorAtualizado(p){const o=parseV(p.valor);if(p.negativada||!p.venc)return o;return o+floor2(o*multaRate())+(jurosParcelaBruto(p)-descJurosParcela(p));}
 
 function initProdutos(){
   const s=document.getElementById('produto');
   s.innerHTML='<option value="-1">— selecione o produto —</option>';
   PRODUTOS.forEach((p,i)=>{s.innerHTML+=`<option value="${i}">${i+1}. ${p.n}</option>`;});
 }
-function onProdutoChange(){const i=parseInt(document.getElementById('produto').value);if(i>=0)document.getElementById('tipoAcesso').value=PRODUTOS[i].a;render();}
+function onProdutoChange(){const i=parseInt(document.getElementById('produto').value);if(i>=0)document.getElementById('tipoAcesso').value=PRODUTOS[i].a;if(semEncargos())produtosExtra=[];render();}
 
-// multi-produto (quitação parcial)
-function optionsProdutos(sel){return PRODUTOS.map((p,i)=>`<option value="${i}" ${i===sel?'selected':''}>${i+1}. ${p.n}</option>`).join('');}
+// multi-produto (quitação parcial) — produtos sem encargos (ONION, outra empresa) não se misturam com os do IBFT
+function optionsProdutos(sel){return PRODUTOS.map((p,i)=>p.semEnc?'':`<option value="${i}" ${i===sel?'selected':''}>${i+1}. ${p.n}</option>`).join('');}
 function addProdutoExtra(){produtosExtra.push(-1);render();}
 function delProdutoExtra(i){produtosExtra.splice(i,1);render();}
 function updProdutoExtra(i,v){produtosExtra[i]=parseInt(v);render();}
@@ -536,6 +548,7 @@ function nomesProdutos(){
   return arr;
 }
 function fraseProdutos(){
+  if(ehApp()) return `referente ao seu aplicativo *${prodSel().txt||prodSel().n}*`;
   const nomes=nomesProdutos();
   if(nomes.length===0) return 'referente ao seu curso de *(NOME DO PRODUTO)*';
   if(nomes.length===1) return `referente ao seu curso de *${nomes[0]}*`;
@@ -619,7 +632,7 @@ const pAtraso=()=>pAtrasoTable().concat(crossedVinc());   // em atraso efetivo =
 const pNeg=()=>atrasos.filter(p=>p.negativada);
 const sumOrig=arr=>arr.reduce((s,p)=>s+parseV(p.valor),0);
 const atrasoOriginal=()=>sumOrig(pAtraso());
-const atrasoMultaV=()=>pAtraso().reduce((s,p)=>s+floor2(parseV(p.valor)*MULTA),0);
+const atrasoMultaV=()=>pAtraso().reduce((s,p)=>s+floor2(parseV(p.valor)*multaRate()),0);
 const atrasoJurosV=()=>pAtraso().reduce((s,p)=>s+jurosParcelaBruto(p),0);   // juros BRUTO (antes do desconto)
 const descJurosTotal=()=>pAtraso().reduce((s,p)=>s+descJurosParcela(p),0);
 const atrasoComEnc=()=>atrasoOriginal()+atrasoMultaV()+atrasoJurosV();      // bruto (original + multa + juros cheio)
@@ -684,13 +697,18 @@ function renderResumo(){
   const lin=(l,v,c)=>`<div class="lin"${c?` style="color:${c}"`:''}><span>${l}</span><b>${brl(v)}</b></div>`;
   const sub=(l,v,c)=>`<div class="lin" style="color:${c||'var(--suave)'};font-size:12px;padding-left:8px"><span>${l}</span><b>${brl(v)}</b></div>`;
   const RED='var(--vermelho)', GREEN='var(--verde)';
+  const semEnc=semEncargos();
+  // juros e multa do atraso (ou a nota de "sem encargos" quando o produto não tem multa/juros, ex.: ONION)
+  const encLinhas=()=> semEnc
+    ? `<div class="lin" style="color:var(--suave);font-size:12px;padding-left:8px"><span>↳ sem multa e sem juros (aplicativo)</span></div>`
+    : sub('↳ juros',atrasoJurosV(),RED)+sub('↳ multa',atrasoMultaV(),RED);
   const nCross=crossedVinc().length, tbl=pAtrasoTable().length;
   const lblAtraso = nCross>0 ? `em atraso (${tbl} vencida(s) + ${nCross} que venceu até o pagamento)` : 'em atraso';
   let h='';
   if(ehQuit()){
     const m=quitModel();
     if(pNeg().length){ h+=lin(`${pNeg().length} negativada(s)`,negOriginal()+m.jurosNeg); if(m.jurosNeg>0) h+=sub('↳ juros',m.jurosNeg,RED); }
-    if(pAtraso().length){h+=lin(`${pAtraso().length} ${lblAtraso}`,atrasoComEnc());h+=sub('↳ juros',atrasoJurosV(),RED);h+=sub('↳ multa',atrasoMultaV(),RED);}
+    if(pAtraso().length){h+=lin(`${pAtraso().length} ${lblAtraso}`,atrasoComEnc());h+=encLinhas();}
     if(qtdVinc()) h+=lin(`${qtdVinc()} a vencer`,totalVinc());
     if(m.descTotal>0){
       h+=lin('Descontos aplicados',-m.descTotal,GREEN);
@@ -703,7 +721,7 @@ function renderResumo(){
     }
   }else{
     h+=lin(`${qtdAtraso()} parcela(s) ${lblAtraso}`,atrasoComEnc());
-    h+=sub('↳ juros',atrasoJurosV(),RED);h+=sub('↳ multa',atrasoMultaV(),RED);
+    h+=encLinhas();
     if(descJurosTotal()>0) h+=sub(`↳ desconto nos juros (${Math.round(jurosDescFrac()*100)}%)`,-descJurosTotal(),GREEN);
     if(qtdVinc()) h+=lin(`${qtdVinc()} parcela(s) a vencer`,totalVinc());
   }
@@ -743,9 +761,12 @@ function gerarTexto(){
   const vaiEstudar = (tipoAc==='vital') || (tipoAc==='12m' && !parcial && (!expirou || ext>0));
   // qualquer quitação (total ou parcial) SEM desconto/isenção não é "condição especial" → abertura neutra
   const quitSemBeneficio = quit && !(m && m.descTotal>0);
+  const app = ehApp(), semEnc = semEncargos(), nomeApp = app ? (prodSel().txt||prodSel().n) : '';
   let t='';
   if(!quitSemBeneficio){
-    t = vaiEstudar
+    t = (vaiEstudar && app)
+      ? `Preparei uma condição especial pra você regularizar e continuar aproveitando o seu aplicativo *${nomeApp}* com tranquilidade. 😊\n\n`
+      : vaiEstudar
       ? `Preparei uma condição especial pra você regularizar e voltar a focar nos seus estudos com tranquilidade. 😊\n\n`
       : `Preparei uma condição especial pra você regularizar sua situação da melhor forma. 😊\n\n`;
   }
@@ -800,13 +821,16 @@ function gerarTexto(){
       const pctEcon = bruto>0?Math.round(descJurosTotal()/bruto*100):0;
       t+=`💚 *Você economiza ${brl(descJurosTotal())} (cerca de ${pctEcon}%) com esse desconto!*\n\n`;
     }else{
-      if(nA>0)t+=`• *${nA}* ${nA===1?'parcela em atraso':'parcelas em atraso'} no valor de *${brl(totalAtraso())}*;\n`;
+      if(nA>0)t+=`• *${nA}* ${nA===1?'parcela em atraso':'parcelas em atraso'} no valor de *${brl(totalAtraso())}*${semEnc?' (sem multa e sem juros)':''};\n`;
       if(nV>0) t+=`• *${nV}* ${nV===1?'parcela a vencer':'parcelas a vencer'} no valor de *${brl(totalVinc())}*;\n`;
       t+=`\n`;
       if(parc>1) t+=`📌 O *total* fica em *${brl(total)}* que pode ser parcelado em até *${parc}x de ${brl(vParc)}* no boleto bancário, PIX ou cartão de crédito.\n\n`;
       else        t+=`📌 O *total* fica em *${brl(total)}*, à vista no boleto bancário, PIX ou cartão de crédito.\n\n`;
     }
-    if(parc>1) t+=`💡 *Importante:* dividir em mais vezes *não gera juros nem aumenta o total*. Os únicos encargos são a multa e os juros das parcelas que já estavam em atraso — e já estão incluídos no valor acima.\n\n`;
+    if(parc>1){
+      if(semEnc) t+=`💡 *Importante:* dividir em mais vezes *não gera juros nem aumenta o total*. E as parcelas em atraso do aplicativo *não têm multa nem juros* — você paga só o valor original de cada uma.\n\n`;
+      else       t+=`💡 *Importante:* dividir em mais vezes *não gera juros nem aumenta o total*. Os únicos encargos são a multa e os juros das parcelas que já estavam em atraso — e já estão incluídos no valor acima.\n\n`;
+    }
   }
 
   const labelVenc = quit ? 'O *vencimento para pagamento* desse acordo' : 'O *vencimento da primeira parcela* desse acordo';
@@ -816,6 +840,15 @@ function gerarTexto(){
   if(parcial){
     // quitação parcial pode envolver produtos com acessos/datas distintos → não afirma expiração
     t+=`🔎 Nosso acordo é *exclusivamente financeiro*.\n\n`;
+  }else if(tipoAc==='12m' && app){
+    // aplicativo: fala em "acesso ao aplicativo" (não em plataforma de aulas, formação ou certificado)
+    const verbo = expirou ? 'expirou no dia' : 'expira no dia';
+    t+=`🔎 Nosso acordo é *exclusivamente financeiro* e não altera o prazo de acesso ao aplicativo *${nomeApp}*, que é de 12 meses conforme previsto em contrato. Ou seja, *seu acesso ao aplicativo ${verbo} ${exp?dataBR(exp):'XXXX'}*.\n\n`;
+    if(ext>0){
+      const refPag = quit ? 'o pagamento deste acordo' : 'o pagamento da primeira parcela deste acordo';
+      if(!expirou) t+=`Assim que o sistema identificar ${refPag}, consigo liberar para você uma extensão de mais *${ext} dias* de acesso ao aplicativo, estendendo seu acesso até *${dataBR(addDays(exp,ext))}*. Assim você segue a sua jornada no ${nomeApp} com mais tranquilidade.\n\n`;
+      else         t+=`Assim que o sistema identificar ${refPag}, consigo liberar para você uma extensão de *${ext} dias* de acesso ao aplicativo, contados a partir da data em que o pagamento for identificado. Assim você segue a sua jornada no ${nomeApp} com mais tranquilidade.\n\n`;
+    }
   }else if(tipoAc==='12m'){
     const verbo = expirou ? 'expirou no dia' : 'expira no dia';
     t+=`🔎 Nosso acordo é *exclusivamente financeiro* e não altera o prazo do material pedagógico que expira com os 12 meses conforme previsto em contrato. Ou seja, *seu acesso à plataforma de aulas ${verbo} ${exp?dataBR(exp):'XXXX'}*.\n\n`;
@@ -833,7 +866,7 @@ function gerarTexto(){
     t+=`🔎 Nosso acordo é *exclusivamente financeiro*.\n\n`;
   }
 
-  if(!quit){   // bloco aparece só no reparcelamento; em qualquer quitação não entra
+  if(!quit && !app){   // só no reparcelamento de produtos do IBFT; quitação e aplicativo (outra empresa) não entram
     t+=`Enquanto houver um reparcelamento ativo:\n\n`;
     t+=`• *Produtos do IBFT* → só podem ser comprados à vista. O parcelamento só será liberado depois da quitação total do reparcelamento.\n\n`;
     t+=`• *Filiação ao CITRG* → pode ser comprada de forma parcelada normalmente, mesmo durante um reparcelamento ativo.\n\n`;
@@ -851,7 +884,8 @@ function gerarTexto(){
   else mantem = !(expirou && ext===0);
   if(mantem){
     const refPag = quit ? 'o pagamento deste acordo' : 'o pagamento da primeira parcela';
-    t+=`\n\nLembrando que, assim que o sistema identificar ${refPag}, o seu acesso é liberado automaticamente — aí você já retoma os estudos. 📚`;
+    if(app) t+=`\n\nLembrando que, assim que o sistema identificar ${refPag}, o seu acesso ao aplicativo é liberado automaticamente — aí você já retoma a sua jornada no ${nomeApp}. 📱`;
+    else    t+=`\n\nLembrando que, assim que o sistema identificar ${refPag}, o seu acesso é liberado automaticamente — aí você já retoma os estudos. 📚`;
   }
   return t;
 }
@@ -937,11 +971,13 @@ function render(){
   document.getElementById('quitTotalWrap').style.display = quit ? 'block' : 'none';
   document.getElementById('cardDesconto').style.display=quit?'block':'none';
   document.getElementById('numAcesso').textContent = quit ? '5' : '4';
-  // desconto nos juros: só no reparcelamento
-  document.getElementById('descJurosWrap').style.display = quit ? 'none' : 'block';
-  // multi-produto: só na quitação parcial
+  const semEnc=semEncargos();
+  document.getElementById('appHint').style.display = ehApp() ? 'block' : 'none';
+  // desconto nos juros: só no reparcelamento (e só se o produto tem juros)
+  document.getElementById('descJurosWrap').style.display = (quit||semEnc) ? 'none' : 'block';
+  // multi-produto: só na quitação parcial (o ONION não se mistura com produtos do IBFT)
   const parcial = quit && !document.getElementById('quitTotal').checked;
-  document.getElementById('produtosExtraWrap').style.display = parcial ? 'block' : 'none';
+  document.getElementById('produtosExtraWrap').style.display = (parcial && !semEnc) ? 'block' : 'none';
   document.getElementById('tipoAcessoWrap').style.display = parcial ? 'none' : 'block';   // acesso irrelevante na parcial
   renderProdutosExtra();
   const ext=parseInt(document.getElementById('extDias').value)||0;
@@ -952,15 +988,25 @@ function render(){
     const N=pNeg().length,A=pAtraso().length,V=qtdVinc();
     const soNeg=N>0&&A===0&&V===0;
     // isenção de juros do atraso: TOTAL e PARCIAL; multa e demais descontos: só TOTAL
-    document.getElementById('ctlJurosMulta').style.display=(A>0)?'block':'none';
+    document.getElementById('ctlJurosMulta').style.display=(A>0&&!semEnc)?'block':'none';   // sem encargos → nada a retirar
     document.getElementById('lblRetMulta').style.display=total?'flex':'none';   // multa só na total
     document.getElementById('ctlVinc').style.display=(total&&V>0)?'block':'none';
     document.getElementById('ctlNeg').style.display=(total&&soNeg)?'block':'none';
+    document.getElementById('lblIsentarNeg').style.display=semEnc?'none':'flex';
     document.getElementById('ctlGeral').style.display=total?'block':'none';
     quitModel();
     document.getElementById('alertaNeg').classList.toggle('show',negClamped);
     let g='';
-    if(!total){
+    if(semEnc){
+      // ONION: sem multa e sem juros → as estratégias de "retirar juros/multa" não se aplicam
+      g = !total ? '💡 <b>Quitação parcial — aplicativo ONION</b>: soma as parcelas selecionadas pelo valor original (não há multa nem juros).'
+        : (!N&&!A&&!V) ? 'Adicione as parcelas para ver a estratégia sugerida.'
+        : '💡 <b>Aplicativo ONION</b>: não há multa nem juros sobre o atraso — as parcelas já estão no valor original.'
+          + (V>0?' Nas parcelas <b>a vencer</b>, é possível conceder até 10% de desconto.':'')
+          + (soNeg?' Nas <b>negativadas</b>, o desconto respeita o piso de R$ 500,00.':'')
+          + ' Desconto adicional sobre o total, só caso a caso.';
+    }
+    else if(!total){
       g='💡 <b>Quitação parcial</b> — soma as parcelas selecionadas com os valores cheios (juros e multa). Use para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link. Se quiser, marque <b>"Retirar os juros das parcelas em atraso"</b> acima para conceder essa isenção nesta quitação parcial.';
     }
     else if(!N&&!A&&!V) g='Adicione as parcelas para ver a estratégia sugerida.';
@@ -994,7 +1040,7 @@ function render(){
 
   const tp=document.getElementById('tipoProposta').value;
   const vEmpty=!document.getElementById('dataVenc').value;
-  document.getElementById('vencHint').innerHTML = (vEmpty?'<span style="color:var(--vermelho);font-weight:700">⚠ Defina o vencimento da 1ª parcela (obrigatório). </span>':'')+(tp==='rep1'?'Padrão: hoje (1º reparcelamento). ':tp==='rep2'?'Padrão: +7 dias (2º reparcelamento). ':'Padrão: hoje. ')+'<b>Os valores em atraso são atualizados até esta data de vencimento (o campo logo acima).</b>';
+  document.getElementById('vencHint').innerHTML = (vEmpty?'<span style="color:var(--vermelho);font-weight:700">⚠ Defina o vencimento da 1ª parcela (obrigatório). </span>':'')+(tp==='rep1'?'Padrão: hoje (1º reparcelamento). ':tp==='rep2'?'Padrão: +7 dias (2º reparcelamento). ':'Padrão: hoje. ')+(semEnc?'<b>Aplicativo sem multa e sem juros: os valores em atraso não sofrem atualização.</b>':'<b>Os valores em atraso são atualizados até esta data de vencimento (o campo logo acima).</b>');
 
   // campo de venc. das vincendas só aparece quando é relevante (pagamento futuro + há parcelas a vencer)
   const futuro = refCalc()>hojeISO();

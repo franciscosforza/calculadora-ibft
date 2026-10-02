@@ -4,6 +4,14 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v25 — out/2026
+- **Novo produto: ONION - O Novo Inconsciente (aplicativo)** — produto digital da ONION - O Novo Inconsciente LTDA (empresa própria, CNPJ diferente do IBFT), acesso de 12 meses.
+- **Sem encargos para o ONION:** parcelas em atraso entram pelo valor original (multa e juros = 0). Implementado em um único ponto (`jurosRate`/`multaRate` consultam a flag `semEnc` do produto) — tabela, resumo, quitação e gráfico herdam automaticamente.
+- **Texto próprio de aplicativo:** "seu aplicativo ONION", "acesso ao aplicativo" (em vez de plataforma de aulas/formação/certificado), destaque de que o atraso não tem multa nem juros e sem o bloco de regras de produtos IBFT/CITRG.
+- **Interface:** aviso sob o produto; somem os controles que não se aplicam (desconto nos juros, retirar juros/multa, isenção de juros da negativada); orientações de quitação próprias; seção ONION no painel Regras.
+- O ONION **não se combina** com cursos do IBFT na mesma proposta (fica fora da lista de produtos adicionais).
+- Demais produtos: nenhuma regra de cálculo mudou.
+
 ## v24 — ago/2026
 - **Correção do modo escuro:** os menus de seleção (tipo de proposta, produto, tipo de acesso e o seletor de zoom no cabeçalho) exibiam um padrão repetido de setas por cima do texto. Causa: a regra `body.dark ... {background:...}` usava o atalho `background`, que zerava `background-repeat`/`background-position`. Corrigido para `background-color` + reforço do `no-repeat`/posição.
 - **Reforço de segurança:** escape (`escAtr`) dos valores interpolados nos campos gerados da tabela de parcelas (defesa em profundidade contra injeção via atributo).
