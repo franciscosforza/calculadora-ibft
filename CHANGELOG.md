@@ -4,6 +4,11 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v26 — out/2026
+- **Correção: ONION com multa e juros.** Foi confirmado que o ONION também tem encargos (só não estavam configurados na cobrança). Agora ele usa **multa de 2% e juros de 2%/mês**, igual aos demais produtos.
+- Removida a regra "sem encargos" (flag `semEnc`, `multaRate`, textos e orientações "sem multa e sem juros"). Para o ONION voltam o desconto nos juros, a retirada de juros/multa na quitação e as orientações padrão.
+- **Continua:** texto próprio de aplicativo e a regra de não misturar o ONION com cursos do IBFT na mesma proposta (agora baseada na flag `app`, porque é outra empresa).
+
 ## v25 — out/2026
 - **Novo produto: ONION - O Novo Inconsciente (aplicativo)** — produto digital da ONION - O Novo Inconsciente LTDA (empresa própria, CNPJ diferente do IBFT), acesso de 12 meses.
 - **Sem encargos para o ONION:** parcelas em atraso entram pelo valor original (multa e juros = 0). Implementado em um único ponto (`jurosRate`/`multaRate` consultam a flag `semEnc` do produto) — tabela, resumo, quitação e gráfico herdam automaticamente.
