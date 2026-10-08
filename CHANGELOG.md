@@ -4,6 +4,17 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v28 — out/2026
+- **Centavos e cronograma:** as parcelas do acordo são calculadas em centavos inteiros e a última absorve a diferença, então a soma sempre fecha com o total (antes, 6x de R$ 389,10 somavam R$ 0,02 a mais que R$ 2.334,58). O reparcelamento mostra a 1ª parcela, o dia das demais (de/até) e o valor da última quando difere. Grade de parcelas e resumo usam o mesmo cálculo.
+- **Personalização:** campos "Nome do aluno" (colar o nome completo do Kommo deixa só o primeiro nome) e "Seu nome" (salvo no navegador, chave `ibft_atendente`). A proposta abre com "Oi, Maria! Aqui é Aretha, do Financeiro do IBFT.". O nome entra no histórico e na busca.
+- **Texto:** "já com multa e juros até dd/mm" (ancoragem), "Descontos que apliquei para você" (reciprocidade), economia com o percentual primeiro, CTA por último com "É só responder SIM" (compromisso), prazo de 5 dias úteis para retirar a negativação na quitação com negativadas, aviso de último reparcelamento no 2º reparcelamento. A frase da extensão de acesso não promete mais o certificado.
+- **Produto com busca:** combobox (o `select#produto` continua oculto) com busca sem acento e por partes, chip do tipo de acesso e grupo "Mais negociados por você" (histórico do navegador, últimos 90 dias).
+- **Tipo de acesso em botões** (o `select#tipoAcesso` continua oculto), com "Automático pelo produto" / "Alterado manualmente · Voltar ao padrão".
+- **Backup do histórico:** Exportar (JSON) e Importar (junta sem duplicar, valida o arquivo).
+- **Aviso de nova versão:** a versão fica em `<meta name="versao">`; a página publicada é consultada a cada 15 min e ao voltar para a aba. O botão "Atualizar" recarrega mantendo a proposta da tela.
+- Regras: limite de 2 reparcelamentos por dívida de cada produto e prazo de retirada da negativação.
+- **Nenhuma regra de cálculo mudou:** as funções de cálculo são idênticas às da v27 e os 11 cenários de regressão dão os mesmos totais.
+
 ## v27 — out/2026
 - **Refino visual e de UX.** Novo sistema de tokens de cor (o modo escuro passou a ser só troca de tokens, sem overrides `!important`), sombras em camadas, fundo com luzes e textura sutis, tipografia com títulos de seção em caixa normal e total do resumo a 28px.
 - **Fio dourado = barra de progresso.** O fio laranja na base do header (padrão IBFT) mostra o progresso da proposta; ao rolar, uma barra fixa desce do topo com o que falta e o botão "Copiar proposta".

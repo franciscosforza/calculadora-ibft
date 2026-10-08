@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="versao" content="v28">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -216,6 +217,39 @@
   .affix input[type=number]{-moz-appearance:textfield;appearance:textfield;}
   .affix input[type=number]::-webkit-inner-spin-button,.affix input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
   .w220{max-width:220px;}
+  [hidden]{display:none !important;}
+  /* seletor de produto com busca (o <select id="produto"> continua existindo, oculto) */
+  .combo{position:relative;}
+  .combo > input{padding-left:36px;padding-right:34px;text-overflow:ellipsis;}
+  .combo-ic{position:absolute;left:12px;top:12px;color:var(--text-faint);pointer-events:none;}
+  .combo-caret{position:absolute;right:11px;top:12px;color:var(--text-muted);pointer-events:none;transition:transform var(--d2) var(--ease-out);}
+  .combo.open .combo-caret{transform:rotate(180deg);}
+  .combo-pop{position:absolute;left:0;right:0;top:calc(100% + 6px);z-index:30;max-height:340px;overflow:auto;overscroll-behavior:contain;padding:6px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--e3);}
+  .cb-grp{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--text-faint);padding:8px 8px 4px;}
+  .cb-opt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 10px;border-radius:var(--r-sm);font-size:13.5px;color:var(--text);cursor:pointer;}
+  .cb-opt .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .cb-opt .nm small{color:var(--text-faint);font-size:11.5px;margin-left:6px;}
+  .cb-opt.on{background:var(--info-bg);}
+  .cb-opt[aria-selected="true"] .nm{font-weight:600;color:var(--heading);}
+  .cb-chip{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--text-muted);border:1px solid var(--line);white-space:nowrap;}
+  .cb-chip.v{background:var(--pos-bg);color:var(--pos);border-color:transparent;}
+  .cb-chip.l{background:var(--surface-3);border-color:transparent;}
+  .cb-chip.a{background:var(--warn-bg);color:var(--warn);border-color:transparent;}
+  .cb-vazio{padding:12px 10px;font-size:13px;color:var(--text-muted);}
+  /* tipo de acesso em botões (o <select id="tipoAcesso"> continua existindo, oculto) */
+  .acc{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+  .acc button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;min-height:52px;padding:8px 11px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);color:var(--text);text-align:left;cursor:pointer;font-family:var(--font);transition:border-color var(--d1),background-color var(--d1),box-shadow var(--d1);}
+  .acc button b{font-size:13.5px;font-weight:600;}
+  .acc button span{font-size:11.5px;color:var(--text-muted);line-height:1.3;}
+  .acc button:hover{border-color:var(--accent);background:var(--info-bg);}
+  .acc button[aria-checked="true"]{border-color:var(--sel-bg);background:var(--info-bg);box-shadow:inset 0 0 0 1px var(--sel-bg);}
+  .acc button[aria-checked="true"] b{color:var(--heading);}
+  .acc button:focus-visible{outline:none;box-shadow:var(--ring);}
+  .acc-auto{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:var(--text-muted);min-height:0;}
+  .acc-auto:empty{display:none;}
+  .acc-auto .cb-chip{background:var(--info-bg);color:var(--heading);border-color:transparent;}
+  .acc-auto .cb-chip.m{background:var(--warn-bg);color:var(--warn);}
+  @media(max-width:520px){.acc{grid-template-columns:1fr;}.acc button{min-height:44px;}}
   /* segmentado do tipo de proposta */
   .seg-scroll{overflow-x:auto;margin:0 -4px;padding:0 4px 2px;}
   .seg{position:relative;display:grid;grid-template-columns:repeat(3,1fr);width:max-content;min-width:100%;padding:4px;background:var(--surface-3);border:1px solid var(--line);border-radius:var(--r);}
@@ -348,7 +382,12 @@
 
   /* ===== histórico ===== */
   .hist{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);}
-  .hist-lbl{display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin:0 0 8px;}
+  .hist-lbl{display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin:0;}
+  .hist-lbl #histN{font-weight:500;color:var(--text-faint);}
+  .hist-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+  .hist-bk{display:flex;gap:2px;margin-right:-8px;}
+  .hist-bk .btn-text{height:30px;padding:0 8px;font-size:12px;}
+  .hist-bk .ic{width:14px;height:14px;}
   .hist .affix input{height:36px;font-size:13px;}
   .hist .affix.pre > input{padding-left:34px;}
   .hist .affix .ax .ic{width:15px;height:15px;}
@@ -485,8 +524,12 @@
 <div class="wrap">
   <div>
     <div class="card col" id="card1">
-      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">1</span><span>Tipo e produto</span><span class="info-i" title="Escolha o tipo de proposta (1º/2º reparcelamento ou quitação) e o produto do aluno. O tipo de acesso ajusta sozinho conforme o produto.">i</span><span class="h-sp"></span><span class="badge-sec" id="badge1"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCard1)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">1</span><span>Aluno, tipo e produto</span><span class="info-i" title="Informe o primeiro nome do aluno (opcional), escolha o tipo de proposta e o produto. O tipo de acesso ajusta sozinho conforme o produto.">i</span><span class="h-sp"></span><span class="badge-sec" id="badge1"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCard1)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
       <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
+        <div class="row">
+          <div><label for="nomeAluno">Nome do aluno<span class="info-i" title="Opcional. A proposta começa com &quot;Oi, Maria!&quot;. Pode colar o nome completo: a calculadora usa só o primeiro nome.">i</span></label><input type="text" id="nomeAluno" autocomplete="off" spellcheck="false" placeholder="Ex.: Maria" oninput="render()" onpaste="colarNome(event)" onblur="ajustarNome()"></div>
+          <div><label for="nomeAtendente">Seu nome<span class="info-i" title="Opcional. Entra na abertura (&quot;Aqui é Aretha, do Financeiro do IBFT&quot;). Fica salvo neste navegador.">i</span></label><input type="text" id="nomeAtendente" autocomplete="off" spellcheck="false" placeholder="Ex.: Aretha" oninput="salvarAtendente();render()"></div>
+        </div>
         <label id="lblTipo">Tipo de proposta<span class="info-i" title="1º Reparcelamento (venc. padrão hoje), 2º Reparcelamento (venc. padrão +7 dias) ou Quitação. Na quitação aparece a opção de quitação total/parcial.">i</span></label>
         <select id="tipoProposta" class="sr-only" tabindex="-1" aria-hidden="true" onchange="onTipoChange()">
           <option value="rep1">1º Reparcelamento</option>
@@ -505,8 +548,14 @@
           <label class="chk-line"><input type="checkbox" id="quitTotal" checked onchange="render()"> Quita toda a dívida (encerra o parcelamento)</label>
           <p class="hint">Desligue para <b>quitação parcial</b>: pagar só algumas parcelas (do meio do parcelamento ou de produtos diferentes) num único link, mantendo o restante do parcelamento ativo.</p>
         </div>
-        <label for="produto">Produto / curso<span class="info-i" title="Curso/produto do aluno. Ao escolher, o tipo de acesso (12 meses, vitalício ou livro) ajusta sozinho conforme o catálogo.">i</span></label>
-        <select id="produto" onchange="onProdutoChange()"></select>
+        <label for="prodBusca">Produto / curso<span class="info-i" title="Digite parte do nome para buscar. Os produtos que você mais negociou nos últimos 90 dias aparecem primeiro. Ao escolher, o tipo de acesso ajusta sozinho.">i</span></label>
+        <select id="produto" class="sr-only" tabindex="-1" aria-hidden="true" onchange="onProdutoChange()"></select>
+        <div class="combo" id="prodCombo">
+          <svg class="ic combo-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
+          <input type="text" id="prodBusca" role="combobox" aria-expanded="false" aria-controls="prodLista" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Buscar produto">
+          <svg class="ic combo-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          <div class="combo-pop" id="prodLista" role="listbox" aria-label="Produtos" hidden></div>
+        </div>
         <p class="hint" id="appHint" style="display:none"><b>Aplicativo ONION</b> (ONION - O Novo Inconsciente LTDA): multa de 2% e juros de 2%/mês sobre o atraso, como os demais produtos. Acesso de 12 meses. A proposta usa texto próprio de aplicativo. Faça proposta separada dos cursos do IBFT.</p>
         <div id="produtosExtraWrap" style="display:none">
           <div id="produtosExtra"></div>
@@ -514,8 +563,14 @@
           <p class="hint">Na quitação parcial, adicione aqui se as parcelas forem de produtos diferentes. A proposta lista todos.</p>
         </div>
         <div id="tipoAcessoWrap">
-          <label for="tipoAcesso">Tipo de acesso<span class="info-i" title="Define se há expiração de acesso. 12 meses → calcula expiração e extensão. Vitalício/Livro → sem seção de acesso. Normalmente preenche sozinho pelo produto.">i</span></label>
-          <select id="tipoAcesso" onchange="render()">
+          <label id="lblAcesso">Tipo de acesso<span class="info-i" title="Define se há expiração de acesso. 12 meses → calcula expiração e extensão. Vitalício/Livro → sem seção de acesso. Normalmente preenche sozinho pelo produto.">i</span></label>
+          <div class="acc" id="accTipo" role="radiogroup" aria-labelledby="lblAcesso">
+            <button type="button" role="radio" data-v="12m" aria-checked="true" tabindex="0"><b>12 meses</b><span>Calcula expiração e extensão</span></button>
+            <button type="button" role="radio" data-v="vital" aria-checked="false" tabindex="-1"><b>Vitalício</b><span>Não expira</span></button>
+            <button type="button" role="radio" data-v="livro" aria-checked="false" tabindex="-1"><b>Livro</b><span>Material físico, sem acesso</span></button>
+          </div>
+          <div class="acc-auto" id="accAuto"></div>
+          <select id="tipoAcesso" class="sr-only" tabindex="-1" aria-hidden="true" onchange="render()">
             <option value="12m">Curso com acesso de 12 meses</option>
             <option value="vital">Acesso vitalício (não expira)</option>
             <option value="livro">Livro / material físico (sem acesso)</option>
@@ -633,10 +688,20 @@
           <textarea id="saida" oninput="onSaidaInput()" style="display:none" aria-label="Texto da proposta"></textarea>
         </div>
         <div class="note-info" id="editNotice" style="display:none">Você está editando o texto à mão. Mudanças nos campos não vão sobrescrever sua edição. <button type="button" class="link-btn" onclick="regerar()">Regerar do zero</button></div>
-        <div id="histWrap" class="hist" style="display:none">
-          <label class="hist-lbl" for="histSearch">Propostas anteriores (todas ficam salvas)</label>
-          <div class="affix pre"><span class="ax"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></span><input type="text" id="histSearch" placeholder="Filtrar por produto, tipo, valor ou data" oninput="renderHist()" autocomplete="off"></div>
-          <div id="histLista" class="hist-list"></div>
+        <div id="histWrap" class="hist">
+          <div class="hist-head">
+            <label class="hist-lbl" for="histSearch">Propostas anteriores <span id="histN"></span></label>
+            <div class="hist-bk">
+              <button type="button" class="btn btn-text btn-sm" id="btnExport" onclick="exportarHist()" title="Baixar um arquivo com todas as propostas salvas neste navegador"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Exportar</button>
+              <button type="button" class="btn btn-text btn-sm" onclick="document.getElementById('histArquivo').click()" title="Trazer propostas de um arquivo exportado (de outro computador, por exemplo)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21V9M7 14l5-5 5 5M5 3h14"/></svg>Importar</button>
+              <input type="file" id="histArquivo" accept="application/json,.json" class="sr-only" tabindex="-1" onchange="importarHist(this)">
+            </div>
+          </div>
+          <div id="histCorpo">
+            <div class="affix pre"><span class="ax"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></span><input type="text" id="histSearch" placeholder="Filtrar por nome, produto, tipo, valor ou data" oninput="renderHist()" autocomplete="off"></div>
+            <div id="histLista" class="hist-list"></div>
+          </div>
+          <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
     </div>
@@ -648,8 +713,9 @@
     <div class="dlg-head"><h3 id="ajudaTit">Como usar a calculadora</h3><button type="button" class="dlg-x" onclick="toggleAjuda()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">Preencha as seções da esquerda. A proposta se monta sozinha à direita, pronta para copiar e colar no Kommo.</p>
-      <h4>1 · Tipo e produto</h4>
-      <p>Escolha o tipo nos botões: <b>1º Reparcelamento</b>, <b>2º Reparcelamento</b> ou <b>Quitação</b>. Na quitação, deixe o interruptor <b>"Quita toda a dívida"</b> ligado para a quitação total, com descontos. Desligue para a <b>quitação parcial</b>: o aluno paga só algumas parcelas, até de produtos diferentes, num único link. Ao escolher o produto, o tipo de acesso se ajusta sozinho.</p>
+      <h4>1 · Aluno, tipo e produto</h4>
+      <p>Escreva o <b>nome do aluno</b> para a proposta começar com "Oi, Maria!". Pode colar o nome completo do Kommo: a calculadora fica só com o primeiro nome. Um nome composto digitado à mão, como "Maria Clara", é mantido. O <b>seu nome</b> entra na abertura ("Aqui é Aretha, do Financeiro do IBFT") e fica salvo neste navegador. Os dois campos são opcionais.</p>
+      <p>Escolha o tipo nos botões: <b>1º Reparcelamento</b>, <b>2º Reparcelamento</b> ou <b>Quitação</b>. Na quitação, deixe o interruptor <b>"Quita toda a dívida"</b> ligado para a quitação total, com descontos. Desligue para a <b>quitação parcial</b>: o aluno paga só algumas parcelas, até de produtos diferentes, num único link. No campo do produto, digite parte do nome para buscar (sem precisar de acento). Os produtos que <b>você</b> mais negociou nos últimos 90 dias aparecem primeiro. Ao escolher o produto, o tipo de acesso se ajusta sozinho e aparece "Automático pelo produto". Se você trocar, aparece "Alterado manualmente", com a opção de voltar ao padrão.</p>
       <h4>2 · Parcelas em atraso</h4>
       <p>Informe a quantidade, o vencimento da mais antiga e o valor. As parcelas mensais aparecem sozinhas. Edite o valor ou a data de cada linha, ou apague as que não batem. A multa de 2% e os juros de 2% ao mês (por dia, até a data de pagamento) entram sozinhos. Na quitação, marque <b>"Negat."</b> nas parcelas negativadas. No reparcelamento, há o campo opcional de desconto nos juros, para dívidas antigas.</p>
       <h4>3 · Parcelas a vencer</h4>
@@ -661,9 +727,13 @@
       <h4>Progresso e barra fixa</h4>
       <p>O <b>fio dourado</b> na base do topo enche conforme você preenche. A linha logo abaixo dele diz o que ainda falta. Ao rolar a página, uma barra fina desce do topo com o que falta e o botão <b>"Copiar proposta"</b>. Assim você copia de qualquer ponto.</p>
       <h4>Proposta gerada</h4>
+      <p>No reparcelamento, a proposta traz as <b>datas das parcelas</b>. Quando o total não divide certinho, a última parcela absorve os centavos, para a soma bater com o total.</p>
       <p>A prévia mostra a mensagem como o aluno vai ver no WhatsApp. <b>"Editar texto"</b> deixa você ajustar à mão, e <b>"Regerar do zero"</b> volta ao texto automático. <b>"Copiar proposta"</b> copia o texto para colar no Kommo. Se faltar algo, a tela leva você direto ao campo. Revise sempre antes de enviar.</p>
       <h4>Nova proposta e histórico</h4>
-      <p><b>"Nova proposta"</b> limpa tudo na hora, sem caixa de confirmação. Se foi sem querer, clique em <b>Desfazer</b> no aviso. Toda proposta copiada fica no histórico, com <b>data e hora</b>. Filtre por produto, tipo, valor ou data e clique para recuperar.</p>
+      <p><b>"Nova proposta"</b> limpa tudo na hora, sem caixa de confirmação. Se foi sem querer, clique em <b>Desfazer</b> no aviso. Toda proposta copiada fica no histórico, com <b>data e hora</b>. Filtre por nome, produto, tipo, valor ou data e clique para recuperar.</p>
+      <p>O histórico fica só neste navegador. Para não perder nada ao trocar de computador, use <b>Exportar</b> (baixa um arquivo com todas as propostas) e, no outro computador, <b>Importar</b>. Propostas repetidas não são duplicadas.</p>
+      <h4>Atualizações</h4>
+      <p>Quando sair uma versão nova, aparece um aviso embaixo da tela. Clique em <b>Atualizar</b>: a calculadora recarrega e mantém a proposta que estava na tela.</p>
       <h4>Tema e zoom</h4>
       <p>Na primeira vez, o tema (claro ou escuro) segue o do computador. Depois, vale o que você escolher no botão de lua e sol. O zoom (100% a 200%) também fica salvo. O botão <b>"Regras"</b> mostra a política de descontos e encargos.</p>
       <h4>Atalhos de teclado</h4>
@@ -672,7 +742,7 @@
   </div>
 </div>
 
-<footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v27</a> · out/2026</footer>
+<footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v28</a> · out/2026</footer>
 
 <div class="overlay" id="regrasOverlay" onclick="if(event.target===this)toggleRegras()">
   <div class="ajuda-box" role="dialog" aria-modal="true" aria-labelledby="regrasTit" tabindex="-1">
@@ -682,13 +752,13 @@
       <h4>Encargos sobre o atraso</h4>
       <p><b>Multa:</b> 2% fixos (uma vez) sobre o valor da parcela. <b>Juros:</b> 2% ao mês, pró-rata por dia corrido a partir do vencimento, até a data de pagamento do acordo. Sem teto: os juros correm cheios. Cálculo idêntico ao Asaas. Se o pagamento for futuro, as parcelas a vencer que vencem até essa data passam a contar como atraso.</p>
       <h4>Parcelas negativadas</h4>
-      <p>Voltam ao <b>valor original</b> (sem juros nem multa). Na quitação só de negativadas, o desconto na negociação vai até o <b>piso de R$ 500,00</b> e não pode ficar abaixo disso.</p>
+      <p>Voltam ao <b>valor original</b> (sem juros nem multa). Na quitação só de negativadas, o desconto na negociação vai até o <b>piso de R$ 500,00</b> e não pode ficar abaixo disso. Depois do pagamento do acordo, a restrição sai em até <b>5 dias úteis</b> (geralmente no dia seguinte ao pedido de retirada).</p>
       <h4>Descontos na quitação total</h4>
       <p>Só em atraso: 1ª oferta com juros e multa; se o aluno achar caro, retira juros e multa (cobra só o original). Atraso + a vencer: retira os juros do atraso + até <b>10%</b> nas a vencer. Só a vencer: até <b>10%</b>. Negativadas + atraso: retira os juros do atraso (negativadas no valor original). Pode haver desconto adicional sobre o total, caso a caso.</p>
       <h4>Quitação parcial</h4>
       <p>Valores cheios por padrão. Opcionalmente, é possível retirar os juros das parcelas em atraso (a multa e os demais descontos são só da quitação total). Para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link.</p>
       <h4>Reparcelamento</h4>
-      <p>De 2x a 12x. Negativadas são quitadas <b>antes</b> (não entram no reparcelamento). Dívidas antigas podem receber % de desconto <b>só sobre os juros</b> do atraso, caso a caso. Vencimento padrão da 1ª parcela: hoje no 1º reparcelamento e hoje + 7 dias no 2º.</p>
+      <p>De 2x a 12x. Negativadas são quitadas <b>antes</b> (não entram no reparcelamento). Dívidas antigas podem receber % de desconto <b>só sobre os juros</b> do atraso, caso a caso. Vencimento padrão da 1ª parcela: hoje no 1º reparcelamento e hoje + 7 dias no 2º. Normalmente oferecido a partir de 2 parcelas em atraso. <b>Limite de 2 reparcelamentos por dívida de cada produto</b>. O limite não é comentado com o aluno no 1º; no 2º, a proposta avisa que é o último e que, se uma parcela atrasar, não haverá novo parcelamento. Parcela do acordo paga com atraso tem multa e juros pelo Asaas.</p>
       <h4>2º reparcelamento: formalização</h4>
       <p>Após o aceite: enviar <b>formulário</b> de dados → montar <b>contrato de confissão de dívida e parcelamento</b> → enviar para <b>assinatura</b> → liberar o boleto da 1ª parcela.</p>
       <h4>Acesso e extensão</h4>
@@ -704,6 +774,9 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v28 · out/2026</h4>
+      <p><b>Proposta mais pessoal e mais clara.</b> Novos campos para o <b>nome do aluno</b> (pode colar o nome completo: fica só o primeiro) e o <b>seu nome</b>, que abrem a proposta com "Oi, Maria! Aqui é Aretha, do Financeiro do IBFT.". O reparcelamento passa a mostrar as <b>datas das parcelas</b>, e a última parcela absorve os centavos para a soma bater com o total (antes, 6x de R$ 389,10 somavam R$ 0,02 a mais que o total). A proposta também diz até quando a multa e os juros foram calculados, mostra a economia com o percentual primeiro e termina pedindo uma resposta simples (<b>SIM</b>). Na quitação com negativadas, informa que a restrição sai em até 5 dias úteis. No 2º reparcelamento, avisa que é o último possível. A frase da extensão de acesso não promete mais o certificado: fala em concluir a formação com mais tranquilidade.</p>
+      <p><b>Na tela:</b> o produto agora tem <b>busca</b> e mostra primeiro os que você mais negociou. O tipo de acesso virou três botões, com aviso quando foi alterado à mão. O histórico ganhou <b>Exportar</b> e <b>Importar</b> (backup) e mostra o nome do aluno. Quando houver versão nova, aparece um aviso com o botão <b>Atualizar</b>, que mantém a proposta da tela. Nenhuma regra de cálculo mudou.</p>
       <h4>v27 · out/2026</h4>
       <p><b>Visual refinado e mais rápido de usar.</b> O fio dourado do topo virou a barra de progresso, e ao rolar a página aparece uma barra fina com o botão <b>"Copiar proposta"</b>. O tipo de proposta virou botões e as opções viraram interruptores. A prévia agora parece uma mensagem de WhatsApp de verdade. <b>"Limpar"</b> e <b>"Nova proposta"</b> não pedem mais confirmação: limpam na hora e oferecem <b>Desfazer</b>. Copiar com algo faltando leva você direto ao campo. O histórico mostra data e hora. O modo escuro foi refeito e, na primeira vez, o tema segue o do computador. As janelas fecham com <kbd>Esc</kbd>. O texto das Regras sobre a quitação parcial foi corrigido (dá para retirar os juros das parcelas em atraso). Nenhuma regra de cálculo mudou.</p>
       <h4>v26 · out/2026</h4>
@@ -747,6 +820,7 @@
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script>
+const VERSAO=(document.querySelector('meta[name="versao"]')||{}).content||'';   // versão desta página (meta no <head>)
 // ícones SVG da interface (traço 1.75, mesmo estilo dos estáticos)
 const ICO={
   x:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>',
@@ -931,7 +1005,7 @@ function updAtraso(i,c,v){atrasos[i][c]=v;render();}                 // venc/neg
 function updValor(i,v){atrasos[i].valor=v;renderLeve();}             // valor → atualização leve (preserva foco/cursor)
 function updVenc(i,v){atrasos[i].venc=v;renderLeve();aplicarStatus();atualizarProgresso();renderCoerencia();}   // data → atualização leve (não recria a tabela, preserva o foco)
 // limpar seções individuais (46) — zera só os campos daquela seção
-function limparCard1(){document.getElementById('produto').value='-1';document.getElementById('tipoAcesso').value='12m';produtosExtra=[];render();}
+function limparCard1(){document.getElementById('nomeAluno').value='';document.getElementById('produto').value='-1';document.getElementById('tipoAcesso').value='12m';produtosExtra=[];render();}
 function limparCard2(){atrasos=[];document.getElementById('genQtd').value='';document.getElementById('genVenc').value=hojeISO();document.getElementById('genVal').value='0';var dj=document.getElementById('descJurosPerc');if(dj)dj.value='0';render();}
 function limparCard3(){vincValManual=false;document.getElementById('vincQtd').value='0';document.getElementById('vincVal').value=document.getElementById('genVal').value;document.getElementById('vincVenc').value='';render();}
 function limparCardDesc(){document.getElementById('retJuros').checked=false;document.getElementById('retMulta').checked=false;document.getElementById('descVincPerc').value='0';document.getElementById('descNegPerc').value='0';document.getElementById('descGeralPerc').value='0';document.getElementById('isentarJurosNeg').checked=true;render();}
@@ -1051,8 +1125,58 @@ function renderParcGrid(){
   for(let n=2;n<=12;n++){const d=document.createElement('button');d.type='button';   // reparcelamento: 2x a 12x (1x = quitação)
     d.className='parc-op'+(n===parcelasEscolhidas?' sel':'');d.setAttribute('role','radio');d.setAttribute('aria-checked',n===parcelasEscolhidas?'true':'false');
     d.onclick=()=>{parcelasEscolhidas=n;render();const s=document.querySelector('#parcGrid .sel');if(s)s.focus({preventScroll:true});};
-    d.innerHTML=`${n}x<b>${total>0?brl(total/n):'—'}</b>`;g.appendChild(d);}
+    d.innerHTML=`${n}x<b>${total>0?brl(planoParcelas(total,n).base):'—'}</b>`;g.appendChild(d);}
 }
+
+// parcelas do acordo em centavos inteiros: todas com o valor arredondado e a última absorve a diferença (a soma fecha com o total)
+function planoParcelas(total,n){
+  n=Math.max(1,n|0); const c=Math.round(total*100), b=Math.round(c/n);
+  return {base:b/100, ultima:(c-b*(n-1))/100};
+}
+// cronograma em texto: 1ª parcela, demais (dia do mês, de/até) e a última quando o valor for diferente
+function textoCronograma(n,vencISO,pp){
+  if(!vencISO) return '';
+  const hoje = vencISO===hojeISO();
+  const primeira = hoje ? `hoje, *${dataBR(vencISO).slice(0,5)}*` : `*${dataBR(vencISO)}*`;
+  if(n<=1) return `🗓️ *Vencimento:* ${primeira}\n\n`;
+  const dia=parseInt(vencISO.slice(8,10),10), ult=addMonths(vencISO,n-1);
+  let s=`🗓️ *Datas das parcelas:*\n• 1ª parcela: ${primeira}\n`;
+  if(n===2) s+=`• 2ª parcela: ${dataBR(ult)}\n`;
+  else      s+=`• Demais: todo dia ${dia}${dia>28?' (ou o último dia do mês, nos meses mais curtos)':''}, de ${dataBR(addMonths(vencISO,1))} a ${dataBR(ult)}\n`;
+  if(Math.abs(pp.ultima-pp.base)>0.001) s+=`• A última parcela fica em ${brl(pp.ultima)} (ajuste de centavos)\n`;
+  return s+'\n';
+}
+// economia com o percentual primeiro (lido mais rápido); sem "0%" quando o percentual arredonda para zero
+function economiaTexto(v,pct){ return pct>0 ? `cerca de ${pct}% (${brl(v)})` : brl(v); }
+
+// nome do aluno: só o primeiro nome, com maiúscula inicial (aceita colar o nome completo do Kommo)
+// (mesmas regras do script de primeiro nome do Kommo: corta "| Terapeuta", "(financeiro)" etc., pula títulos e partículas)
+function primeiroNome(s){
+  let v=String(s||'').normalize('NFC').replace(/^\s*(sr|sra|srta|dr|dra|prof|profa|pr|pra|pe|me|eng|enf)\.?\s+/i,'').split(/\s[-–]\s|[|/(,@]/)[0];
+  const partes=v.replace(/[^\p{L}\s'’-]/gu,' ').trim().split(/\s+/).filter(Boolean)
+    .filter(p=>!/^(sr|sra|srta|dr|dra|prof|profa|pr|pra|pe|me|eng|enf|de|da|do|das|dos|e|d['’])$/i.test(p));
+  const p=partes[0]||'';
+  if(p.length<2 || /^(cliente|aluno|aluna|whatsapp|financeiro|contato|mae|mãe|pai)$/i.test(p)) return '';
+  return capNome(p);
+}
+function capNome(p){ return p.split('-').map(x=>x.charAt(0).toLocaleUpperCase('pt-BR')+x.slice(1).toLocaleLowerCase('pt-BR')).join('-'); }
+// o que vai no texto: o campo como está (permite "Maria Clara"), só corrigindo CAIXA ALTA / caixa baixa
+function nomeAlunoTexto(){ return formatarNome(document.getElementById('nomeAluno').value); }
+function formatarNome(v){
+  v=String(v||'').replace(/\s+/g,' ').trim();
+  if(!v) return '';
+  return (v===v.toLocaleUpperCase('pt-BR')||v===v.toLocaleLowerCase('pt-BR')) ? v.split(' ').map(capNome).join(' ') : v;
+}
+function colarNome(e){
+  const txt=(e.clipboardData||window.clipboardData).getData('text'); if(!txt)return;
+  e.preventDefault(); const el=e.target; el.value=primeiroNome(txt); render();
+}
+// nome completo digitado (3 palavras ou mais) vira só o primeiro nome ao sair do campo; 2 palavras ficam (nome composto)
+function ajustarNome(){
+  const el=document.getElementById('nomeAluno'), v=el.value.trim();
+  if(v.split(/\s+/).length>=3){ el.value=primeiroNome(v); render(); }
+}
+function salvarAtendente(){ try{localStorage.setItem('ibft_atendente',document.getElementById('nomeAtendente').value.trim());}catch(e){} }
 
 let ultimoTotal=null, pulsoIni=0;   // pulso do total no resumo
 function renderResumo(){
@@ -1094,7 +1218,9 @@ function renderResumo(){
   const econPct = baseEcon>0?Math.round(economia/baseEcon*100):0;
   if(economia>0) h+=`<div class="lin econ"><span>Economia (${econPct}%)</span><span>${brl(economia)}</span></div>`;
   if(!ehQuit() && parcelasEscolhidas>0 && totalGeral()>0)
-    h+=`<div class="lin parc"><span>${parcelasEscolhidas}x de</span><b>${brl(totalGeral()/parcelasEscolhidas)}</b></div>`;
+    { const pp=planoParcelas(totalGeral(),parcelasEscolhidas);
+      h+=`<div class="lin parc"><span>${parcelasEscolhidas}x de</span><b>${brl(pp.base)}</b></div>`;
+      if(Math.abs(pp.ultima-pp.base)>0.001) h+=sub('↳ última parcela (ajuste de centavos)',pp.ultima); }
   // mini-gráfico da composição (mostra que a maior parte é o valor original, não juros)
   const cOrig=atrasoOriginal()+negOriginal()+totalVinc(), cMulta=atrasoMultaV(), cJuros=atrasoJurosV();
   const cTot=cOrig+cMulta+cJuros;
@@ -1124,9 +1250,14 @@ function gerarTexto(){
   // qualquer quitação (total ou parcial) SEM desconto/isenção não é "condição especial" → abertura neutra
   const quitSemBeneficio = quit && !(m && m.descTotal>0);
   const app = ehApp(), nomeApp = app ? (prodSel().txt||prodSel().n) : '';
+  // personalização: "Oi, Maria! Aqui é Aretha, do Financeiro do IBFT." (cada parte só entra se o campo estiver preenchido)
+  const nomeAl=nomeAlunoTexto(), atend=(document.getElementById('nomeAtendente').value||'').trim();
+  // ancoragem: deixa claro até quando a multa e os juros do atraso foram calculados
+  const encAte=` com multa e juros até ${dataBR(refCalc()).slice(0,5)}`;
   let t='';
+  if(nomeAl||atend) t=`Oi${nomeAl?', '+nomeAl:''}!${atend?` Aqui é ${atend}, do Financeiro${app?'':' do IBFT'}.`:''}\n\n`;
   if(!quitSemBeneficio){
-    t = (vaiEstudar && app)
+    t += (vaiEstudar && app)
       ? `Preparei uma condição especial pra você regularizar e continuar aproveitando o seu aplicativo *${nomeApp}* com tranquilidade. 😊\n\n`
       : vaiEstudar
       ? `Preparei uma condição especial pra você regularizar e voltar a focar nos seus estudos com tranquilidade. 😊\n\n`
@@ -1143,13 +1274,13 @@ function gerarTexto(){
     // itemiza a composição só quando há mais de um grupo (evita repetir o mesmo valor)
     if(grupos>1){
       if(m.N>0) t+=`• *${m.N}* ${m.N===1?'parcela negativada':'parcelas negativadas'}: ${brl(negOriginal()+m.jurosNeg)}\n`;
-      if(m.A>0) t+=`• *${m.A}* ${m.A===1?'parcela em atraso':'parcelas em atraso'}: ${brl(atrasoComEnc())}\n`;
+      if(m.A>0) t+=`• *${m.A}* ${m.A===1?'parcela em atraso':'parcelas em atraso'}: ${brl(atrasoComEnc())} (${encAte.trim()})\n`;
       if(m.V>0) t+=`• *${m.V}* ${m.V===1?'parcela a vencer':'parcelas a vencer'}: ${brl(totalVinc())}\n`;
     }
-    const sufixoUnico = grupos<=1 ? ` (${descUnico})` : '';
+    const sufixoUnico = grupos<=1 ? ` (${descUnico}${m.N===0&&m.A>0?','+encAte:''})` : '';
     if(m.descTotal>0){
       t+=`${grupos>1?'\n':''}💵 *Valor atual da dívida: ${brl(bruto)}*${sufixoUnico}\n`;
-      t+=`\n✅ *Descontos aplicados:*\n`;
+      t+=`\n✅ *Descontos que apliquei para você:*\n`;
       if(m.jurosNeg>0) t+=`• Isenção dos juros das parcelas negativadas: − ${brl(m.jurosNeg)}\n`;
       if(m.jurosRem>0) t+=`• Isenção dos juros das parcelas em atraso: − ${brl(m.jurosRem)}\n`;
       if(m.multaRem>0) t+=`• Isenção da multa das parcelas em atraso: − ${brl(m.multaRem)}\n`;
@@ -1158,43 +1289,48 @@ function gerarTexto(){
       if(m.geralDesc>0) t+=`• ${m.dg}% de desconto adicional: − ${brl(m.geralDesc)}\n`;
       t+=`\n📌 *Valor final para quitação: ${brl(m.total)}* — à vista no boleto bancário, PIX ou cartão de crédito.\n`;
       const pctEcon = bruto>0?Math.round(m.descTotal/bruto*100):0;
-      t+=`💚 *Você economiza ${brl(m.descTotal)} (cerca de ${pctEcon}%) quitando nessa condição!*\n\n`;
+      t+=`💚 *Você economiza ${economiaTexto(m.descTotal,pctEcon)} quitando nessa condição!*\n\n`;
     }else{
       t+=`${grupos>1?'\n':''}📌 *Valor total para quitação: ${brl(m.total)}*${sufixoUnico} — à vista no boleto bancário, PIX ou cartão de crédito.\n\n`;
     }
+    // negativadas: prazo de retirada da restrição depois do pagamento
+    if(m.N>0) t+=`🔓 Assim que o pagamento for identificado, pedimos a retirada da restrição do seu nome, que sai em até *5 dias úteis*.\n\n`;
   }else{
-    const total=totalGeral(),parc=parcelasEscolhidas,vParc=parc>0?total/parc:0;
+    const total=totalGeral(),parc=parcelasEscolhidas,pp=planoParcelas(total,parc);
     const nA=qtdAtraso(), nV=qtdVinc();
+    const formaParc = parc>1 ? `em *${parc}x de ${brl(pp.base)}* no boleto bancário, PIX ou cartão de crédito` : `à vista no boleto bancário, PIX ou cartão de crédito`;
     if(descJurosTotal()>0){
       // com desconto nos juros: mostra o valor CHEIO → descontos → valor final (não deixa o desconto invisível)
       const bruto = atrasoComEnc()+totalVinc();
       const grupos = (nA>0?1:0)+(nV>0?1:0);
-      const descUnico = nA>0 ? `${nA} ${nA===1?'parcela em atraso':'parcelas em atraso'}` : `${nV} ${nV===1?'parcela a vencer':'parcelas a vencer'}`;
+      const descUnico = nA>0 ? `${nA} ${nA===1?'parcela em atraso':'parcelas em atraso'},${encAte}` : `${nV} ${nV===1?'parcela a vencer':'parcelas a vencer'}`;
       // itemiza só quando há mais de um grupo (evita repetir o mesmo valor)
       if(grupos>1){
-        if(nA>0) t+=`• *${nA}* ${nA===1?'parcela em atraso':'parcelas em atraso'}: ${brl(atrasoComEnc())}\n`;
+        if(nA>0) t+=`• *${nA}* ${nA===1?'parcela em atraso':'parcelas em atraso'}: ${brl(atrasoComEnc())} (${encAte.trim()})\n`;
         if(nV>0) t+=`• *${nV}* ${nV===1?'parcela a vencer':'parcelas a vencer'}: ${brl(totalVinc())}\n`;
       }
       t+=`${grupos>1?'\n':''}💵 *Valor atual da dívida: ${brl(bruto)}*${grupos<=1?` (${descUnico})`:''}\n`;
-      t+=`\n✅ *Descontos aplicados:*\n`;
+      t+=`\n✅ *Descontos que apliquei para você:*\n`;
       t+=`• ${Math.round(jurosDescFrac()*100)}% de desconto nos juros das parcelas em atraso: − ${brl(descJurosTotal())}\n`;
-      if(parc>1) t+=`\n📌 *Valor final: ${brl(total)}* — pode ser parcelado em até *${parc}x de ${brl(vParc)}* no boleto bancário, PIX ou cartão de crédito.\n`;
-      else       t+=`\n📌 *Valor final: ${brl(total)}* — à vista no boleto bancário, PIX ou cartão de crédito.\n`;
+      t+=`\n📌 *Valor final: ${brl(total)}* — ${formaParc}.\n`;
       const pctEcon = bruto>0?Math.round(descJurosTotal()/bruto*100):0;
-      t+=`💚 *Você economiza ${brl(descJurosTotal())} (cerca de ${pctEcon}%) com esse desconto!*\n\n`;
+      t+=`💚 *Você economiza ${economiaTexto(descJurosTotal(),pctEcon)} com esse desconto!*\n\n`;
     }else{
-      if(nA>0)t+=`• *${nA}* ${nA===1?'parcela em atraso':'parcelas em atraso'} no valor de *${brl(totalAtraso())}*;\n`;
+      if(nA>0)t+=`• *${nA}* ${nA===1?'parcela em atraso':'parcelas em atraso'} no valor de *${brl(totalAtraso())}* (já${encAte});\n`;
       if(nV>0) t+=`• *${nV}* ${nV===1?'parcela a vencer':'parcelas a vencer'} no valor de *${brl(totalVinc())}*;\n`;
       t+=`\n`;
-      if(parc>1) t+=`📌 O *total* fica em *${brl(total)}* que pode ser parcelado em até *${parc}x de ${brl(vParc)}* no boleto bancário, PIX ou cartão de crédito.\n\n`;
-      else        t+=`📌 O *total* fica em *${brl(total)}*, à vista no boleto bancário, PIX ou cartão de crédito.\n\n`;
+      t+=`📌 O *total* fica em *${brl(total)}*, ${formaParc}.\n\n`;
     }
+    // cronograma do acordo: datas e ajuste de centavos na última parcela (a soma das parcelas fecha com o total)
+    t+=textoCronograma(parc,vencISO,pp);
     if(parc>1) t+=`💡 *Importante:* dividir em mais vezes *não gera juros nem aumenta o total*. Os únicos encargos são a multa e os juros das parcelas que já estavam em atraso — e já estão incluídos no valor acima.\n\n`;
   }
 
-  const labelVenc = quit ? 'O *vencimento para pagamento* desse acordo' : 'O *vencimento da primeira parcela* desse acordo';
-  if(vencISO===hojeISO()) t+=`🗓️ ${labelVenc} fica para hoje mesmo, dia *${dataBR(vencISO).slice(0,5)}*.\n\n`;
-  else                    t+=`🗓️ ${labelVenc} fica para *${dataBR(vencISO)}*.\n\n`;
+  if(quit){   // no reparcelamento a data da 1ª parcela já está no cronograma
+    const labelVenc = 'O *vencimento para pagamento* desse acordo';
+    if(vencISO===hojeISO()) t+=`🗓️ ${labelVenc} fica para hoje mesmo, dia *${dataBR(vencISO).slice(0,5)}*.\n\n`;
+    else                    t+=`🗓️ ${labelVenc} fica para *${dataBR(vencISO)}*.\n\n`;
+  }
 
   if(parcial){
     // quitação parcial pode envolver produtos com acessos/datas distintos → não afirma expiração
@@ -1214,9 +1350,9 @@ function gerarTexto(){
     if(ext>0){
       const refPag = quit ? 'o pagamento deste acordo' : 'o pagamento da primeira parcela deste acordo';
       if(!expirou){
-        t+=`Assim que o sistema identificar ${refPag}, consigo liberar para você uma extensão de mais *${ext} dias* de acesso à plataforma, estendendo seu acesso até *${dataBR(addDays(exp,ext))}*. Isso te dá a oportunidade de concluir sua formação com mais tranquilidade e garantir seu certificado dentro de um prazo mais confortável.\n\n`;
+        t+=`Assim que o sistema identificar ${refPag}, consigo liberar para você uma extensão de mais *${ext} dias* de acesso à plataforma, estendendo seu acesso até *${dataBR(addDays(exp,ext))}*. Isso te dá a oportunidade de concluir sua formação com mais tranquilidade.\n\n`;
       }else{
-        t+=`Assim que o sistema identificar ${refPag}, consigo liberar para você uma extensão de *${ext} dias* de acesso à plataforma, contados a partir da data em que o pagamento for identificado. Isso te dá a oportunidade de concluir sua formação com mais tranquilidade e garantir seu certificado dentro de um prazo mais confortável.\n\n`;
+        t+=`Assim que o sistema identificar ${refPag}, consigo liberar para você uma extensão de *${ext} dias* de acesso à plataforma, contados a partir da data em que o pagamento for identificado. Isso te dá a oportunidade de concluir sua formação com mais tranquilidade.\n\n`;
       }
     }
   }else if(tipoAc==='vital'){
@@ -1231,11 +1367,6 @@ function gerarTexto(){
     t+=`• *Filiação ao CITRG* → pode ser comprada de forma parcelada normalmente, mesmo durante um reparcelamento ativo.\n\n`;
   }
 
-  // CTA forte + meio de pagamento (PIX na quitação; boleto no 1º reparc.; formulário/contrato no 2º reparc.)
-  if(quit)                  t+=`Posso já gerar o seu *PIX* pra você garantir essa condição? A confirmação é na hora. ✅`;
-  else if(tipoProp==='rep2')t+=`Se estiver tudo certo pra você, o próximo passo é preencher um *formulário rápido* com seus dados pessoais. Com ele eu preparo o *contrato de confissão de dívida e parcelamento* e te envio para assinatura — e logo em seguida liberamos o *boleto* da primeira parcela. Posso te enviar o formulário pra darmos início? ✅`;
-  else                      t+=`Posso já gerar o seu *boleto* da primeira parcela pra darmos início? ✅`;
-
   let mantem;
   if(parcial) mantem=false;             // acesso ambíguo entre produtos → não promete liberação
   else if(tipoAc==='livro') mantem=false;
@@ -1243,9 +1374,17 @@ function gerarTexto(){
   else mantem = !(expirou && ext===0);
   if(mantem){
     const refPag = quit ? 'o pagamento deste acordo' : 'o pagamento da primeira parcela';
-    if(app) t+=`\n\nLembrando que, assim que o sistema identificar ${refPag}, o seu acesso ao aplicativo é liberado automaticamente — aí você já retoma a sua jornada no ${nomeApp}. 📱`;
-    else    t+=`\n\nLembrando que, assim que o sistema identificar ${refPag}, o seu acesso é liberado automaticamente — aí você já retoma os estudos. 📚`;
+    if(app) t+=`Lembrando que, assim que o sistema identificar ${refPag}, o seu acesso ao aplicativo é liberado automaticamente — aí você já retoma a sua jornada no ${nomeApp}. 📱\n\n`;
+    else    t+=`Lembrando que, assim que o sistema identificar ${refPag}, o seu acesso é liberado automaticamente — aí você já retoma os estudos. 📚\n\n`;
   }
+
+  // 2º reparcelamento: é o último possível para essa dívida (limite de 2 por dívida de cada produto)
+  if(tipoProp==='rep2') t+=`⚠️ *Atenção:* este é o último reparcelamento possível para essa dívida. Se alguma parcela deste acordo atrasar, não conseguiremos fazer um novo parcelamento.\n\n`;
+
+  // CTA por último, com resposta de uma palavra (compromisso): PIX na quitação; boleto no 1º reparc.; formulário/contrato no 2º reparc.
+  if(quit)                  t+=`Posso já gerar o seu *PIX* pra você garantir essa condição? É só responder *SIM*. A confirmação é na hora. ✅`;
+  else if(tipoProp==='rep2')t+=`Se estiver tudo certo pra você, o próximo passo é preencher um *formulário rápido* com seus dados pessoais. Com ele eu preparo o *contrato de confissão de dívida e parcelamento* e te envio para assinatura — e logo em seguida liberamos o *boleto* da primeira parcela. Posso te enviar o formulário pra darmos início? É só responder *SIM*. ✅`;
+  else                      t+=`Posso já gerar o seu *boleto* da primeira parcela pra darmos início? É só responder *SIM*. ✅`;
   return t;
 }
 
@@ -1351,9 +1490,108 @@ function initSeg(){
   });
 }
 
+// ===== seletor de produto com busca; escreve no <select id="produto"> (que continua existindo) =====
+// "Mais negociados por você": conta os produtos das propostas copiadas neste navegador nos últimos 90 dias
+function rankingProdutos(){
+  const lim=Date.now()-90*864e5, c={};
+  historico.forEach(s=>{ if((s._ts||0)>=lim){ const i=parseInt(s.produto); if(i>=0&&PRODUTOS[i]) c[i]=(c[i]||0)+1; } });
+  return c;
+}
+const semAcento=s=>String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const escH=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+let cbAtivo=0, cbVis=[], cbQuery='';
+function chipAcesso(p){
+  if(p.app) return '<span class="cb-chip a">App · outra empresa</span>';
+  return p.a==='vital' ? '<span class="cb-chip v">Vitalício</span>' : p.a==='livro' ? '<span class="cb-chip l">Livro</span>' : '<span class="cb-chip">12 meses</span>';
+}
+function desenharProdutos(){
+  const pop=document.getElementById('prodLista'), inp=document.getElementById('prodBusca');
+  const cont=rankingProdutos(), sel=parseInt(document.getElementById('produto').value);
+  const termos=semAcento(cbQuery.trim()).split(/\s+/).filter(Boolean);
+  const ordem=PRODUTOS.map((p,i)=>i).sort((a,b)=>(cont[b]||0)-(cont[a]||0)||PRODUTOS[a].n.localeCompare(PRODUTOS[b].n,'pt-BR'));
+  let h='',k=0; cbVis=[];
+  const item=i=>{ cbVis.push(i); const n=cont[i]||0;
+    return `<div class="cb-opt${k===cbAtivo?' on':''}" role="option" id="cbo${k++}" data-i="${i}" aria-selected="${i===sel}"><span class="nm">${escH(PRODUTOS[i].n)}${n&&!termos.length?`<small>${n}×</small>`:''}</span>${chipAcesso(PRODUTOS[i])}</div>`; };
+  if(!termos.length){
+    const top=ordem.filter(i=>cont[i]>0).slice(0,5);
+    if(top.length){ h+='<div class="cb-grp">Mais negociados por você</div>'; top.forEach(i=>h+=item(i)); h+='<div class="cb-grp">Todos os produtos</div>'; }
+    ordem.filter(i=>top.indexOf(i)<0).forEach(i=>h+=item(i));
+  }else{
+    ordem.filter(i=>{const n=semAcento(PRODUTOS[i].n);return termos.every(t=>n.indexOf(t)>=0);}).forEach(i=>h+=item(i));
+    if(!cbVis.length) h='<div class="cb-vazio">Nenhum produto com esse nome.</div>';
+  }
+  pop.innerHTML=h;
+  inp.setAttribute('aria-activedescendant',cbVis.length?'cbo'+cbAtivo:'');
+  const on=pop.querySelector('.cb-opt.on'); if(on) on.scrollIntoView({block:'nearest'});
+}
+function abrirProdutos(){
+  const inp=document.getElementById('prodBusca'), pop=document.getElementById('prodLista');
+  if(!pop.hidden) return;
+  cbQuery=''; const sel=parseInt(document.getElementById('produto').value);
+  pop.hidden=false; document.getElementById('prodCombo').classList.add('open'); inp.setAttribute('aria-expanded','true');
+  cbAtivo=0; desenharProdutos();
+  const k=cbVis.indexOf(sel); if(k>=0){ cbAtivo=k; desenharProdutos(); }
+}
+function fecharProdutos(){
+  const pop=document.getElementById('prodLista'); if(pop.hidden) return;
+  pop.hidden=true; document.getElementById('prodCombo').classList.remove('open');
+  document.getElementById('prodBusca').setAttribute('aria-expanded','false'); syncProd(true);
+}
+function escolherProduto(i){
+  document.getElementById('produto').value=String(i); fecharProdutos(); onProdutoChange();
+}
+// mostra no campo o produto escolhido (quando o atendente não está digitando nele)
+function syncProd(forcar){
+  const inp=document.getElementById('prodBusca'); if(!inp) return;
+  if(!forcar && document.activeElement===inp) return;
+  const p=prodSel(); inp.value=p?p.n:'';
+}
+function initProdBusca(){
+  const inp=document.getElementById('prodBusca'), pop=document.getElementById('prodLista');
+  inp.addEventListener('focus',()=>inp.select());
+  inp.addEventListener('click',abrirProdutos);
+  inp.addEventListener('input',()=>{ abrirProdutos(); cbQuery=inp.value; cbAtivo=0; desenharProdutos(); });
+  inp.addEventListener('keydown',e=>{
+    const aberto=!pop.hidden;
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){
+      e.preventDefault(); if(!aberto){abrirProdutos();return;}
+      cbAtivo = e.key==='ArrowDown' ? Math.min(cbAtivo+1,cbVis.length-1) : Math.max(cbAtivo-1,0); desenharProdutos();
+    }else if(e.key==='Enter' && aberto){ e.preventDefault(); if(cbVis.length) escolherProduto(cbVis[cbAtivo]); }
+    else if(e.key==='Escape' && aberto){ e.preventDefault(); e.stopPropagation(); fecharProdutos(); inp.select(); }
+    else if(e.key==='Tab' && aberto){ fecharProdutos(); }
+  });
+  inp.addEventListener('blur',()=>setTimeout(()=>{ if(document.activeElement!==inp) fecharProdutos(); },120));
+  pop.addEventListener('mousedown',e=>e.preventDefault());   // mantém o foco no campo ao clicar na lista
+  pop.addEventListener('click',e=>{ const o=e.target.closest('.cb-opt'); if(o) escolherProduto(parseInt(o.dataset.i)); });
+}
+
+// ===== tipo de acesso em botões; escreve no <select id="tipoAcesso"> (que continua existindo) =====
+function setAcesso(v){ document.getElementById('tipoAcesso').value=v; render(); }
+function syncAcesso(){
+  const v=document.getElementById('tipoAcesso').value, wrap=document.getElementById('accTipo'); if(!wrap) return;
+  wrap.querySelectorAll('button[role=radio]').forEach(b=>{const on=b.dataset.v===v;b.setAttribute('aria-checked',on?'true':'false');b.tabIndex=on?0:-1;});
+  const p=prodSel(), aviso=document.getElementById('accAuto');
+  aviso.innerHTML = !p ? '' : p.a===v ? '<span class="cb-chip">Automático pelo produto</span>'
+    : '<span class="cb-chip m">Alterado manualmente</span><button type="button" class="link-btn" onclick="setAcesso(prodSel().a)">Voltar ao padrão do produto</button>';
+}
+function initAcesso(){
+  const bts=[...document.querySelectorAll('#accTipo button[role=radio]')];
+  bts.forEach((b,i)=>{
+    b.addEventListener('click',()=>setAcesso(b.dataset.v));
+    b.addEventListener('keydown',e=>{
+      let j=null;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown') j=(i+1)%bts.length;
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp') j=(i-1+bts.length)%bts.length;
+      if(j===null)return; e.preventDefault(); setAcesso(bts[j].dataset.v); bts[j].focus();
+    });
+  });
+}
+
 function render(){
   renderAtrasos();
   syncSeg();
+  syncProd();
+  syncAcesso();
   const quit=ehQuit();
   if(!quit && parcelasEscolhidas<2) parcelasEscolhidas=2;   // reparcelamento começa em 2x
   document.getElementById('quitTotalWrap').style.display = quit ? 'block' : 'none';
@@ -1463,12 +1701,15 @@ function showToast(msg,o){
   let t=null; const fechar=()=>{ if(el._fim)return; el._fim=1; clearTimeout(t); el.classList.remove('in'); el.classList.add('out'); setTimeout(()=>el.remove(),240); };
   if(o.acao){ const b=document.createElement('button'); b.type='button'; b.className='t-act'; b.textContent=o.acao.rotulo; b.onclick=()=>{ fechar(); o.acao.fn(); }; el.appendChild(b); }
   box.appendChild(el);
-  while(box.children.length>3) box.firstElementChild.remove();
+  while(box.children.length>3){ const v=[...box.children].find(x=>!x._fixo)||box.firstElementChild; v.remove(); }
+  el._fixo=!!o.fixo;
   requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('in')));
   const ms=o.ms||(o.acao?7000:4000);
-  t=setTimeout(fechar,ms);
-  el.addEventListener('mouseenter',()=>clearTimeout(t));
-  el.addEventListener('mouseleave',()=>{ if(!el._fim) t=setTimeout(fechar,2500); });
+  if(!o.fixo){
+    t=setTimeout(fechar,ms);
+    el.addEventListener('mouseenter',()=>clearTimeout(t));
+    el.addEventListener('mouseleave',()=>{ if(!el._fim) t=setTimeout(fechar,2500); });
+  }
   return {fechar};
 }
 // leva o atendente até o que falta: rola, abre o card se estiver recolhido, pulsa a barra lateral e foca o campo
@@ -1500,7 +1741,7 @@ function feedbackCopiado(){
 function copiar(){
   // guarda-corpos: confere o essencial antes de copiar
   const probs=[], alvos=[];
-  if(parseInt(document.getElementById('produto').value)<0){ probs.push('produto'); alvos.push(['card1','produto']); }
+  if(parseInt(document.getElementById('produto').value)<0){ probs.push('produto'); alvos.push(['card1','prodBusca']); }
   if(totalGeral()<=0){ probs.push('valores das parcelas');
     const q=document.getElementById('genQtd').value.trim(), v=document.getElementById('genVenc').value;
     alvos.push(['card2', !q||q==='0' ? 'genQtd' : (!v ? 'genVenc' : 'genVal')]); }
@@ -1522,7 +1763,7 @@ function snapshot(){
     retJuros:document.getElementById('retJuros').checked,retMulta:document.getElementById('retMulta').checked,
     descVincPerc:g('descVincPerc'),descNegPerc:g('descNegPerc'),descJurosPerc:g('descJurosPerc'),descGeralPerc:g('descGeralPerc'),quitTotal:document.getElementById('quitTotal').checked,isentarJurosNeg:document.getElementById('isentarJurosNeg').checked,
     dataLib:g('dataLib'),extDias:g('extDias'),dataVenc:g('dataVenc'),
-    atrasos:JSON.parse(JSON.stringify(atrasos)),parcelasEscolhidas,produtosExtra:[...produtosExtra]};
+    atrasos:JSON.parse(JSON.stringify(atrasos)),parcelasEscolhidas,produtosExtra:[...produtosExtra],nomeAluno:g('nomeAluno')};
 }
 function restore(s){
   const set=(id,v)=>document.getElementById(id).value=v;
@@ -1534,6 +1775,7 @@ function restore(s){
   if(s.descGeralPerc!==undefined)set('descGeralPerc',s.descGeralPerc);
   if(s.quitTotal!==undefined)document.getElementById('quitTotal').checked=s.quitTotal;
   if(s.isentarJurosNeg!==undefined)document.getElementById('isentarJurosNeg').checked=s.isentarJurosNeg;
+  set('nomeAluno',s.nomeAluno||'');
   produtosExtra=s.produtosExtra||[];
   atrasos=s.atrasos||[];parcelasEscolhidas=s.parcelasEscolhidas||2;editadoManual=false;document.getElementById('editNotice').style.display='none';render();
 }
@@ -1550,17 +1792,55 @@ function resumoSnap(){
 function salvarHist(){
   if(totalGeral()<=0) return;                 // não guarda proposta vazia
   const snap=snapshot(); snap._resumo=resumoSnap(); snap._ts=Date.now();
-  historico=historico.filter(s=>s._resumo!==snap._resumo);   // remove duplicadas (mesmo resumo)
+  historico=historico.filter(s=>!(s._resumo===snap._resumo && (s.nomeAluno||'')===(snap.nomeAluno||'')));   // remove duplicadas
   historico.unshift(snap);   // guarda TODAS as propostas (sem limite fixo)
-  // só remove as mais antigas se o armazenamento do navegador encher (quota ~5MB)
+  gravarHist();
+  renderHist();
+}
+// grava no navegador; só remove as mais antigas se o armazenamento encher (quota ~5MB)
+function gravarHist(){
   try{localStorage.setItem('ibft_hist',JSON.stringify(historico));}
   catch(e){ while(historico.length>1){ historico.pop(); try{ localStorage.setItem('ibft_hist',JSON.stringify(historico)); break; }catch(e2){} } }
-  renderHist();
+}
+// backup: exporta todas as propostas num arquivo .json e importa de volta (junta sem duplicar)
+function exportarHist(){
+  if(!historico.length){ showToast('Ainda não há propostas para exportar.',{tipo:'aviso'}); return; }
+  const dados={app:'calculadora-ibft',versao:VERSAO,exportadoEm:new Date().toISOString(),itens:historico};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(dados)],{type:'application/json'}));
+  a.download='historico-calculadora-ibft-'+hojeISO()+'.json';
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1000);
+  showToast(historico.length+(historico.length===1?' proposta exportada':' propostas exportadas'),{tipo:'ok'});
+}
+function importarHist(input){
+  const f=input.files&&input.files[0]; input.value=''; if(!f) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{
+      const d=JSON.parse(r.result);
+      const itens=Array.isArray(d)?d:(d&&Array.isArray(d.itens)?d.itens:null);
+      if(!itens) throw new Error('formato');
+      const valido=x=>x&&typeof x==='object'&&typeof x._resumo==='string'&&typeof x.tipoProposta==='string'&&Array.isArray(x.atrasos);
+      const chave=x=>(x._ts||'')+'|'+x._resumo+'|'+(x.nomeAluno||'');
+      const ja=new Set(historico.map(chave)); let n=0, ruins=0;
+      itens.forEach(x=>{ if(!valido(x)){ruins++;return;} if(ja.has(chave(x)))return; historico.push(x); ja.add(chave(x)); n++; });
+      if(!n && ruins && ruins===itens.length) throw new Error('itens');
+      historico.sort((a,b)=>(b._ts||0)-(a._ts||0));
+      gravarHist(); renderHist();
+      showToast(n ? n+(n===1?' proposta importada':' propostas importadas') : 'Nenhuma proposta nova nesse arquivo',{tipo:'ok'});
+    }catch(e){ showToast('Esse arquivo não é um backup da calculadora. Use um arquivo gerado em Exportar.',{tipo:'erro',ms:7000}); }
+  };
+  r.onerror=()=>showToast('Não foi possível ler o arquivo.',{tipo:'erro'});
+  r.readAsText(f);
 }
 function renderHist(){
   const wrap=document.getElementById('histWrap'), lista=document.getElementById('histLista');
-  if(!historico.length){wrap.style.display='none';return;}
-  wrap.style.display='block';
+  const vazio=!historico.length;
+  document.getElementById('histCorpo').hidden=vazio;
+  document.getElementById('histVazio').hidden=!vazio;
+  document.getElementById('histN').textContent=vazio?'':'('+historico.length+')';
+  if(vazio){ lista.innerHTML=''; return; }
   const termo=(document.getElementById('histSearch').value||'').toLowerCase();
   const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const p2=n=>('0'+n).slice(-2);
@@ -1568,10 +1848,10 @@ function renderHist(){
   historico.forEach((s,i)=>{const r=(s._resumo||'');
     const h=new Date(s._ts||Date.now());
     const quando=p2(h.getDate())+'/'+p2(h.getMonth()+1)+' · '+p2(h.getHours())+':'+p2(h.getMinutes());
-    if(termo && (r+' '+quando).toLowerCase().indexOf(termo)<0)return;
+    if(termo && (r+' '+quando+' '+(s.nomeAluno||'')).toLowerCase().indexOf(termo)<0)return;
     // _resumo = "tipo · produto · valor[ · Nx] · venc dd/mm"
     const partes=r.split(' · '), tipo=partes[0]||'', prod=partes[1]||'', valor=partes[2]||'', resto=partes.slice(3).join(' · ');
-    o+=`<button type="button" class="hist-item" onclick="restaurarHist(${i})" title="${esc(r)}"><span class="hi-dt">${quando}</span><span class="hi-chip${tipo.indexOf('Quit')===0?' q':''}">${esc(tipo)}</span><span class="hi-prod">${esc(prod)}${resto?`<small>${esc(resto)}</small>`:''}</span><span class="hi-val">${esc(valor)}</span></button>`;
+    o+=`<button type="button" class="hist-item" onclick="restaurarHist(${i})" title="${esc(r)}"><span class="hi-dt">${quando}</span><span class="hi-chip${tipo.indexOf('Quit')===0?' q':''}">${esc(tipo)}</span><span class="hi-prod">${s.nomeAluno?`<b>${esc(formatarNome(s.nomeAluno))}</b> · `:''}${esc(prod)}${resto?`<small>${esc(resto)}</small>`:''}</span><span class="hi-val">${esc(valor)}</span></button>`;
   });
   lista.innerHTML = o || '<div class="hist-vazio">Nenhuma proposta com esse termo.</div>';
   fadeHist();
@@ -1588,6 +1868,7 @@ function novaProposta(){
   const antes=capturar();   // para o Desfazer
   salvarHist();   // guarda a proposta atual no histórico antes de limpar
   document.getElementById('tipoProposta').value='rep1';
+  document.getElementById('nomeAluno').value='';
   document.getElementById('produto').value='-1';
   document.getElementById('tipoAcesso').value='12m';
   document.getElementById('genQtd').value='';
@@ -1619,8 +1900,11 @@ document.getElementById('genVenc').value=hojeISO();
 setVencDefault();
 addAtraso();
 initSeg();
+initProdBusca();
+initAcesso();
+try{document.getElementById('nomeAtendente').value=localStorage.getItem('ibft_atendente')||'';}catch(e){}
+try{historico=JSON.parse(localStorage.getItem('ibft_hist')||'[]')||[];}catch(e){historico=[];}   // antes do render: o ranking de produtos usa o histórico
 render();
-try{historico=JSON.parse(localStorage.getItem('ibft_hist')||'[]')||[];}catch(e){historico=[];}
 renderHist();
 renderContador();   // 50 · mostra o contador do dia ao abrir
 modoVer();   // rótulo do botão Editar texto
@@ -1630,7 +1914,24 @@ try{ if(localStorage.getItem('ibft_dark')===null && window.matchMedia){ const mq
   const seguir=ev=>{ try{ if(localStorage.getItem('ibft_dark')===null) aplicarTema(ev.matches); }catch(e){} };
   if(mq.addEventListener) mq.addEventListener('change',seguir); } }catch(e){}
 try{const z=localStorage.getItem('ibft_zoom');if(z&&z!=='1')aplicarZoom(z);}catch(e){}   // preferência de zoom
-try{document.getElementById('produto').focus();}catch(e){}   // auto-foco no produto
+try{document.getElementById('nomeAluno').focus();}catch(e){}   // auto-foco no nome do aluno
+// voltando de "Atualizar" (nova versão): recupera a proposta que estava na tela
+try{ const r=sessionStorage.getItem('ibft_retomar'); if(r){ sessionStorage.removeItem('ibft_retomar'); voltar(JSON.parse(r)); showToast('Calculadora atualizada para a '+VERSAO+'. Sua proposta foi mantida.',{tipo:'ok'}); } }catch(e){}
+// aviso de nova versão: só quando aberta pelo site (GitHub Pages); compara a meta "versao" publicada com a desta página
+function checarVersao(){
+  if(!/^https?:$/.test(location.protocol) || checarVersao.avisou) return;
+  fetch(location.pathname+'?nv='+Date.now(),{cache:'no-store'}).then(r=>r.ok?r.text():'').then(h=>{
+    const m=h.match(/<meta name="versao" content="([^"]+)"/);
+    if(m && VERSAO && m[1]!==VERSAO && !checarVersao.avisou){
+      checarVersao.avisou=true;
+      showToast('Nova versão da calculadora disponível ('+m[1]+')',{tipo:'ok',fixo:true,acao:{rotulo:'Atualizar',fn:atualizarVersao}});
+    }
+  }).catch(()=>{});
+}
+function atualizarVersao(){ try{sessionStorage.setItem('ibft_retomar',JSON.stringify(capturar()));}catch(e){} location.reload(); }
+setTimeout(checarVersao,20000);
+setInterval(checarVersao,15*60000);
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') checarVersao(); });
 // logo da barra fixa reaproveita a do header (sem duplicar o base64)
 try{document.getElementById('tbLogo').src=document.querySelector('.logo-ibft').src;}catch(e){}
 // barra fixa: aparece quando o header sai da tela
