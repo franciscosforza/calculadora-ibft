@@ -4,6 +4,16 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v27 — out/2026
+- **Refino visual e de UX.** Novo sistema de tokens de cor (o modo escuro passou a ser só troca de tokens, sem overrides `!important`), sombras em camadas, fundo com luzes e textura sutis, tipografia com títulos de seção em caixa normal e total do resumo a 28px.
+- **Fio dourado = barra de progresso.** O fio laranja na base do header (padrão IBFT) mostra o progresso da proposta; ao rolar, uma barra fixa desce do topo com o que falta e o botão "Copiar proposta".
+- **Controles:** tipo de proposta em controle segmentado (o `select` original continua existindo, oculto), opções em interruptores, afixos "R$", "%" e "dias" dentro dos campos, hierarquia de botões consistente, seções que recolhem com animação e status "Pronta" / "Falta preencher".
+- **Prévia estilo WhatsApp** (fundo de conversa, balão enviado, "agora ✓✓").
+- **Toasts no lugar de `alert`/`confirm`:** "Limpar" e "Nova proposta" limpam na hora e oferecem **Desfazer**; copiar com algo faltando rola até o campo, abre a seção e foca; fallback de área de transferência com mensagem de erro.
+- **Histórico** com data e hora, busca por data e estado vazio. **Diálogos** acessíveis (Esc fecha, foco entra e volta, rolagem travada). Tema inicial segue o do computador.
+- Texto das **Regras** corrigido (quitação parcial pode retirar os juros das atrasadas); "Como usar" reescrito.
+- **Nenhuma regra de cálculo nem texto de proposta mudou:** as funções de cálculo/texto são idênticas byte a byte às da v26 e 11 cenários geram o mesmo texto nas duas versões.
+
 ## v26 — out/2026
 - **Correção: ONION com multa e juros.** Foi confirmado que o ONION também tem encargos (só não estavam configurados na cobrança). Agora ele usa **multa de 2% e juros de 2%/mês**, igual aos demais produtos.
 - Removida a regra "sem encargos" (flag `semEnc`, `multaRate`, textos e orientações "sem multa e sem juros"). Para o ONION voltam o desconto nos juros, a retirada de juros/multa na quitação e as orientações padrão.

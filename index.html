@@ -9,341 +9,634 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  // tema inicial antes da pintura: preferência salva; sem preferência, segue o sistema
+  try{var _d=localStorage.getItem('ibft_dark');if(_d==='1'||(_d===null&&window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches))document.documentElement.classList.add('dark');}catch(e){}
+</script>
 <style>
+  /* ===== tokens (o modo escuro é só troca de tokens) ===== */
   :root{
-    --navy:#0e2a55; --navy-deep:#081a38; --navy-mid:#1b4488;
-    --accent:#2f6fe0; --accent2:#5b9bff; --gold:#ec9310; --gold2:#f6a72b;
-    --trg-red:#e23b3b; --trg-yellow:#f5b321; --trg-green:#3bb273; --trg-blue:#3b7de2;
-    --cinza:#eef2f8; --borda:#dbe3ee; --texto:#101c31; --suave:#5b6b82;
-    --alerta:#b7791f; --alerta-bg:#fff7e9; --vermelho:#d64545; --verde:#1f9d63;
-    --body-bg:radial-gradient(1100px 560px at 18% -8%, #e9f1fc 0%, transparent 60%), linear-gradient(180deg,#f4f7fc 0%,#e9eef6 100%);
-    --card-bg:#ffffff;
-    --shadow-sm:0 1px 2px rgba(16,42,86,.06); --shadow-md:0 10px 30px rgba(16,42,86,.08); --shadow-lg:0 20px 48px rgba(16,42,86,.14);
-    --r:12px; --r-lg:16px; --r-xl:20px;
+    color-scheme:light;
+    /* superfícies */
+    --bg:#F2F5FA; --surface:#FFFFFF; --surface-2:#F6F8FC; --surface-3:#EDF1F7;
+    --line:#E1E7F0; --line-strong:#CBD5E3;
+    /* texto */
+    --text:#0F1B2E; --text-muted:#5A6A80; --text-faint:#8494AA;
+    --heading:#0E2A55;
+    /* marca */
+    --navy:#0E2A55; --navy-deep:#081A38; --navy-mid:#1B4488;
+    --accent:#2F6FE0; --accent-2:#5B9BFF; --gold:#EC9310; --gold-2:#F6A72B;
+    --fio:#EC9310; --fio-2:#F6A72B;
+    --on-sel:#FFFFFF;          /* texto sobre item selecionado */
+    --sel-bg:var(--navy);      /* fundo do item selecionado (grade e segmentado) */
+    /* semântica */
+    --pos:#157347; --pos-bg:#E6F6EE; --neg:#C83A3A; --neg-bg:#FDECEC;   /* um tom abaixo do briefing (#1F9D63 / #D64545) para passar AA em texto pequeno */
+    --warn:#9A6514; --warn-bg:#FFF6E6; --warn-line:#F1D29A;
+    --info-bg:#EEF4FF; --info-line:#C9DAF6;
+    /* elevação: sombras em camadas, luz vindo de cima */
+    --e1:0 1px 0 rgba(255,255,255,.8) inset,0 1px 2px rgba(15,27,46,.06),0 2px 6px rgba(15,27,46,.04);
+    --e2:0 1px 2px rgba(15,27,46,.06),0 10px 28px -8px rgba(15,27,46,.14);
+    --e3:0 2px 4px rgba(15,27,46,.06),0 28px 56px -14px rgba(15,27,46,.26);
+    --ring:0 0 0 3px rgba(47,111,224,.20);
+    /* forma */
+    --r-sm:8px; --r:12px; --r-lg:16px; --r-xl:20px;
+    /* motion */
+    --d1:120ms; --d2:200ms; --d3:320ms;
+    --ease-out:cubic-bezier(.22,1,.36,1); --ease-io:cubic-bezier(.65,0,.35,1);
+    /* tipografia */
     --font:"Inter",-apple-system,"Segoe UI",system-ui,Arial,sans-serif;
-    --display:"Space Grotesk","Inter",system-ui,sans-serif;
-    --ease:cubic-bezier(.4,0,.2,1);
+    --display:"Space Grotesk","Inter","Segoe UI",system-ui,sans-serif;
+    /* apelidos legados (não remover: o JS gera HTML com eles) */
+    --borda:var(--line); --suave:var(--text-muted); --texto:var(--text); --cinza:var(--surface-3);
+    --verde:var(--pos); --vermelho:var(--neg); --alerta:var(--warn); --alerta-bg:var(--warn-bg);
+    --card-bg:var(--surface); --accent2:var(--accent-2); --gold2:var(--gold-2);
   }
+  /* o tema escuro fica no <html> (e espelhado no <body>), para que os apelidos acima resolvam com os valores escuros */
+  :root.dark{
+    color-scheme:dark;
+    --bg:#0A1220; --surface:#121C2C; --surface-2:#0E1726; --surface-3:#16223A;
+    --line:#24324A; --line-strong:#33445F;
+    --text:#E7EDF6; --text-muted:#A3B3C9; --text-faint:#7486A0;
+    --heading:#CFE0FB;
+    --accent:#6EA2FF; --accent-2:#8FB8FF; --gold:#F2A33A; --gold-2:#F7B858;
+    --on-sel:#081A38; --sel-bg:var(--accent);
+    --pos:#5FD39A; --pos-bg:#12301F; --neg:#F28B8B; --neg-bg:#341818;
+    --warn:#F1C879; --warn-bg:#2B2414; --warn-line:#5A4A1F;
+    --info-bg:#14243B; --info-line:#2C4A73;
+    --e1:0 1px 0 rgba(255,255,255,.04) inset,0 1px 2px rgba(0,0,0,.4);
+    --e2:0 1px 0 rgba(255,255,255,.04) inset,0 12px 30px -10px rgba(0,0,0,.6);
+    --e3:0 1px 0 rgba(255,255,255,.05) inset,0 30px 60px -16px rgba(0,0,0,.7);
+    --ring:0 0 0 3px rgba(110,162,255,.28);
+  }
+
+  /* ===== base ===== */
   *{box-sizing:border-box;}
-  *{scrollbar-width:thin;scrollbar-color:var(--borda) transparent;}
+  *{scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent;}
   ::-webkit-scrollbar{width:10px;height:10px;}
-  ::-webkit-scrollbar-thumb{background:var(--borda);border-radius:8px;border:2px solid transparent;background-clip:content-box;}
-  ::-webkit-scrollbar-thumb:hover{background:var(--suave);background-clip:content-box;}
+  ::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:8px;border:2px solid transparent;background-clip:content-box;}
+  ::-webkit-scrollbar-thumb:hover{background:var(--text-faint);background-clip:content-box;}
   ::selection{background:rgba(47,111,224,.22);}
-  :focus-visible{outline:2px solid var(--accent2);outline-offset:2px;}
-  body{margin:0;font-family:var(--font);background:var(--body-bg);background-attachment:fixed;color:var(--texto);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-variant-numeric:tabular-nums;}
-  header{background:linear-gradient(115deg,var(--navy-deep) 0%,var(--navy) 48%,var(--navy-mid) 100%);color:#fff;padding:18px 28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 4px 24px rgba(8,26,61,.4);position:relative;overflow:hidden;border-width:0 0 3px;border-style:solid;border-image:linear-gradient(90deg,var(--trg-red),var(--trg-yellow),var(--trg-green),var(--trg-blue)) 1;}
-  header::before{content:"";position:absolute;left:-8%;top:-70%;width:38%;height:240%;background:radial-gradient(closest-side,rgba(91,155,255,.28),transparent);pointer-events:none;}
-  header::after{content:"";position:absolute;right:0;top:0;bottom:0;width:42%;background:repeating-linear-gradient(90deg,transparent 0 18px,rgba(59,178,115,.07) 18px 20px);-webkit-mask:linear-gradient(90deg,transparent,#000);mask:linear-gradient(90deg,transparent,#000);}
-  .logo-ibft{height:50px;width:auto;flex:none;position:relative;z-index:1;filter:drop-shadow(0 2px 6px rgba(0,0,0,.28));}
-  header .ttl{z-index:1;}
-  header h1{margin:0;font-family:var(--display);font-size:23px;font-weight:700;line-height:1.05;letter-spacing:-.2px;transition:color .2s;}
-  header p{margin:4px 0 0;font-size:12px;opacity:.82;letter-spacing:.2px;transition:color .2s;}
-  .hdr-acoes{margin-left:auto;display:flex;gap:8px;z-index:1;flex-wrap:wrap;align-items:center;}
-  .hdr-cont{font-size:12px;font-weight:600;color:#fff;background:rgba(255,255,255,.16);padding:6px 11px;border-radius:20px;white-space:nowrap;align-self:center;}
-  .ajuda-btn{z-index:1;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.4);padding:8px 14px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:background .15s,transform .15s;}
-  .ajuda-btn:hover{background:rgba(255,255,255,.26);transform:translateY(-1px);}
-  .hdr-sel{z-index:1;background:rgba(255,255,255,.14);color:#fff;border:1px solid rgba(255,255,255,.4);padding:8px 30px 8px 12px;border-radius:10px;cursor:pointer;font-size:13px;font-weight:600;width:auto;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 10px center;}
-  .hdr-sel option{color:#15324f;}
-  .progresso{max-width:1220px;margin:14px auto -8px;padding:0 24px;}
-  .progresso .ptxt{display:flex;justify-content:space-between;font-size:12px;color:var(--suave);font-weight:600;margin-bottom:5px;}
-  .progresso .pbarbg{background:#dbe4f0;border-radius:8px;height:9px;overflow:hidden;box-shadow:inset 0 1px 2px rgba(16,42,86,.08);}
-  .progresso .pbar{background:linear-gradient(90deg,var(--verde),#42c98a);height:100%;width:0;transition:width .4s var(--ease);border-radius:8px;}
-  .wrap{max-width:1220px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 1fr;gap:22px;}
-  @media(max-width:940px){.wrap{grid-template-columns:1fr;}}
-  .card{background:var(--card-bg);border:1px solid var(--borda);border-radius:var(--r-xl);padding:24px;margin-bottom:20px;box-shadow:var(--shadow-sm),var(--shadow-md);transition:border-color .2s var(--ease),box-shadow .2s var(--ease),transform .2s var(--ease);animation:fadeUp .4s var(--ease) both;}
-  .card:hover{box-shadow:var(--shadow-lg);}
-  .card.ok{border-color:rgba(31,157,99,.55);box-shadow:var(--shadow-sm),0 0 0 3px rgba(31,157,99,.12);}
-  .card.falta{border-color:rgba(214,69,69,.5);box-shadow:var(--shadow-sm),0 0 0 3px rgba(214,69,69,.1);}
-  .wrap > div:first-child .card:nth-child(1){animation-delay:.02s}
-  .wrap > div:first-child .card:nth-child(2){animation-delay:.08s}
-  .wrap > div:first-child .card:nth-child(3){animation-delay:.14s}
-  .wrap > div:first-child .card:nth-child(4){animation-delay:.20s}
-  .wrap > div:first-child .card:nth-child(5){animation-delay:.26s}
-  .badge-sec{margin-left:auto;font-size:10px;font-weight:700;padding:4px 10px;border-radius:20px;letter-spacing:.2px;display:none;box-shadow:0 1px 2px rgba(0,0,0,.06);}
-  .badge-sec.show{display:inline-block;animation:popIn .24s var(--ease);}
-  .badge-ok{background:#e3f6ec;color:var(--verde);}
-  .badge-falta{background:#fde8e8;color:var(--vermelho);}
-  .card h2{margin:0 0 16px;font-family:var(--display);font-size:12.5px;text-transform:uppercase;letter-spacing:.9px;color:var(--navy);font-weight:600;position:relative;padding-bottom:12px;display:flex;align-items:center;gap:9px;}
-  .card h2::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:100%;background:linear-gradient(90deg,var(--borda),transparent);border-radius:2px;}
-  .card h2 .num{font-family:var(--display);background:linear-gradient(135deg,var(--accent2),var(--navy));color:#fff;width:24px;height:24px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;box-shadow:0 3px 8px rgba(16,42,86,.3);}
-  label{display:block;font-size:12px;font-weight:600;color:var(--suave);margin:12px 0 5px;letter-spacing:.1px;}
-  input,select,textarea{width:100%;padding:11px 13px;border:1px solid var(--borda);border-radius:var(--r);font-size:14px;font-family:inherit;color:var(--texto);background:#fff;transition:border-color .16s,box-shadow .16s,background .16s;}
-  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(47,111,224,.16);}
-  input:hover:not(:focus),select:hover:not(:focus){border-color:#c3cfe0;}
-  select{appearance:none;-webkit-appearance:none;-moz-appearance:none;padding-right:38px;cursor:pointer;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235b6b82' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 13px center;}
-  input[type=checkbox]{width:17px;height:17px;accent-color:var(--accent);cursor:pointer;}
+  :root.dark ::selection{background:rgba(110,162,255,.30);}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+  html{background:var(--bg);scrollbar-gutter:stable;}
+  html.lock{overflow:hidden;}
+  body{margin:0;background:transparent;font-family:var(--font);color:var(--text);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;font-variant-numeric:tabular-nums;}
+  .ic{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;}
+  .sr-only{position:absolute !important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+
+  /* ===== fundo: camadas fixas em pseudo-elementos (sem background-attachment:fixed) ===== */
+  body::before,body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;}
+  body::before{background:
+    radial-gradient(900px 560px at 8% -12%, rgba(47,111,224,.14), transparent 62%),
+    radial-gradient(760px 520px at 104% 108%, rgba(236,147,16,.09), transparent 60%),
+    linear-gradient(180deg, rgba(14,42,85,.05), transparent 320px);}
+  body::after{
+    background:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.06'/></svg>"),
+      radial-gradient(rgba(14,42,85,.08) 1px, transparent 1.3px) 0 0/22px 22px;
+    -webkit-mask:radial-gradient(1200px 800px at 50% 0%, #000 40%, transparent 85%);
+            mask:radial-gradient(1200px 800px at 50% 0%, #000 40%, transparent 85%);}
+  :root.dark body::before{background:
+    radial-gradient(900px 560px at 8% -12%, rgba(91,155,255,.16), transparent 62%),
+    radial-gradient(760px 520px at 104% 108%, rgba(242,163,58,.08), transparent 60%);}
+  :root.dark body::after{background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.08'/></svg>"),
+    radial-gradient(rgba(255,255,255,.05) 1px, transparent 1.3px) 0 0/22px 22px;}
+
+  /* ===== header IBFT + fio dourado (= barra de progresso) ===== */
+  header{position:relative;background:linear-gradient(115deg,var(--navy-deep) 0%,var(--navy) 48%,var(--navy-mid) 100%);color:#fff;box-shadow:0 8px 24px -10px rgba(8,26,56,.45);overflow:hidden;}
+  header::before{content:"";position:absolute;left:-8%;top:-70%;width:38%;height:240%;background:radial-gradient(closest-side,rgba(91,155,255,.18),transparent);pointer-events:none;}
+  .hdr-in{position:relative;z-index:1;max-width:1220px;margin:0 auto;padding:16px 24px 19px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
+  .logo-ibft{height:54px;width:auto;flex:none;filter:drop-shadow(0 2px 6px rgba(0,0,0,.25));}
+  header h1{margin:0;font-family:var(--display);font-size:23px;font-weight:700;line-height:1.1;letter-spacing:-.01em;}
+  header p{margin:3px 0 0;font-size:12.5px;color:rgba(255,255,255,.78);}
+  .hdr-acoes{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .hdr-cont{display:inline-flex;align-items:center;height:28px;padding:0 11px;border-radius:999px;font-size:12px;font-weight:500;color:rgba(255,255,255,.82);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);white-space:nowrap;}
+  .hb{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:36px;padding:0 13px;border-radius:10px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;font:600 13px var(--font);cursor:pointer;transition:background-color var(--d1),border-color var(--d1),transform var(--d1);}
+  .hb:hover{background:rgba(255,255,255,.2);border-color:rgba(255,255,255,.32);}
+  .hb:active{transform:scale(.98);}
+  .hb:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(246,167,43,.55);}
+  .hb.ico{width:36px;padding:0;}
+  .hb .ic{width:17px;height:17px;}
+  #btnDark .i-sun{display:none;}
+  :root.dark #btnDark .i-sun{display:block;}
+  :root.dark #btnDark .i-moon{display:none;}
+  .hdr-zoom{position:relative;display:inline-flex;align-items:center;}
+  .hdr-zoom .ic{position:absolute;left:11px;pointer-events:none;color:#fff;opacity:.9;}
+  .hdr-sel{height:36px;width:auto;padding:0 30px 0 33px;border-radius:10px;background-color:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);color:#fff;font:600 13px var(--font);cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 11px center;background-size:12px;transition:background-color var(--d1),border-color var(--d1);}
+  .hdr-sel:hover{background-color:rgba(255,255,255,.2);border-color:rgba(255,255,255,.32);}
+  .hdr-sel:focus{outline:none;box-shadow:0 0 0 3px rgba(246,167,43,.55);}
+  .hdr-sel option{color:#0F1B2E;background:#fff;}
+  .fio{position:absolute;left:0;right:0;bottom:0;height:3px;background:rgba(236,147,16,.28);overflow:hidden;z-index:2;}
+  .fio-fill{position:relative;height:100%;width:0;background:linear-gradient(90deg,var(--fio-2),var(--fio));transition:width var(--d3) var(--ease-out);overflow:hidden;}
+  .fio-fill::after{content:"";position:absolute;top:0;bottom:0;left:0;width:28%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.9),transparent);transform:translateX(-110%);}
+  .fio.done .fio-fill::after{animation:sheen 900ms var(--ease-io) var(--d3) 1 both;}
+  @keyframes sheen{from{transform:translateX(-110%)}to{transform:translateX(380%)}}
+
+  /* linha discreta do progresso, logo abaixo do header */
+  .prog-line{max-width:1220px;margin:12px auto 0;padding:0 24px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:12px;font-weight:500;color:var(--text-muted);}
+  .prog-line #progTxt{display:inline-flex;align-items:center;gap:6px;min-width:0;}
+  .prog-line.done #progTxt{color:var(--pos);font-weight:600;}
+  .prog-line.done #progTxt::before{content:"";width:14px;height:14px;flex:none;background:currentColor;-webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>") center/contain no-repeat;mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>") center/contain no-repeat;}
+
+  /* barra fixa que desce do topo quando o header sai da tela */
+  .topbar{position:fixed;top:0;left:0;right:0;height:48px;z-index:40;background:var(--surface);background:color-mix(in srgb,var(--surface) 82%,transparent);-webkit-backdrop-filter:blur(10px) saturate(1.2);backdrop-filter:blur(10px) saturate(1.2);border-bottom:1px solid var(--line);box-shadow:0 6px 18px -12px rgba(15,27,46,.25);transform:translateY(-100%);opacity:0;visibility:hidden;transition:transform var(--d2) var(--ease-out),opacity var(--d2) var(--ease-out),visibility 0s linear var(--d2);}
+  body.bar-on .topbar{transform:none;opacity:1;visibility:visible;transition:transform var(--d2) var(--ease-out),opacity var(--d2) var(--ease-out),visibility 0s;}
+  .tb-in{max-width:1220px;height:100%;margin:0 auto;padding:0 24px;display:flex;align-items:center;gap:14px;}
+  .tb-logo{display:inline-flex;align-items:center;height:32px;padding:0 10px;border-radius:var(--r-sm);background:linear-gradient(115deg,var(--navy-deep),var(--navy));flex:none;}
+  .tb-logo img{height:22px;width:auto;display:block;}
+  .tb-txt{flex:1;min-width:0;font-size:12.5px;font-weight:500;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .tb-txt.done{color:var(--pos);font-weight:600;}
+  .topbar .fio{bottom:-1px;}
+
+  /* ===== layout ===== */
+  .wrap{max-width:1220px;margin:0 auto;padding:16px 24px 24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;}
+  .sticky{position:sticky;top:calc(64px / var(--z,1));max-height:calc((100vh - 80px) / var(--z,1));overflow:auto;overscroll-behavior:contain;margin:0 -6px;padding:0 6px 6px;}
+
+  /* ===== cards ===== */
+  .card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:18px 22px 20px;margin-bottom:18px;box-shadow:var(--e1);scroll-margin-top:72px;}
+  .card::before{content:"";position:absolute;left:-1px;top:18px;bottom:18px;width:3px;border-radius:0 3px 3px 0;background:transparent;transition:background-color var(--d2) var(--ease-out);}
+  .card.ok::before{background:var(--pos);}
+  .card.falta::before{background:var(--neg);}
+  .card.pulse-bar::before{background:var(--neg);animation:barPulse 480ms var(--ease-io) 2;}
+  @keyframes barPulse{50%{width:6px;box-shadow:0 0 0 4px var(--neg-bg);}}
+  .card.enter{animation:cardIn var(--d3) var(--ease-out) both;}
+  @keyframes cardIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .card h2{margin:0;font-family:var(--display);font-size:15px;font-weight:600;letter-spacing:-.005em;color:var(--heading);display:flex;align-items:center;gap:8px;min-height:30px;}
+  .card:not(.col) > h2,.out-head{padding-bottom:12px;margin-bottom:14px;border-bottom:1px solid var(--line);}
+  .card h2 .num{flex:none;font-family:var(--display);background:linear-gradient(135deg,var(--accent-2),var(--navy-mid));color:#fff;width:24px;height:24px;border-radius:8px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;box-shadow:0 2px 6px -1px rgba(16,42,86,.35);}
+  .h-sp{flex:1;}
+  .badge-sec{display:none;align-items:center;gap:7px;font-family:var(--font);font-size:12px;font-weight:500;color:var(--text-muted);white-space:nowrap;}
+  .badge-sec.show{display:inline-flex;}
+  .badge-sec::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;flex:none;}
+  .badge-ok::before{background:var(--pos);box-shadow:0 0 0 3px var(--pos-bg);}
+  .badge-falta{color:var(--neg);}
+  .badge-falta::before{background:var(--neg);box-shadow:0 0 0 3px var(--neg-bg);}
+  .info-i{cursor:help;color:var(--text-faint);font-size:10.5px;font-weight:700;margin-left:6px;border:1.5px solid currentColor;border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;line-height:1;font-style:italic;font-family:Georgia,serif;flex:none;vertical-align:-3px;transition:color var(--d1);}
+  .info-i:hover{color:var(--accent);}
+  .limpar-sec{display:inline-flex;align-items:center;gap:5px;min-height:30px;padding:0 9px;margin:0 -2px 0 2px;border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-muted);font:500 12px var(--font);cursor:pointer;opacity:0;transition:opacity var(--d1),color var(--d1),background-color var(--d1);}
+  .limpar-sec .ic{width:14px;height:14px;}
+  .card h2:hover .limpar-sec,.card h2:focus-within .limpar-sec,.limpar-sec:focus-visible{opacity:1;}
+  .limpar-sec:hover{color:var(--neg);background:var(--neg-bg);}
+  .limpar-sec:focus-visible{outline:none;box-shadow:var(--ring);}
+  @media (hover:none){.limpar-sec{opacity:1;}}
+  .card.col > h2{cursor:pointer;border-radius:var(--r-sm);}
+  .card.col > h2:focus-visible{outline:none;box-shadow:var(--ring);}
+  .caret{display:inline-flex;color:var(--text-faint);transition:transform var(--d3) var(--ease-out);}
+  .caret .ic{width:18px;height:18px;}
+  .card.col.collapsed > h2 .caret{transform:rotate(-90deg);}
+  /* recolher/expandir animado */
+  .card-body{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:1fr;transition:grid-template-rows var(--d3) var(--ease-out),visibility 0s;}
+  .card-body-in{min-height:0;margin:0 -4px;padding:0 4px;}
+  .card-body-in > .cb-sep{border-top:1px solid var(--line);margin-top:12px;}
+  .card.col.collapsed > .card-body{grid-template-rows:0fr;visibility:hidden;transition:grid-template-rows var(--d3) var(--ease-out),visibility 0s linear var(--d3);}
+  .card.col.collapsed > .card-body > .card-body-in,.card.col.anim > .card-body > .card-body-in{overflow:hidden;}
+
+  /* ===== campos ===== */
+  label{display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin:14px 0 6px;}
+  input,select,textarea{width:100%;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:var(--r);font-family:inherit;font-size:14px;color:var(--text);background-color:var(--surface);transition:border-color var(--d1),box-shadow var(--d1),background-color var(--d1);}
+  textarea{height:auto;padding:12px;}
+  input:hover:not(:focus),select:hover:not(:focus),textarea:hover:not(:focus){border-color:var(--line-strong);}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:var(--ring);}
+  input::placeholder{color:var(--text-faint);}
+  select{appearance:none;-webkit-appearance:none;-moz-appearance:none;padding-right:36px;cursor:pointer;text-overflow:ellipsis;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%235A6A80' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 12px center;background-size:14px;}
+  :root.dark select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23A3B3C9' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");}
   input[type=date]{accent-color:var(--accent);}
   .row{display:flex;gap:12px;}.row>div{flex:1;min-width:0;}
-  .btn{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;border:none;padding:11px 18px;border-radius:var(--r);cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;transition:transform .14s var(--ease),box-shadow .14s var(--ease),filter .14s;box-shadow:0 4px 14px rgba(47,111,224,.34);}
-  .btn:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(47,111,224,.44);filter:saturate(1.06);}
-  .btn:active{transform:translateY(0) scale(.98);box-shadow:0 3px 10px rgba(47,111,224,.34);}
-  .btn-sm{padding:8px 13px;font-size:12px;}
-  #btnCopiar{background:linear-gradient(135deg,var(--gold2),var(--gold));box-shadow:0 4px 14px rgba(236,147,16,.4);}
-  #btnCopiar:hover{box-shadow:0 8px 20px rgba(236,147,16,.5);}
-  .btn-ghost{background:#eef3fb;color:var(--accent);box-shadow:none;border:1px solid transparent;}
-  .btn-ghost:hover{background:#e3ecfa;color:var(--navy);border-color:rgba(47,111,224,.28);transform:translateY(-1px);}
-  .btn-del{background:#fdeaea;color:var(--vermelho);box-shadow:none;transition:.15s;}
-  .btn-del:hover{background:#fbd9d9;transform:translateY(-1px);}
-  table{width:100%;border-collapse:collapse;margin-top:10px;}
-  th,td{padding:7px 5px;text-align:left;font-size:12px;}
-  th{color:var(--suave);font-weight:700;border-bottom:1px solid var(--borda);text-transform:uppercase;letter-spacing:.5px;font-size:10px;}
-  tbody tr{transition:background .12s;}
-  tbody tr:hover{background:rgba(47,111,224,.045);}
-  .val-atual{font-weight:700;color:var(--navy);white-space:nowrap;}
-  .check{display:flex;align-items:center;justify-content:center;gap:4px;}
-  .check input{width:auto;}
-  .gen-box{background:var(--cinza);border:1px solid var(--borda);border-radius:var(--r);padding:14px;margin-bottom:8px;}
-  .resumo{background:linear-gradient(165deg,#f7fafe,#eaf1fb);border:1px solid #d9e4f3;border-left:3px solid var(--gold);border-radius:var(--r-lg);padding:16px 18px;margin-top:8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.7);}
-  .resumo .lin{display:flex;justify-content:space-between;padding:4px 0;font-size:13px;}
-  .resumo .tot{border-top:2px solid #cdd9ec;margin-top:9px;padding-top:11px;font-family:var(--display);font-weight:700;font-size:22px;letter-spacing:-.2px;color:var(--navy);}
-  .parc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:10px;}
-  .parc-op{border:1px solid var(--borda);border-radius:var(--r);padding:10px 4px;text-align:center;cursor:pointer;font-size:12px;font-weight:600;color:var(--suave);background:#fff;transition:transform .14s var(--ease),box-shadow .14s var(--ease),border-color .14s,background .14s,color .14s;}
-  .parc-op:hover{border-color:var(--accent);color:var(--navy);transform:translateY(-2px);box-shadow:0 6px 14px rgba(47,111,224,.18);}
-  .parc-op.sel{background:linear-gradient(135deg,var(--accent),var(--navy));color:#fff;border-color:var(--navy);box-shadow:0 6px 16px rgba(16,42,86,.28);}
-  .parc-op b{display:block;font-size:14px;margin-top:3px;}
-  .alerta{background:var(--alerta-bg);border:1px solid #f3d18a;color:var(--alerta);padding:10px 12px;border-radius:var(--r);font-size:12px;margin-top:10px;display:none;}
-  .alerta.show{display:block;animation:fadeUp .3s var(--ease) both;}
-  #saida{width:100%;min-height:440px;font-family:var(--font);font-size:13px;line-height:1.55;border:1px solid var(--borda);border-radius:var(--r);padding:15px;white-space:pre-wrap;resize:vertical;background:#fcfdff;}
-  .out-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;flex-wrap:wrap;}
-  .copy-ok{color:var(--verde);font-size:12px;font-weight:600;opacity:0;transition:.2s;margin-right:6px;}
-  .copy-ok.show{opacity:1;}
-  .hint{font-size:11px;color:var(--suave);margin-top:4px;line-height:1.45;}
-  .sticky{position:sticky;top:20px;}
-  .overlay{position:fixed;inset:0;background:rgba(8,22,48,.55);display:none;align-items:flex-start;justify-content:center;z-index:50;padding:34px 16px;overflow:auto;backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);}
-  .overlay.show{display:flex;animation:ovFade .2s var(--ease);}
-  .ajuda-box{background:#fff;max-width:720px;width:100%;border-radius:var(--r-xl);padding:26px 30px;box-shadow:0 24px 70px rgba(0,0,0,.4);animation:boxIn .28s var(--ease);}
-  .ajuda-box h3{margin:0 0 8px;font-family:var(--display);color:var(--navy);font-size:19px;font-weight:700;}
-  .ajuda-box h4{margin:16px 0 4px;color:var(--accent);font-size:12px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;}
-  .ajuda-box p{margin:4px 0;font-size:13px;line-height:1.55;color:var(--texto);}
-  .ajuda-close{float:right;background:var(--navy);color:#fff;border:none;border-radius:9px;padding:7px 13px;cursor:pointer;font-weight:600;font-size:12px;font-family:inherit;transition:.15s;}
-  .ajuda-close:hover{background:var(--navy-mid);}
-  .rodape{text-align:center;color:var(--suave);font-size:11px;padding:18px;}
-  #toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(160%);background:linear-gradient(135deg,#22a86b,#178a55);color:#fff;padding:13px 24px;border-radius:12px;font-weight:600;font-size:14px;box-shadow:0 12px 30px rgba(23,110,72,.4);z-index:100;transition:transform .34s var(--ease);}
-  #toast.show{transform:translateX(-50%) translateY(0);}
-  .info-i{cursor:help;color:var(--accent);font-size:11px;font-weight:700;margin-left:7px;border:1.5px solid var(--accent);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center;line-height:1;font-style:italic;font-family:Georgia,serif;transition:background .14s,color .14s;flex:none;}
-  .info-i:hover{background:var(--accent);color:#fff;}
-  .compo-bar{display:flex;height:14px;border-radius:7px;overflow:hidden;margin-top:10px;border:1px solid #d9e4f3;}
+  .hint{font-size:12px;color:var(--text-muted);margin:6px 0 0;line-height:1.5;}
+  .gen-box{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:2px 14px 14px;margin-top:14px;}
+  /* afixos (R$, %, dias) dentro do campo */
+  .affix{position:relative;}
+  .affix > .ax{position:absolute;top:0;bottom:0;display:flex;align-items:center;font-size:13px;font-weight:500;color:var(--text-faint);pointer-events:none;}
+  .affix.pre > .ax{left:12px;}
+  .affix.pre > input{padding-left:36px;}
+  .affix.suf > .ax{right:12px;}
+  .affix.suf > input{padding-right:34px;}
+  .affix.suf.dias > input{padding-right:48px;}
+  .affix input[type=number]{-moz-appearance:textfield;appearance:textfield;}
+  .affix input[type=number]::-webkit-inner-spin-button,.affix input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0;}
+  .w220{max-width:220px;}
+  /* segmentado do tipo de proposta */
+  .seg-scroll{overflow-x:auto;margin:0 -4px;padding:0 4px 2px;}
+  .seg{position:relative;display:grid;grid-template-columns:repeat(3,1fr);width:max-content;min-width:100%;padding:4px;background:var(--surface-3);border:1px solid var(--line);border-radius:var(--r);}
+  .seg-ind{position:absolute;top:4px;bottom:4px;left:4px;width:calc((100% - 8px) / 3);border-radius:9px;background:var(--sel-bg);box-shadow:var(--e2);transition:transform var(--d2) var(--ease-out);}
+  .seg[data-i="1"] .seg-ind{transform:translateX(100%);}
+  .seg[data-i="2"] .seg-ind{transform:translateX(200%);}
+  .seg button{position:relative;z-index:1;height:34px;padding:0 10px;border:none;background:transparent;border-radius:9px;color:var(--text-muted);font:600 13px var(--font);cursor:pointer;white-space:nowrap;transition:color var(--d2) var(--ease-out);}
+  .seg button:hover{color:var(--text);}
+  .seg button[aria-checked="true"]{color:var(--on-sel);}
+  .seg button:focus-visible{outline:none;box-shadow:var(--ring);}
+  /* interruptores (mesmo checkbox, só CSS) */
+  .chk-line{display:flex;align-items:center;gap:10px;margin:12px 0 4px;min-height:32px;font-size:13px;font-weight:500;color:var(--text);cursor:pointer;}
+  .chk-line input[type=checkbox]{appearance:none;-webkit-appearance:none;position:relative;flex:none;width:34px;height:20px;margin:0;padding:0;border:none;border-radius:999px;background:var(--line-strong);cursor:pointer;transition:background-color var(--d2) var(--ease-out),box-shadow var(--d1);}
+  .chk-line input[type=checkbox]::before{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(15,27,46,.3);transition:transform var(--d2) var(--ease-out);}
+  .chk-line input[type=checkbox]:checked{background:var(--accent);}
+  .chk-line input[type=checkbox]:checked::before{transform:translateX(14px);}
+  .chk-line input[type=checkbox]:focus-visible{outline:none;box-shadow:var(--ring);}
+  .chk-line + .hint{margin:0 0 4px 44px;}
+  /* checkbox "Negat." da tabela */
+  td.check input[type=checkbox]{appearance:none;-webkit-appearance:none;width:18px;height:18px;margin:0;padding:0;border:1.5px solid var(--line-strong);border-radius:5px;background:var(--surface) center/12px no-repeat;cursor:pointer;transition:background-color var(--d1),border-color var(--d1);}
+  td.check input[type=checkbox]:hover{border-color:var(--accent);}
+  td.check input[type=checkbox]:checked{background-color:var(--accent);border-color:var(--accent);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>");}
+  :root.dark td.check input[type=checkbox]:checked{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23081A38' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>");}
+  td.check input[type=checkbox]:focus-visible{outline:none;box-shadow:var(--ring);}
+
+  /* ===== tabela de atrasos ===== */
+  .tbl-wrap{overflow-x:auto;margin:9px -4px -3px;padding:3px 4px;}
+  table{width:100%;border-collapse:collapse;}
+  th,td{padding:6px 4px;text-align:left;font-size:12px;}
+  th{color:var(--text-muted);font-weight:600;border-bottom:1px solid var(--line);font-size:12px;}
+  td input{height:36px;}
+  td input[type=text]{min-width:84px;}
+  input[type=date]{padding-right:8px;}
+  td input[type=date]{padding-left:9px;}
+  tbody tr{transition:background-color var(--d1);}
+  tbody tr:hover{background:var(--surface-2);}
+  .val-atual{font-weight:600;color:var(--heading);white-space:nowrap;}
+  .check{text-align:center;}
+  td.check{vertical-align:middle;}
+  .prod-extra{display:flex;gap:8px;align-items:center;margin-top:8px;}
+  .prod-extra select{flex:1;}
+
+  /* ===== botões (primário, secundário, terciário, destrutivo) ===== */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 16px;border:1px solid transparent;border-radius:var(--r);font:600 13px var(--font);cursor:pointer;white-space:nowrap;text-decoration:none;transition:background-color var(--d1),border-color var(--d1),color var(--d1),box-shadow var(--d1),transform var(--d1);}
+  .btn:active{transform:scale(.98);}
+  .btn:focus-visible{outline:none;box-shadow:var(--ring);}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+  .btn-sm{height:34px;padding:0 12px;font-size:12.5px;}
+  .btn-primary{background:linear-gradient(180deg,var(--gold-2),var(--gold));color:#1A1203;border-color:rgba(160,95,0,.35);box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 6px 16px -6px rgba(236,147,16,.6);}
+  .btn-primary:hover{filter:brightness(1.04);box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 10px 22px -8px rgba(236,147,16,.7);}
+  .btn-primary:focus-visible{box-shadow:var(--ring),0 6px 16px -6px rgba(236,147,16,.6);}
+  .btn-primary.copied{background:#17804F;border-color:#17804F;color:#fff;box-shadow:0 6px 16px -6px rgba(23,128,79,.6);}
+  :root.dark .btn-primary.copied{background:var(--pos);border-color:var(--pos);color:#0A1220;}
+  .btn-primary .i-ok{display:none;}
+  .btn-primary.copied .i-ok{display:block;}
+  .btn-primary.copied .i-copy{display:none;}
+  .btn-secondary{background:var(--surface);color:var(--text);border-color:var(--line-strong);}
+  .btn-secondary:hover{background:var(--surface-2);border-color:var(--accent);color:var(--heading);}
+  .btn-text{background:transparent;color:var(--accent);padding:0 10px;height:32px;}
+  .btn-text:hover{background:var(--info-bg);}
+  .btn-x{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border:none;border-radius:var(--r-sm);background:transparent;color:var(--text-faint);cursor:pointer;transition:color var(--d1),background-color var(--d1),transform var(--d1);}
+  .btn-x:hover{color:var(--neg);background:var(--neg-bg);}
+  .btn-x:active{transform:scale(.98);}
+  .btn-x:focus-visible{outline:none;box-shadow:var(--ring);}
+  .acts{display:flex;flex-wrap:wrap;gap:4px;margin:8px 0 0 -10px;}
+
+  /* ===== avisos ===== */
+  .note-info,.note-warn,.alerta{position:relative;padding:9px 12px 9px 34px;border-radius:var(--r);font-size:12.5px;line-height:1.5;border:1px solid;}
+  .note-info{background:var(--info-bg);border-color:var(--info-line);color:var(--heading);}
+  .note-warn,.alerta{background:var(--warn-bg);border-color:var(--warn-line);color:var(--warn);}
+  .note-info::before,.note-warn::before,.alerta::before{content:"";position:absolute;left:11px;top:11px;width:15px;height:15px;background:currentColor;}
+  .note-info::before{-webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 16v-4M12 8h.01'/></svg>") center/contain no-repeat;mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='12' cy='12' r='9'/><path d='M12 16v-4M12 8h.01'/></svg>") center/contain no-repeat;}
+  .note-warn::before,.alerta::before{-webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/><path d='M12 9v4M12 17h.01'/></svg>") center/contain no-repeat;mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/><path d='M12 9v4M12 17h.01'/></svg>") center/contain no-repeat;}
+  .alerta{display:none;margin-top:12px;}
+  .alerta.show{display:block;}
+  #quitGuide{margin-top:14px;}
+  #coerencia{margin-bottom:12px;}
+  #editNotice{margin-top:10px;}
+  .link-btn{background:none;border:none;padding:0;font:inherit;font-weight:600;color:var(--accent);text-decoration:underline;text-underline-offset:2px;cursor:pointer;}
+
+  /* ===== resumo ("ficha") ===== */
+  .resumo{position:relative;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:4px 16px 12px 19px;overflow:hidden;}
+  .resumo::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--gold-2),var(--gold));}
+  .resumo .lin{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:7px 0;font-size:13px;border-top:1px solid var(--line);}
+  .resumo .lin:first-child{border-top:none;}
+  .resumo .lin b{font-weight:600;font-size:14px;white-space:nowrap;}
+  .resumo .lin.sub{border-top:none;padding:1px 0 3px 10px;font-size:12px;color:var(--text-muted);}
+  .resumo .lin.sub b{font-size:12.5px;font-weight:600;}
+  .resumo .lin.cross{color:var(--warn);font-size:11.5px;font-style:italic;border-top:1px dashed var(--warn-line);}
+  .resumo .lin.econ{color:var(--pos);font-weight:600;border-top:none;padding-top:2px;}
+  .resumo .lin.parc{border-top:none;padding-top:2px;}
+  .resumo .tot{align-items:baseline;margin:6px -16px 0 -19px;padding:12px 16px 6px 19px;border-top:1px solid var(--line-strong);font-family:var(--display);font-weight:600;font-size:28px;line-height:1.15;letter-spacing:-.02em;color:var(--heading);}
+  .resumo .tot span:first-child{font-family:var(--font);font-size:12px;font-weight:600;letter-spacing:0;color:var(--text-muted);}
+  .resumo .tot.pulse{animation:totPulse 600ms var(--ease-out) both;}
+  @keyframes totPulse{from{background-color:var(--info-bg)}to{background-color:transparent}}
+  .compo-bar{display:flex;height:8px;border-radius:999px;overflow:hidden;margin-top:12px;background:var(--surface-3);}
   .compo-bar span{display:block;height:100%;}
-  .compo-bar span:first-child{border-radius:7px 0 0 7px;}
-  .compo-bar span:last-child{border-radius:0 7px 7px 0;}
-  .compo-leg{display:flex;gap:12px;flex-wrap:wrap;font-size:10.5px;color:var(--suave);margin-top:5px;}
-  .compo-leg i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:3px;vertical-align:middle;}
-  #preview{box-shadow:var(--shadow-sm),0 10px 26px rgba(21,60,40,.1);}
-  .limpar-sec{font-size:11px;font-weight:600;color:var(--suave);cursor:pointer;margin-left:8px;text-decoration:none;letter-spacing:0;white-space:nowrap;transition:color .14s;}
-  .limpar-sec:hover{color:var(--vermelho);}
-  .card.col > h2{cursor:pointer;}
-  .card.col > h2 .caret{font-size:11px;color:var(--suave);margin-left:6px;display:inline-block;transition:transform .2s var(--ease);}
-  .card.col.collapsed > h2 .caret{transform:rotate(-90deg);}
-  .card.col.collapsed > :not(h2){display:none !important;}
-  .card.col.collapsed{padding-bottom:16px;}
-  @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-  @keyframes popIn{from{transform:scale(.7);opacity:0}to{transform:scale(1);opacity:1}}
-  @keyframes ovFade{from{opacity:0}to{opacity:1}}
-  @keyframes boxIn{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
-  .resumo,.parc-op,.alerta,#preview,#editNotice,#histWrap{transition:background-color .2s,border-color .2s,box-shadow .2s;}
+  .compo-leg{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-muted);margin-top:6px;}
+  .compo-leg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:0;}
+  .parc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px;}
+  .parc-op{display:block;width:100%;border:1px solid var(--line);border-radius:var(--r);padding:8px 4px;text-align:center;cursor:pointer;font:600 12px var(--font);color:var(--text-muted);background:var(--surface);transition:border-color var(--d1),background-color var(--d1),color var(--d1),box-shadow var(--d1);}
+  .parc-op:hover{border-color:var(--accent);background:var(--info-bg);}
+  .parc-op:focus-visible{outline:none;box-shadow:var(--ring);}
+  .parc-op b{display:block;font-size:13.5px;font-weight:600;margin-top:2px;color:var(--text);font-variant-numeric:tabular-nums;}
+  .parc-op.sel{background:var(--sel-bg);border-color:var(--sel-bg);color:var(--on-sel);box-shadow:var(--e2);}
+  .parc-op.sel b{color:var(--on-sel);}
+
+  /* ===== proposta ===== */
+  .out-head{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+  .out-head h2{padding:0;margin:0;border:none;}
+  .out-acts{display:flex;gap:8px;flex-wrap:wrap;}
+  .revise{display:flex;align-items:flex-start;gap:7px;margin:0 0 8px;font-size:12px;color:var(--text-muted);}
+  .revise .ic{width:14px;height:14px;margin-top:2px;color:var(--warn);}
+  .btn-copy{width:100%;height:44px;font-size:14px;margin-bottom:14px;}
+  /* prévia estilo WhatsApp */
+  .wa{display:flex;flex-direction:column;align-items:flex-end;padding:14px 14px 16px 12px;border-radius:var(--r-lg);border:1px solid var(--line);background-color:#EFEAE2;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><g fill='none' stroke='%23000' stroke-opacity='.05' stroke-width='1.3' stroke-linecap='round'><circle cx='16' cy='18' r='5'/><path d='M58 10l6 6-6 6-6-6z'/><path d='M8 64q6-8 12 0t12 0'/><circle cx='74' cy='62' r='2.5'/><path d='M44 44h8M48 40v8'/><path d='M80 86l6-4M20 88h6'/></g></svg>");}
+  :root.dark .wa{background-color:#0B141A;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='96' height='96'><g fill='none' stroke='%23fff' stroke-opacity='.04' stroke-width='1.3' stroke-linecap='round'><circle cx='16' cy='18' r='5'/><path d='M58 10l6 6-6 6-6-6z'/><path d='M8 64q6-8 12 0t12 0'/><circle cx='74' cy='62' r='2.5'/><path d='M44 44h8M48 40v8'/><path d='M80 86l6-4M20 88h6'/></g></svg>");}
+  .wa-bubble{position:relative;max-width:94%;min-width:120px;background:#D9FDD3;color:#111B21;border-radius:10px;border-top-right-radius:0;padding:8px 11px 5px 11px;box-shadow:0 1px .5px rgba(11,20,26,.13);}
+  .wa-bubble::before{content:"";position:absolute;top:0;right:-8px;width:8px;height:13px;background:inherit;clip-path:polygon(0 0,100% 0,0 100%);}
+  :root.dark .wa-bubble{background:#005C4B;color:#E9EDEF;}
+  .wa-bubble.flash{animation:bubFlash 700ms var(--ease-out);}
+  @keyframes bubFlash{from{box-shadow:0 0 0 4px rgba(37,211,102,.45),0 1px .5px rgba(11,20,26,.13)}to{box-shadow:0 0 0 0 rgba(37,211,102,0),0 1px .5px rgba(11,20,26,.13)}}
+  #preview{font-family:-apple-system,"Segoe UI",system-ui,Roboto,Helvetica,Arial,sans-serif;font-size:13.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word;min-height:60px;font-variant-numeric:normal;}
+  .wa-meta{display:flex;justify-content:flex-end;align-items:center;gap:3px;margin-top:2px;font-size:11px;color:#56656E;}
+  :root.dark .wa-meta{color:rgba(233,237,239,.78);}
+  .wa-meta .ic{width:16px;height:16px;color:#53BDEB;stroke-width:2;}
+  #saida{width:94%;min-height:440px;font-family:-apple-system,"Segoe UI",system-ui,Roboto,Helvetica,Arial,sans-serif;font-size:13.5px;line-height:1.55;border:1px solid var(--line);border-radius:10px;padding:12px 14px;white-space:pre-wrap;resize:vertical;background:var(--surface);color:var(--text);}
+  .fade-in{animation:fadeIn var(--d2) var(--ease-out);}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+
+  /* ===== histórico ===== */
+  .hist{margin-top:16px;padding-top:14px;border-top:1px solid var(--line);}
+  .hist-lbl{display:block;font-size:12px;font-weight:600;color:var(--text-muted);margin:0 0 8px;}
+  .hist .affix input{height:36px;font-size:13px;}
+  .hist .affix.pre > input{padding-left:34px;}
+  .hist .affix .ax .ic{width:15px;height:15px;}
+  .hist-list{max-height:240px;overflow:auto;margin-top:8px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overscroll-behavior:contain;}
+  .hist-list.fade-t{-webkit-mask-image:linear-gradient(180deg,transparent,#000 22px);mask-image:linear-gradient(180deg,transparent,#000 22px);}
+  .hist-list.fade-b{-webkit-mask-image:linear-gradient(0deg,transparent,#000 22px);mask-image:linear-gradient(0deg,transparent,#000 22px);}
+  .hist-list.fade-t.fade-b{-webkit-mask-image:linear-gradient(180deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(180deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);}
+  .hist-item{display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;min-height:40px;padding:6px 12px;border:none;border-bottom:1px solid var(--line);background:transparent;color:var(--text);font:400 12.5px var(--font);text-align:left;cursor:pointer;transition:background-color var(--d1);}
+  .hist-item:last-child{border-bottom:none;}
+  .hist-item:hover{background:var(--surface-3);}
+  .hist-item:focus-visible{outline:none;box-shadow:inset 0 0 0 2px var(--accent);}
+  .hi-dt{color:var(--text-muted);font-size:12px;white-space:nowrap;}
+  .hi-chip{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--info-bg);color:var(--heading);white-space:nowrap;}
+  .hi-chip.q{background:var(--pos-bg);color:var(--pos);}
+  .hi-prod{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .hi-prod small{color:var(--text-faint);font-size:11.5px;margin-left:6px;}
+  .hi-val{font-weight:600;white-space:nowrap;}
+  .hist-vazio{padding:12px;font-size:12.5px;color:var(--text-muted);}
+
+  /* ===== overlays (Como usar, Regras, Novidades) ===== */
+  .overlay{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:4vh 16px;background:rgba(8,22,48,.5);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);opacity:0;transition:opacity var(--d2) var(--ease-out);}
+  :root.dark .overlay{background:rgba(0,0,0,.6);}
+  .overlay.show{display:flex;}
+  .overlay.in{opacity:1;transition-duration:var(--d3);}
+  .ajuda-box{display:flex;flex-direction:column;width:100%;max-width:720px;max-height:86vh;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--e3);outline:none;opacity:0;transform:translateY(8px) scale(.98);transition:opacity var(--d2) var(--ease-out),transform var(--d2) var(--ease-out);}
+  .overlay.in .ajuda-box{opacity:1;transform:none;transition-duration:var(--d3);}
+  .dlg-head{display:flex;align-items:center;gap:12px;padding:18px 18px 14px 26px;border-bottom:1px solid var(--line);flex:none;}
+  .dlg-head h3{flex:1;margin:0;font-family:var(--display);font-size:20px;font-weight:700;letter-spacing:-.01em;color:var(--heading);}
+  .dlg-x{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:none;border-radius:10px;background:transparent;color:var(--text-muted);cursor:pointer;transition:background-color var(--d1),color var(--d1);}
+  .dlg-x:hover{background:var(--surface-3);color:var(--text);}
+  .dlg-x:focus-visible{outline:none;box-shadow:var(--ring);}
+  .dlg-x .ic{width:18px;height:18px;}
+  .dlg-body{overflow:auto;overscroll-behavior:contain;padding:8px 26px 28px;}
+  .dlg-body .lead{margin:10px 0 4px;color:var(--text-muted);}
+  .dlg-body h4{margin:24px 0 6px;font-size:13px;font-weight:700;color:var(--accent);}
+  .dlg-body p{margin:6px 0;font-size:13.5px;line-height:1.62;color:var(--text);}
+  .dlg-body kbd{display:inline-block;min-width:22px;padding:1px 6px;border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:6px;background:var(--surface-2);font:600 12px var(--font);text-align:center;}
+
+  /* ===== toasts ===== */
+  .toasts{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);z-index:80;display:flex;flex-direction:column-reverse;align-items:center;gap:8px;pointer-events:none;width:max-content;max-width:calc(100vw - 32px);}
+  .toast{pointer-events:auto;display:flex;align-items:center;gap:10px;min-height:44px;padding:8px 10px 8px 14px;border-radius:var(--r);background:#0F1B2E;color:#F2F5FA;font-size:13.5px;font-weight:500;box-shadow:var(--e3);opacity:0;transform:translateY(14px);transition:opacity var(--d2) var(--ease-out),transform var(--d3) var(--ease-out);}
+  :root.dark .toast{background:#1E2B42;border:1px solid var(--line-strong);color:var(--text);}
+  .toast.in{opacity:1;transform:none;}
+  .toast.out{opacity:0;transform:translateY(8px);transition-duration:var(--d2);}
+  .toast .t-ic{display:inline-flex;}
+  .toast .t-ic .ic{width:18px;height:18px;}
+  .toast.t-ok .t-ic{color:#5FD39A;}
+  .toast.t-aviso .t-ic{color:#F6C35A;}
+  .toast.t-erro .t-ic{color:#F28B8B;}
+  .toast .t-msg{padding-right:4px;}
+  .toast .t-act{height:30px;padding:0 10px;border:none;border-radius:8px;background:rgba(255,255,255,.1);color:#F6B858;font:700 13px var(--font);cursor:pointer;}
+  .toast .t-act:hover{background:rgba(255,255,255,.18);}
+  .toast .t-act:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(246,184,88,.5);}
+
+  /* ===== rodapé ===== */
+  .rodape{text-align:center;color:var(--text-muted);font-size:11px;padding:6px 16px 22px;}
+  .rodape a{color:inherit;text-decoration:underline dotted;text-underline-offset:2px;cursor:pointer;}
+  .rodape a:hover{color:var(--text-muted);}
+
+  /* ===== responsivo ===== */
+  @media(max-width:940px){
+    .wrap{grid-template-columns:minmax(0,1fr);}
+    .sticky{position:static;max-height:none;overflow:visible;margin:0;padding:0;}
+  }
+  @media(min-width:941px) and (max-width:1120px){
+    .seg button{padding:0 6px;font-size:12.5px;}
+  }
   @media(max-width:720px){
-    header{padding:14px 16px;gap:10px;}
+    .hdr-in{padding:12px 16px 15px;gap:10px;}
+    .logo-ibft{height:40px;}
     header h1{font-size:19px;}
-    .hdr-acoes{margin-left:0;width:100%;justify-content:flex-start;}
-    .wrap{padding:16px;}
-    .card{padding:18px;}
+    header p{font-size:12px;}
+    .hdr-acoes{margin-left:0;width:100%;}
+    .prog-line{padding:0 16px;}
+    .wrap{padding:12px 16px 16px;}
+    .card{padding:16px 16px 18px;}
+    .tb-in{padding:0 16px;}
+    .tb-logo{display:none;}
+    .parc-grid{grid-template-columns:repeat(3,1fr);}
   }
+  @media(max-width:520px){
+    .row{flex-wrap:wrap;}
+    .row>div{flex:1 1 140px;}
+    .hb .hb-t{display:none;}
+    .hb{width:36px;padding:0;}
+    .hist-item{grid-template-columns:auto minmax(0,1fr) auto;}
+    .hist-item .hi-chip{display:none;}
+  }
+  /* sem slides, pulsos nem sheen; só fades curtos */
   @media (prefers-reduced-motion: reduce){
-    *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+    *,*::before,*::after{animation:none !important;transition-duration:0s !important;}
+    .overlay,.ajuda-box,.toast,.topbar{transition:opacity 120ms linear !important;transform:none !important;}
+    .fade-in{animation:fadeIn 120ms linear !important;}
   }
-  body.dark{--cinza:#0e151e;--texto:#e6edf5;--borda:#2a3746;--suave:#a7b8cc;--alerta:#f1c879;--alerta-bg:#2c2614;--vermelho:#f08a8a;--verde:#5fd39a;--body-bg:radial-gradient(1100px 560px at 18% -8%, #12233a 0%, transparent 60%), linear-gradient(180deg,#0f1620 0%,#0a1016 100%);--card-bg:#161f2b;}
-  body.dark .card{background:#161f2b;}
-  body.dark input,body.dark select,body.dark textarea{background-color:#0e151e;color:#e6edf5;}
-  body.dark select{background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23a7b8cc' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 13px center;}
-  body.dark .hdr-sel{background-color:rgba(255,255,255,.14);background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");background-repeat:no-repeat;background-position:right 10px center;}
-  body.dark .gen-box{background:#0e151e;}
-  body.dark .resumo{background:linear-gradient(165deg,#172230,#0e151e);border-color:#2a3746;border-left-color:var(--gold);box-shadow:none;}
-  body.dark #saida{background:#161f2b;color:#e6edf5;}
-  body.dark .parc-op{background:#0e151e;color:#a7b8cc;}
-  body.dark .card h2,body.dark .resumo .tot,body.dark .val-atual,body.dark .ajuda-box h3{color:#cfe0fb;}
-  body.dark .card h2::after{background:linear-gradient(90deg,#2a3746,transparent);}
-  body.dark .resumo .tot{border-top-color:#3a4d63;}
-  body.dark .resumo .lin{color:#e6edf5;}
-  body.dark .card h2 .num{background:linear-gradient(135deg,#5b9bff,#1b4488);}
-  body.dark .info-i{color:#83b3ec;border-color:#83b3ec;}
-  body.dark .info-i:hover{background:#83b3ec;color:#0e151e;}
-  body.dark .ajuda-box{background:#18222f;}
-  body.dark .ajuda-box h4{color:#83b3ec;}
-  body.dark .btn-ghost{background:#21303f;color:#9cc4f2;}
-  body.dark .btn-ghost:hover{background:#28394d;color:#cfe0fb;border-color:rgba(131,179,236,.3);}
-  body.dark .btn-del{background:#3a1c1c;color:#f08a8a;}
-  body.dark .btn-del:hover{background:#4a2222;}
-  body.dark .badge-ok{background:#15331f;}
-  body.dark .badge-falta{background:#3a1818;}
-  body.dark .progresso .pbarbg{background:#2a3746;}
-  body.dark #toast{background:linear-gradient(135deg,#1f8a56,#14663f);}
-  body.dark .parc-op.sel{background:linear-gradient(135deg,#3b82d6,#1b4488);border-color:#3b82d6;color:#fff;}
-  body.dark th{border-bottom-color:#2a3746;}
-  body.dark ::selection{background:rgba(131,179,236,.28);}
-  body.dark tbody tr:hover{background:rgba(131,179,236,.06);}
-  body.dark .limpar-sec:hover{color:#f08a8a;}
-  body.dark #quitGuide,body.dark #editNotice{background:#16273d !important;border-color:#2c4a73 !important;color:#cfe0fb !important;}
-  body.dark #coerencia{background:#2c2614 !important;border-color:#5a4a1f !important;color:#f1c879 !important;}
 </style>
 </head>
 <body>
 <header>
-  <img class="logo-ibft" src="data:image/webp;base64,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" alt="IBFT">
-  <div class="ttl">
-    <h1>Financeiro IBFT</h1>
-    <p>Calculadora de propostas de reparcelamento e quitação</p>
+  <div class="hdr-in">
+    <img class="logo-ibft" src="data:image/webp;base64,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" alt="IBFT">
+    <div class="ttl">
+      <h1>Financeiro IBFT</h1>
+      <p>Calculadora de propostas de reparcelamento e quitação</p>
+    </div>
+    <div class="hdr-acoes">
+      <span class="hdr-cont" id="contDia" title="Propostas que você copiou hoje (zera todo dia, só neste navegador)">0 propostas hoje</span>
+      <span class="hdr-zoom"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><select class="hdr-sel" id="zoomSel" onchange="aplicarZoom(this.value)" title="Tamanho da tela (zoom)" aria-label="Zoom da tela">
+        <option value="1">100%</option>
+        <option value="1.1">110%</option>
+        <option value="1.25">125%</option>
+        <option value="1.5">150%</option>
+        <option value="1.75">175%</option>
+        <option value="2">200%</option>
+      </select></span>
+      <button type="button" class="hb ico" id="btnDark" onclick="toggleDark()" aria-label="Usar tema escuro" title="Usar tema escuro"><svg class="ic i-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.5 14.2A8.5 8.5 0 1 1 9.8 3.5a6.8 6.8 0 0 0 10.7 10.7z"/></svg><svg class="ic i-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></svg></button>
+      <button type="button" class="hb" onclick="toggleRegras()" aria-label="Regras" title="Resumo da política de descontos e encargos"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 16.2 16.2 3.5l4.3 4.3L7.8 20.5z"/><path d="m7.6 12.1 1.8 1.8M10.4 9.3l1.8 1.8M13.2 6.5 15 8.3"/></svg><span class="hb-t">Regras</span></button>
+      <button type="button" class="hb" onclick="toggleAjuda()" aria-label="Como usar" title="Como usar a calculadora"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.7-2.4 2.2-2.4 3.8"/><path d="M12 17.2h.01"/></svg><span class="hb-t">Como usar</span></button>
+    </div>
   </div>
-  <div class="hdr-acoes">
-    <span class="hdr-cont" id="contDia" title="Propostas que você copiou hoje (zera todo dia, só neste navegador)">📋 0 hoje</span>
-    <select class="hdr-sel" id="zoomSel" onchange="aplicarZoom(this.value)" title="Tamanho da tela (zoom)">
-      <option value="1">🔍 100%</option>
-      <option value="1.1">110%</option>
-      <option value="1.25">125%</option>
-      <option value="1.5">150%</option>
-      <option value="1.75">175%</option>
-      <option value="2">200%</option>
-    </select>
-    <button class="ajuda-btn" id="btnDark" onclick="toggleDark()" title="Modo escuro / claro">🌙</button>
-    <button class="ajuda-btn" onclick="toggleRegras()" title="Resumo da política de descontos e encargos">📏 Regras</button>
-    <button class="ajuda-btn" onclick="toggleAjuda()">❓ Como usar</button>
-  </div>
+  <div class="fio" aria-hidden="true"><div class="fio-fill" id="progBar"></div></div>
 </header>
 
-<div class="progresso">
-  <div class="ptxt"><span id="progTxt">Comece preenchendo as seções</span><span id="progPct">0%</span></div>
-  <div class="pbarbg"><div class="pbar" id="progBar"></div></div>
+<div class="topbar" id="topbar">
+  <div class="tb-in">
+    <span class="tb-logo"><img id="tbLogo" alt=""></span>
+    <span class="tb-txt" id="progTxt2"></span>
+    <button type="button" class="btn btn-primary btn-sm" id="btnCopiar2" onclick="copiar()" title="Copiar proposta (Ctrl+C)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="lbl">Copiar proposta</span></button>
+  </div>
+  <div class="fio" aria-hidden="true"><div class="fio-fill" id="progBar2"></div></div>
 </div>
+
+<div class="prog-line" id="progLine"><span id="progTxt">Comece preenchendo as seções</span><span id="progPct">0%</span></div>
 
 <div class="wrap">
   <div>
     <div class="card col" id="card1">
-      <h2 onclick="toggleCard(this)"><span class="num">1</span> 🧾 Tipo &amp; Produto<span class="info-i" title="Escolha o tipo de proposta (1º/2º reparcelamento ou quitação) e o produto do aluno. O tipo de acesso ajusta sozinho conforme o produto.">i</span><span class="badge-sec" id="badge1"></span><a class="limpar-sec" onclick="event.stopPropagation();limparCard1()" title="Limpar esta seção">🧹 limpar</a><span class="caret">▾</span></h2>
-      <label>Tipo de proposta<span class="info-i" title="1º Reparcelamento (venc. padrão hoje), 2º Reparcelamento (venc. padrão +7 dias) ou Quitação. Na quitação aparece o checkbox de quitação total/parcial.">i</span></label>
-      <select id="tipoProposta" onchange="onTipoChange()">
-        <option value="rep1">1º Reparcelamento</option>
-        <option value="rep2">2º Reparcelamento</option>
-        <option value="quit">Quitação</option>
-      </select>
-      <div id="quitTotalWrap" style="display:none">
-        <label class="chk-line" style="display:flex;align-items:center;gap:7px;margin:10px 0 4px;font-size:13px;font-weight:600;color:var(--texto)"><input type="checkbox" id="quitTotal" checked style="width:auto" onchange="render()"> Quita toda a dívida (encerra o parcelamento)</label>
-        <p class="hint" style="margin:0 0 4px">Desmarque para <b>quitação parcial</b> — pagar só algumas parcelas (do meio do parcelamento ou de produtos diferentes) num único link, mantendo o restante do parcelamento ativo.</p>
-      </div>
-      <label>Produto / curso<span class="info-i" title="Curso/produto do aluno. Ao escolher, o tipo de acesso (12 meses, vitalício ou livro) ajusta sozinho conforme o catálogo.">i</span></label>
-      <select id="produto" onchange="onProdutoChange()"></select>
-      <p class="hint" id="appHint" style="display:none">📱 <b>Aplicativo ONION</b> (ONION - O Novo Inconsciente LTDA): multa de 2% e juros de 2%/mês sobre o atraso, como os demais produtos. Acesso de 12 meses. A proposta usa texto próprio de aplicativo. Faça proposta separada dos cursos do IBFT.</p>
-      <div id="produtosExtraWrap" style="display:none">
-        <div id="produtosExtra"></div>
-        <a onclick="addProdutoExtra()" style="font-size:12px;color:var(--accent);cursor:pointer;text-decoration:underline;display:inline-block;margin-top:8px">+ adicionar outro produto</a>
-        <p class="hint">Na quitação parcial, adicione aqui se as parcelas forem de produtos diferentes — a proposta lista todos.</p>
-      </div>
-      <div id="tipoAcessoWrap">
-        <label>Tipo de acesso<span class="info-i" title="Define se há expiração de acesso. 12 meses → calcula expiração e extensão. Vitalício/Livro → sem seção de acesso. Normalmente preenche sozinho pelo produto.">i</span></label>
-        <select id="tipoAcesso" onchange="render()">
-          <option value="12m">Curso com acesso de 12 meses</option>
-          <option value="vital">Acesso vitalício (não expira)</option>
-          <option value="livro">Livro / material físico (sem acesso)</option>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">1</span><span>Tipo e produto</span><span class="info-i" title="Escolha o tipo de proposta (1º/2º reparcelamento ou quitação) e o produto do aluno. O tipo de acesso ajusta sozinho conforme o produto.">i</span><span class="h-sp"></span><span class="badge-sec" id="badge1"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCard1)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
+        <label id="lblTipo">Tipo de proposta<span class="info-i" title="1º Reparcelamento (venc. padrão hoje), 2º Reparcelamento (venc. padrão +7 dias) ou Quitação. Na quitação aparece a opção de quitação total/parcial.">i</span></label>
+        <select id="tipoProposta" class="sr-only" tabindex="-1" aria-hidden="true" onchange="onTipoChange()">
+          <option value="rep1">1º Reparcelamento</option>
+          <option value="rep2">2º Reparcelamento</option>
+          <option value="quit">Quitação</option>
         </select>
-      </div>
+        <div class="seg-scroll">
+          <div class="seg" id="segTipo" role="radiogroup" aria-labelledby="lblTipo" data-i="0">
+            <span class="seg-ind" aria-hidden="true"></span>
+            <button type="button" role="radio" data-v="rep1" aria-checked="true" tabindex="0">1º Reparcelamento</button>
+            <button type="button" role="radio" data-v="rep2" aria-checked="false" tabindex="-1">2º Reparcelamento</button>
+            <button type="button" role="radio" data-v="quit" aria-checked="false" tabindex="-1">Quitação</button>
+          </div>
+        </div>
+        <div id="quitTotalWrap" style="display:none">
+          <label class="chk-line"><input type="checkbox" id="quitTotal" checked onchange="render()"> Quita toda a dívida (encerra o parcelamento)</label>
+          <p class="hint">Desligue para <b>quitação parcial</b>: pagar só algumas parcelas (do meio do parcelamento ou de produtos diferentes) num único link, mantendo o restante do parcelamento ativo.</p>
+        </div>
+        <label for="produto">Produto / curso<span class="info-i" title="Curso/produto do aluno. Ao escolher, o tipo de acesso (12 meses, vitalício ou livro) ajusta sozinho conforme o catálogo.">i</span></label>
+        <select id="produto" onchange="onProdutoChange()"></select>
+        <p class="hint" id="appHint" style="display:none"><b>Aplicativo ONION</b> (ONION - O Novo Inconsciente LTDA): multa de 2% e juros de 2%/mês sobre o atraso, como os demais produtos. Acesso de 12 meses. A proposta usa texto próprio de aplicativo. Faça proposta separada dos cursos do IBFT.</p>
+        <div id="produtosExtraWrap" style="display:none">
+          <div id="produtosExtra"></div>
+          <div class="acts"><button type="button" class="btn btn-text" onclick="addProdutoExtra()">+ Adicionar outro produto</button></div>
+          <p class="hint">Na quitação parcial, adicione aqui se as parcelas forem de produtos diferentes. A proposta lista todos.</p>
+        </div>
+        <div id="tipoAcessoWrap">
+          <label for="tipoAcesso">Tipo de acesso<span class="info-i" title="Define se há expiração de acesso. 12 meses → calcula expiração e extensão. Vitalício/Livro → sem seção de acesso. Normalmente preenche sozinho pelo produto.">i</span></label>
+          <select id="tipoAcesso" onchange="render()">
+            <option value="12m">Curso com acesso de 12 meses</option>
+            <option value="vital">Acesso vitalício (não expira)</option>
+            <option value="livro">Livro / material físico (sem acesso)</option>
+          </select>
+        </div>
+      </div></div>
     </div>
 
     <div class="card col" id="card2">
-      <h2 onclick="toggleCard(this)"><span class="num">2</span> ⏰ <span id="lblSec2">Parcelas em atraso</span><span class="info-i" title="Lance as parcelas vencidas: quantidade, vencimento da mais antiga e valor original. A multa (2%) e os juros (2%/mês) são calculados automaticamente até a data de pagamento. Na quitação, marque as negativadas.">i</span><span class="badge-sec" id="badge2"></span><a class="limpar-sec" onclick="event.stopPropagation();limparCard2()" title="Limpar esta seção">🧹 limpar</a><span class="caret">▾</span></h2>
-      <div class="gen-box">
-        <div class="row">
-          <div><label>Quantidade<span class="info-i" title="Quantas parcelas em atraso. Gera essa quantidade de linhas com vencimentos mensais a partir da mais antiga.">i</span></label><input type="number" id="genQtd" min="0" value="1" oninput="gerarParcelas()"></div>
-          <div><label>Venc. da mais antiga<span class="info-i" title="Data de vencimento da parcela em atraso mais antiga. As seguintes recebem vencimento mensal a partir dela.">i</span></label><input type="date" id="genVenc" oninput="gerarParcelas()"></div>
-          <div><label>Valor original (R$)<span class="info-i" title="Valor de face de cada parcela (sem juros/multa). Aceita vírgula. Os encargos são somados sozinhos na coluna Atualizado.">i</span></label><input type="text" inputmode="decimal" id="genVal" value="0" oninput="maskMoeda(this);gerarParcelas()"></div>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">2</span><span id="lblSec2">Parcelas em atraso</span><span class="info-i" title="Lance as parcelas vencidas: quantidade, vencimento da mais antiga e valor original. A multa (2%) e os juros (2%/mês) são calculados automaticamente até a data de pagamento. Na quitação, marque as negativadas.">i</span><span class="h-sp"></span><span class="badge-sec" id="badge2"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCard2)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
+        <div class="gen-box">
+          <div class="row">
+            <div><label for="genQtd">Quantidade<span class="info-i" title="Quantas parcelas em atraso. Gera essa quantidade de linhas com vencimentos mensais a partir da mais antiga.">i</span></label><input type="number" id="genQtd" min="0" value="1" oninput="gerarParcelas()"></div>
+            <div><label for="genVenc">Venc. da mais antiga<span class="info-i" title="Data de vencimento da parcela em atraso mais antiga. As seguintes recebem vencimento mensal a partir dela.">i</span></label><input type="date" id="genVenc" oninput="gerarParcelas()"></div>
+            <div><label for="genVal">Valor original<span class="info-i" title="Valor de face de cada parcela (sem juros/multa). Aceita vírgula. Os encargos são somados sozinhos na coluna Atualizado.">i</span></label><div class="affix pre"><span class="ax">R$</span><input type="text" inputmode="decimal" id="genVal" value="0" oninput="maskMoeda(this);gerarParcelas()"></div></div>
+          </div>
+          <p class="hint">As parcelas são geradas sozinhas (vencimentos mensais a partir da mais antiga) conforme você preenche. Apagar a quantidade zera tudo. Depois, é só editar ou apagar as linhas que não baterem, como uma parcela paga no meio.</p>
         </div>
-        <p class="hint">As parcelas são geradas automaticamente (vencimentos mensais a partir da mais antiga) conforme você preenche. Apagar a Quantidade zera tudo. Depois é só editar/apagar as linhas que não baterem — ex.: parcela paga no meio.</p>
-      </div>
-      <table>
-        <thead><tr><th>Valor orig.</th><th>Vencimento</th><th id="thNegat">Negat.</th><th>Atualizado</th><th></th></tr></thead>
-        <tbody id="atrasoBody"></tbody>
-      </table>
-      <button class="btn btn-ghost btn-sm" onclick="addAtraso()" style="margin-top:8px">+ Adicionar parcela manual</button>
-      <button class="btn btn-ghost btn-sm" id="btnTodasNeg" onclick="toggleTodasNeg()" style="margin-top:8px;margin-left:6px;display:none">Marcar todas como negativadas</button>
-      <div id="descJurosWrap" style="margin-top:14px;display:none">
-        <label>Desconto nos juros das parcelas em atraso (%) — opcional</label>
-        <input type="number" id="descJurosPerc" min="0" max="100" step="1" value="0" oninput="render()" style="max-width:220px">
-        <p class="hint">Para negociar dívidas antigas com juros altos. Incide só sobre os juros (não sobre a multa nem o valor original).</p>
-      </div>
+        <div class="tbl-wrap"><table>
+          <thead><tr><th>Valor orig.</th><th>Vencimento</th><th id="thNegat" class="check">Negat.</th><th>Atualizado</th><th><span class="sr-only">Apagar</span></th></tr></thead>
+          <tbody id="atrasoBody"></tbody>
+        </table></div>
+        <div class="acts">
+          <button type="button" class="btn btn-text" onclick="addAtraso()">+ Adicionar parcela</button>
+          <button type="button" class="btn btn-text" id="btnTodasNeg" onclick="toggleTodasNeg()" style="display:none">Marcar todas como negativadas</button>
+        </div>
+        <div id="descJurosWrap" style="display:none">
+          <label for="descJurosPerc">Desconto nos juros das parcelas em atraso (opcional)</label>
+          <div class="affix suf w220"><input type="number" id="descJurosPerc" min="0" max="100" step="1" value="0" oninput="render()"><span class="ax">%</span></div>
+          <p class="hint">Para negociar dívidas antigas com juros altos. Incide só sobre os juros (não sobre a multa nem o valor original).</p>
+        </div>
+      </div></div>
     </div>
 
     <div class="card col" id="card3">
-      <h2 onclick="toggleCard(this)"><span class="num">3</span> 📅 Parcelas a vencer<span class="info-i" title="Parcelas que ainda não venceram (sem juros). É opcional — preencha só se houver parcelas a vencer no acordo.">i</span><span class="badge-sec" id="badge3"></span><a class="limpar-sec" onclick="event.stopPropagation();limparCard3()" title="Limpar esta seção">🧹 limpar</a><span class="caret">▾</span></h2>
-      <div class="row">
-        <div><label>Quantidade<span class="info-i" title="Quantas parcelas ainda não venceram. Entram no total sem juros nem multa.">i</span></label><input type="number" id="vincQtd" min="0" value="0" oninput="render()"></div>
-        <div><label>Valor unitário (R$)<span class="info-i" title="Preenche sozinho com o valor da parcela em atraso. Edite se as parcelas a vencer tiverem valor diferente. Aceita vírgula.">i</span></label><input type="text" inputmode="decimal" id="vincVal" value="0" oninput="maskMoeda(this);vincValManual=true;render()"></div>
-        <div id="vincVencWrap" style="display:none"><label>Venc. da 1ª a vencer<span class="info-i" title="Aparece quando o pagamento é futuro. Se uma parcela a vencer cair antes do pagamento, vira atraso automaticamente.">i</span></label><input type="date" id="vincVenc" oninput="render()"></div>
-      </div>
-      <p class="hint">Sem juros enquanto não vencem.</p>
-      <div class="alerta" id="warnCross">⚠️ A data de pagamento é futura e você tem parcelas a vencer. Informe o <b>vencimento da próxima parcela a vencer</b> (campo que apareceu acima) para o sistema mover automaticamente para "em atraso" qualquer uma que vença antes do pagamento.</div>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">3</span><span>Parcelas a vencer</span><span class="info-i" title="Parcelas que ainda não venceram (sem juros). É opcional: preencha só se houver parcelas a vencer no acordo.">i</span><span class="h-sp"></span><span class="badge-sec" id="badge3"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCard3)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
+        <div class="row">
+          <div><label for="vincQtd">Quantidade<span class="info-i" title="Quantas parcelas ainda não venceram. Entram no total sem juros nem multa.">i</span></label><input type="number" id="vincQtd" min="0" value="0" oninput="render()"></div>
+          <div><label for="vincVal">Valor unitário<span class="info-i" title="Preenche sozinho com o valor da parcela em atraso. Edite se as parcelas a vencer tiverem valor diferente. Aceita vírgula.">i</span></label><div class="affix pre"><span class="ax">R$</span><input type="text" inputmode="decimal" id="vincVal" value="0" oninput="maskMoeda(this);vincValManual=true;render()"></div></div>
+          <div id="vincVencWrap" style="display:none"><label for="vincVenc">Venc. da 1ª a vencer<span class="info-i" title="Aparece quando o pagamento é futuro. Se uma parcela a vencer cair antes do pagamento, vira atraso automaticamente.">i</span></label><input type="date" id="vincVenc" oninput="render()"></div>
+        </div>
+        <p class="hint">Sem juros enquanto não vencem.</p>
+        <div class="alerta" id="warnCross">A data de pagamento é futura e há parcelas a vencer. Informe o <b>vencimento da próxima parcela a vencer</b> (campo que apareceu acima) para que as que vencem antes do pagamento passem para "em atraso" automaticamente.</div>
+      </div></div>
     </div>
 
     <div class="card col" id="cardDesconto" style="display:none">
-      <h2 onclick="toggleCard(this)"><span class="num">4</span> 🏷️ Quitação — descontos<span class="info-i" title="Aplique os descontos da quitação conforme a situação: isenção de juros/multa do atraso, % nas parcelas a vencer, % na dívida negativada e um desconto adicional sobre o total. Siga a orientação em azul.">i</span><a class="limpar-sec" onclick="event.stopPropagation();limparCardDesc()" title="Limpar esta seção">🧹 limpar</a><span class="caret">▾</span></h2>
-      <div class="alerta" id="quitGuide" style="display:block;background:#eef5ff;border-color:#b9d4f2;color:var(--navy)"></div>
-      <div id="ctlJurosMulta" style="display:none">
-        <label class="chk-line" style="display:flex;align-items:center;gap:7px;margin-top:12px;font-size:13px;font-weight:600;color:var(--texto)"><input type="checkbox" id="retJuros" style="width:auto" onchange="render()"> Retirar os juros das parcelas em atraso</label>
-        <label class="chk-line" id="lblRetMulta" style="display:flex;align-items:center;gap:7px;margin-top:8px;font-size:13px;font-weight:600;color:var(--texto)"><input type="checkbox" id="retMulta" style="width:auto" onchange="render()"> Retirar a multa das parcelas em atraso</label>
-      </div>
-      <div id="ctlVinc" style="display:none">
-        <label>Desconto nas parcelas a vencer (%) — máx. 10%</label>
-        <input type="number" id="descVincPerc" min="0" max="10" step="0.5" value="0" oninput="render()">
-      </div>
-      <div id="ctlNeg" style="display:none">
-        <label class="chk-line" style="display:flex;align-items:center;gap:7px;margin:4px 0 8px;font-size:13px;font-weight:600;color:var(--texto)"><input type="checkbox" id="isentarJurosNeg" checked style="width:auto" onchange="render()"> Mostrar isenção dos juros (negativadas voltam ao valor original)</label>
-        <label>Desconto na dívida negativada (%)</label>
-        <input type="number" id="descNegPerc" min="0" max="100" step="1" value="0" oninput="render()">
-        <div class="alerta" id="alertaNeg">⚠️ Limite atingido: a dívida negativada não pode ficar abaixo de R$ 500,00. O valor foi travado nesse piso.</div>
-      </div>
-      <div id="ctlGeral" style="display:none">
-        <label>Desconto adicional sobre o total (%) — opcional</label>
-        <input type="number" id="descGeralPerc" min="0" max="100" step="1" value="0" oninput="render()" style="max-width:220px">
-        <p class="hint">Desconto extra concedido sobre o valor total da quitação, além dos itens acima.</p>
-      </div>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">4</span><span>Descontos da quitação</span><span class="info-i" title="Aplique os descontos da quitação conforme a situação: isenção de juros/multa do atraso, % nas parcelas a vencer, % na dívida negativada e um desconto adicional sobre o total. Siga a orientação em azul.">i</span><span class="h-sp"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCardDesc)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
+        <div class="note-info" id="quitGuide"></div>
+        <div id="ctlJurosMulta" style="display:none">
+          <label class="chk-line"><input type="checkbox" id="retJuros" onchange="render()"> Retirar os juros das parcelas em atraso</label>
+          <label class="chk-line" id="lblRetMulta"><input type="checkbox" id="retMulta" onchange="render()"> Retirar a multa das parcelas em atraso</label>
+        </div>
+        <div id="ctlVinc" style="display:none">
+          <label for="descVincPerc">Desconto nas parcelas a vencer (máx. 10%)</label>
+          <div class="affix suf w220"><input type="number" id="descVincPerc" min="0" max="10" step="0.5" value="0" oninput="render()"><span class="ax">%</span></div>
+        </div>
+        <div id="ctlNeg" style="display:none">
+          <label class="chk-line"><input type="checkbox" id="isentarJurosNeg" checked onchange="render()"> Mostrar isenção dos juros (negativadas voltam ao valor original)</label>
+          <label for="descNegPerc">Desconto na dívida negativada</label>
+          <div class="affix suf w220"><input type="number" id="descNegPerc" min="0" max="100" step="1" value="0" oninput="render()"><span class="ax">%</span></div>
+          <div class="alerta" id="alertaNeg">Limite atingido: a dívida negativada não pode ficar abaixo de R$ 500,00. O valor foi travado nesse piso.</div>
+        </div>
+        <div id="ctlGeral" style="display:none">
+          <label for="descGeralPerc">Desconto adicional sobre o total (opcional)</label>
+          <div class="affix suf w220"><input type="number" id="descGeralPerc" min="0" max="100" step="1" value="0" oninput="render()"><span class="ax">%</span></div>
+          <p class="hint">Desconto extra concedido sobre o valor total da quitação, além dos itens acima.</p>
+        </div>
+      </div></div>
     </div>
 
     <div class="card col" id="cardAcesso">
-      <h2 onclick="toggleCard(this)"><span class="num" id="numAcesso">5</span> 🔓 Acesso &amp; extensão<span class="info-i" title="Informe a data de liberação do acesso para calcular a expiração dos 12 meses. Se for conceder extensão, informe os dias (acima de 90 → análise do Francisco).">i</span><span class="badge-sec" id="badge5"></span><a class="limpar-sec" onclick="event.stopPropagation();limparCardAcesso()" title="Limpar esta seção">🧹 limpar</a><span class="caret">▾</span></h2>
-      <div class="row">
-        <div><label>Data de liberação do acesso<span class="info-i" title="Data em que o aluno recebeu o acesso. A expiração é calculada como liberação + 12 meses.">i</span></label><input type="date" id="dataLib" oninput="render()"></div>
-        <div><label>Extensão (dias)<span class="info-i" title="Dias extras de acesso concedidos no pagamento. Acima de 90 dias → análise do Francisco. Deixe 0 se não houver extensão.">i</span></label><input type="number" id="extDias" min="0" value="0" oninput="render()"></div>
-      </div>
-      <div class="alerta" id="alertaExt">⚠️ Extensão acima de 90 dias — levar para análise do Francisco antes de conceder.</div>
-      <div id="acessoInfo" class="hint" style="margin-top:8px"></div>
-      <p class="hint" id="notaConclusao"></p>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num" id="numAcesso">5</span><span>Acesso e extensão</span><span class="info-i" title="Informe a data de liberação do acesso para calcular a expiração dos 12 meses. Se for conceder extensão, informe os dias (acima de 90 → análise do Francisco).">i</span><span class="h-sp"></span><span class="badge-sec" id="badge5"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCardAcesso)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
+        <div class="row">
+          <div><label for="dataLib">Data de liberação do acesso<span class="info-i" title="Data em que o aluno recebeu o acesso. A expiração é calculada como liberação + 12 meses.">i</span></label><input type="date" id="dataLib" oninput="render()"></div>
+          <div><label for="extDias">Extensão<span class="info-i" title="Dias extras de acesso concedidos no pagamento. Acima de 90 dias → análise do Francisco. Deixe 0 se não houver extensão.">i</span></label><div class="affix suf dias"><input type="number" id="extDias" min="0" value="0" oninput="render()"><span class="ax">dias</span></div></div>
+        </div>
+        <div class="alerta" id="alertaExt">Extensão acima de 90 dias: leve para análise do Francisco antes de conceder.</div>
+        <div id="acessoInfo" class="hint"></div>
+        <p class="hint" id="notaConclusao"></p>
+      </div></div>
     </div>
   </div>
 
   <div>
-    <div class="sticky">
-      <div class="card">
+    <div class="sticky" id="colDir">
+      <div class="card" id="cardResumo">
         <h2>Resumo financeiro</h2>
-        <div id="coerencia" style="display:none;background:#fffaf0;border:1px solid #f6c668;color:#b7791f;padding:8px 11px;border-radius:7px;font-size:11.5px;margin-bottom:8px"></div>
+        <div class="note-warn" id="coerencia" style="display:none"></div>
         <div class="resumo" id="resumo"></div>
-        <label style="margin-top:14px">Vencimento da 1ª parcela do acordo</label>
+        <label for="dataVenc">Vencimento da 1ª parcela do acordo</label>
         <input type="date" id="dataVenc" oninput="render()">
         <div id="vencHint" class="hint"></div>
         <div id="parcWrap">
-          <label style="margin-top:10px">Parcelamento (clique para escolher)</label>
-          <div class="parc-grid" id="parcGrid"></div>
+          <label>Parcelamento</label>
+          <div class="parc-grid" id="parcGrid" role="radiogroup" aria-label="Número de parcelas"></div>
         </div>
       </div>
-      <div class="card">
+      <div class="card" id="cardProposta">
         <div class="out-head">
-          <h2 style="margin:0;border:none">Proposta gerada</h2>
-          <div><span class="copy-ok" id="copyOk">✓ Copiado!</span><button class="btn btn-ghost btn-sm" id="btnEdit" onclick="toggleEdit()" style="margin-right:6px">✏️ Editar</button><button class="btn btn-ghost btn-sm" onclick="novaProposta()" style="margin-right:6px">🔄 Nova proposta</button><button class="btn btn-sm" id="btnCopiar" onclick="copiar()">📋 Copiar</button></div>
+          <h2>Proposta gerada</h2>
+          <div class="out-acts">
+            <button type="button" class="btn btn-secondary btn-sm" id="btnEdit" onclick="toggleEdit()" title="Editar o texto à mão (Alt+E)"></button>
+            <button type="button" class="btn btn-secondary btn-sm" onclick="novaProposta()" title="Limpar tudo e começar outra proposta (Alt+N)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11.5v6M9 14.5h6"/></svg>Nova proposta</button>
+          </div>
         </div>
-        <div style="background:#fffaf0;border:1px solid #f6c668;color:#b7791f;padding:8px 11px;border-radius:7px;font-size:12px;margin-bottom:10px">⚠️ Antes de enviar, revise a proposta com atenção e confira se ela corresponde à real situação do aluno.</div>
-        <div id="preview" style="background:#e8f5e9;border:1px solid #c8e6c9;border-radius:10px;padding:14px 16px;font-size:13.5px;line-height:1.55;color:#15281a;white-space:pre-wrap;word-break:break-word;min-height:120px"></div>
-        <textarea id="saida" oninput="onSaidaInput()" style="display:none"></textarea>
-        <div id="editNotice" style="display:none;background:#eef5ff;border:1px solid #b9d4f2;color:var(--navy);padding:7px 10px;border-radius:7px;font-size:11px;margin-top:6px">✍️ Você está editando o texto manualmente — mudanças nos campos não vão sobrescrever sua edição. <a onclick="regerar()" style="cursor:pointer;text-decoration:underline;font-weight:600">Regerar do zero</a></div>
-        <div id="histWrap" style="display:none;margin-top:8px">
-          <label style="font-size:11px;color:var(--suave);font-weight:600">↩ Recuperar uma proposta gerada antes (todas ficam salvas)</label>
-          <input type="text" id="histSearch" placeholder="🔎 filtrar por produto, tipo, valor..." oninput="renderHist()" style="font-size:12px;margin-top:2px;margin-bottom:4px">
-          <div id="histLista" style="max-height:170px;overflow:auto;border:1px solid var(--borda);border-radius:7px"></div>
+        <p class="revise"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><span>Antes de enviar, revise a proposta e confira se ela corresponde à situação real do aluno.</span></p>
+        <button type="button" class="btn btn-primary btn-copy" id="btnCopiar" onclick="copiar()" title="Copiar proposta (Ctrl+C)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="lbl">Copiar proposta</span></button>
+        <div class="wa" id="waWrap">
+          <div class="wa-bubble" id="waBubble"><div id="preview"></div><div class="wa-meta">agora <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m1.5 12.5 4.5 4.5 9-10"/><path d="m11 16 1 1 9.5-10"/></svg></div></div>
+          <textarea id="saida" oninput="onSaidaInput()" style="display:none" aria-label="Texto da proposta"></textarea>
+        </div>
+        <div class="note-info" id="editNotice" style="display:none">Você está editando o texto à mão. Mudanças nos campos não vão sobrescrever sua edição. <button type="button" class="link-btn" onclick="regerar()">Regerar do zero</button></div>
+        <div id="histWrap" class="hist" style="display:none">
+          <label class="hist-lbl" for="histSearch">Propostas anteriores (todas ficam salvas)</label>
+          <div class="affix pre"><span class="ax"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></span><input type="text" id="histSearch" placeholder="Filtrar por produto, tipo, valor ou data" oninput="renderHist()" autocomplete="off"></div>
+          <div id="histLista" class="hist-list"></div>
         </div>
       </div>
     </div>
@@ -351,119 +644,179 @@
 </div>
 
 <div class="overlay" id="ajudaOverlay" onclick="if(event.target===this)toggleAjuda()">
-  <div class="ajuda-box">
-    <button class="ajuda-close" onclick="toggleAjuda()">Fechar ✕</button>
-    <h3>Como usar a calculadora</h3>
-    <p>Preencha as seções da esquerda; a proposta é montada sozinha à direita, pronta para copiar e colar no Kommo.</p>
-    <h4>1 · Tipo &amp; Produto</h4>
-    <p>Escolha 1º/2º Reparcelamento ou Quitação. Na Quitação, marque <b>"Quita toda a dívida"</b> para quitação total (com descontos) ou desmarque para <b>parcial</b> — pagar só algumas parcelas (inclusive de produtos diferentes) num único link. Na parcial, por padrão os valores são cheios, mas você pode marcar <b>"Retirar os juros das parcelas em atraso"</b> para conceder essa isenção. Ao escolher o produto, o tipo de acesso se ajusta sozinho. Cada seção tem <b>"🧹 limpar"</b> no título e você pode recolhê-la clicando no título.</p>
-    <h4>2 · Parcelas em atraso</h4>
-    <p>Informe quantidade, vencimento da mais antiga e valor — as parcelas mensais aparecem automaticamente. Edite o valor/vencimento de cada linha (aceita vírgula) ou apague as que não baterem. Multa de 2% e juros de 2%/mês (pró-rata por dia, até a data de pagamento) são calculados sozinhos. Na quitação, marque <b>"Negat."</b> nas parcelas negativadas. No reparcelamento há o campo opcional <b>"Desconto nos juros (%)"</b> para dívidas antigas.</p>
-    <h4>3 · Parcelas a vencer</h4>
-    <p>Quantidade e valor das que ainda não venceram (sem juros). O <b>valor já vem preenchido</b> com o valor da parcela em atraso (normalmente é o mesmo) — em geral basta informar a <b>quantidade</b>. Se as a vencer tiverem outro valor, é só editar. Sem parcelas a vencer, deixe a quantidade em 0.</p>
-    <h4>4 e 5 · Descontos / Acesso &amp; extensão</h4>
-    <p>Na quitação total, siga a orientação em azul para aplicar os descontos (isenção de juros/multa, % nas a vencer, % na negativada e um <b>desconto adicional sobre o total</b>, se quiser). Em curso de 12 meses, informe a data de liberação do acesso para calcular a expiração e, se for o caso, os dias de extensão (acima de 90 dias → análise do Francisco).</p>
-    <h4>Proposta gerada</h4>
-    <p>A proposta aparece já no formato que o aluno vê. Quando há desconto (isenção de juros, % etc.), ela mostra o <b>valor cheio da dívida</b>, depois os <b>descontos aplicados</b> e por fim o <b>valor final</b>, deixando claro o que o aluno ganha. Use <b>"✏️ Editar"</b> para ajustar o texto à mão (e <b>"Regerar do zero"</b> para voltar ao automático). <b>"Copiar"</b> leva o texto formatado pro Kommo; <b>"Nova proposta"</b> limpa tudo (todas as propostas geradas ficam salvas para recuperar depois). No topo há o seletor de <b>zoom</b>, o modo escuro e o botão <b>"📏 Regras"</b>. Sempre revise a proposta antes de enviar.</p>
+  <div class="ajuda-box" role="dialog" aria-modal="true" aria-labelledby="ajudaTit" tabindex="-1">
+    <div class="dlg-head"><h3 id="ajudaTit">Como usar a calculadora</h3><button type="button" class="dlg-x" onclick="toggleAjuda()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <div class="dlg-body">
+      <p class="lead">Preencha as seções da esquerda. A proposta se monta sozinha à direita, pronta para copiar e colar no Kommo.</p>
+      <h4>1 · Tipo e produto</h4>
+      <p>Escolha o tipo nos botões: <b>1º Reparcelamento</b>, <b>2º Reparcelamento</b> ou <b>Quitação</b>. Na quitação, deixe o interruptor <b>"Quita toda a dívida"</b> ligado para a quitação total, com descontos. Desligue para a <b>quitação parcial</b>: o aluno paga só algumas parcelas, até de produtos diferentes, num único link. Ao escolher o produto, o tipo de acesso se ajusta sozinho.</p>
+      <h4>2 · Parcelas em atraso</h4>
+      <p>Informe a quantidade, o vencimento da mais antiga e o valor. As parcelas mensais aparecem sozinhas. Edite o valor ou a data de cada linha, ou apague as que não batem. A multa de 2% e os juros de 2% ao mês (por dia, até a data de pagamento) entram sozinhos. Na quitação, marque <b>"Negat."</b> nas parcelas negativadas. No reparcelamento, há o campo opcional de desconto nos juros, para dívidas antigas.</p>
+      <h4>3 · Parcelas a vencer</h4>
+      <p>O valor já vem igual ao da parcela em atraso. Em geral, basta informar a quantidade. Sem parcelas a vencer, deixe 0.</p>
+      <h4>4 e 5 · Descontos, acesso e extensão</h4>
+      <p>Na quitação total, siga a orientação em azul e use os interruptores e campos de desconto. Na parcial, dá para retirar os juros das parcelas em atraso. Em curso de 12 meses, informe a data de liberação do acesso e, se houver, os dias de extensão. Acima de 90 dias, fale com o Francisco.</p>
+      <h4>Seções</h4>
+      <p>Clique no título de uma seção para recolher ou abrir. O ponto ao lado do título mostra se ela está <b>pronta</b> ou se <b>falta preencher</b>. <b>"Limpar"</b> zera só aquela seção. Se foi sem querer, clique em <b>Desfazer</b> no aviso que aparece embaixo da tela.</p>
+      <h4>Progresso e barra fixa</h4>
+      <p>O <b>fio dourado</b> na base do topo enche conforme você preenche. A linha logo abaixo dele diz o que ainda falta. Ao rolar a página, uma barra fina desce do topo com o que falta e o botão <b>"Copiar proposta"</b>. Assim você copia de qualquer ponto.</p>
+      <h4>Proposta gerada</h4>
+      <p>A prévia mostra a mensagem como o aluno vai ver no WhatsApp. <b>"Editar texto"</b> deixa você ajustar à mão, e <b>"Regerar do zero"</b> volta ao texto automático. <b>"Copiar proposta"</b> copia o texto para colar no Kommo. Se faltar algo, a tela leva você direto ao campo. Revise sempre antes de enviar.</p>
+      <h4>Nova proposta e histórico</h4>
+      <p><b>"Nova proposta"</b> limpa tudo na hora, sem caixa de confirmação. Se foi sem querer, clique em <b>Desfazer</b> no aviso. Toda proposta copiada fica no histórico, com <b>data e hora</b>. Filtre por produto, tipo, valor ou data e clique para recuperar.</p>
+      <h4>Tema e zoom</h4>
+      <p>Na primeira vez, o tema (claro ou escuro) segue o do computador. Depois, vale o que você escolher no botão de lua e sol. O zoom (100% a 200%) também fica salvo. O botão <b>"Regras"</b> mostra a política de descontos e encargos.</p>
+      <h4>Atalhos de teclado</h4>
+      <p><kbd>Ctrl</kbd> + <kbd>C</kbd> copia a proposta (quando nada está selecionado na tela).<br><kbd>Alt</kbd> + <kbd>N</kbd> começa uma nova proposta.<br><kbd>Alt</kbd> + <kbd>E</kbd> edita o texto ou volta para a prévia.<br><kbd>Esc</kbd> fecha esta janela e as de Regras e Novidades.</p>
+    </div>
   </div>
 </div>
 
-<div class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" style="color:inherit;text-decoration:underline dotted;cursor:pointer" title="Ver o que mudou em cada versão">v26</a> · out/2026</div>
+<footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v27</a> · out/2026</footer>
 
 <div class="overlay" id="regrasOverlay" onclick="if(event.target===this)toggleRegras()">
-  <div class="ajuda-box">
-    <button class="ajuda-close" onclick="toggleRegras()">Fechar ✕</button>
-    <h3>📏 Regras vigentes — consulta rápida</h3>
-    <p class="hint" style="margin-top:-6px">Resumo da política. Em caso de dúvida ou exceção, falar com o Francisco.</p>
-    <h4>Encargos sobre o atraso</h4>
-    <p><b>Multa:</b> 2% fixos (uma vez) sobre o valor da parcela. <b>Juros:</b> 2% ao mês, pró-rata por dia corrido (a partir do vencimento). Sem teto — juros correm cheios. Cálculo idêntico ao Asaas.</p>
-    <h4>Parcelas negativadas</h4>
-    <p>Voltam ao <b>valor original</b> (sem juros nem multa). Na quitação só de negativadas, o desconto na negociação vai até o <b>piso de R$ 500,00</b> — não pode ficar abaixo.</p>
-    <h4>Descontos na quitação total</h4>
-    <p>Só em atraso: 1ª oferta com juros e multa; se achar caro, retira juros e multa (cobra só o original). Atraso + a vencer: retira os juros do atraso + até <b>10%</b> nas a vencer. Só a vencer: até <b>10%</b>. Negativadas + atraso: retira os juros do atraso (negativadas no valor original). Pode haver desconto adicional sobre o total, caso a caso.</p>
-    <h4>Quitação parcial</h4>
-    <p><b>Sem descontos</b> — soma as parcelas com valores cheios. Para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link.</p>
-    <h4>Reparcelamento</h4>
-    <p>De 2x a 12x. Negativadas são quitadas <b>antes</b> (não entram no reparcelamento). Dívidas antigas podem receber % de desconto <b>só sobre os juros</b> do atraso — caso a caso.</p>
-    <h4>2º reparcelamento — formalização</h4>
-    <p>Após o aceite: enviar <b>formulário</b> de dados → montar <b>contrato de confissão de dívida e parcelamento</b> → enviar para <b>assinatura</b> → liberar o boleto da 1ª parcela.</p>
-    <h4>Acesso e extensão</h4>
-    <p>Curso de 12 meses expira em liberação + 12 meses. Extensão concedida no pagamento, conforme o progresso do aluno. <b>Acima de 90 dias → análise do Francisco</b>.</p>
-    <h4>📱 ONION (aplicativo)</h4>
-    <p>Produto digital da <b>ONION - O Novo Inconsciente LTDA</b> (empresa própria, CNPJ diferente do IBFT). <b>Mesmos encargos</b> dos demais produtos (multa de 2% e juros de 2%/mês sobre o atraso) e mesma política de descontos. Acesso de <b>12 meses</b>, sem renovação automática. A proposta usa texto próprio de aplicativo (sem regras de produtos IBFT/CITRG) e <b>não se mistura</b> com cursos do IBFT na mesma proposta.</p>
+  <div class="ajuda-box" role="dialog" aria-modal="true" aria-labelledby="regrasTit" tabindex="-1">
+    <div class="dlg-head"><h3 id="regrasTit">Regras vigentes</h3><button type="button" class="dlg-x" onclick="toggleRegras()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <div class="dlg-body">
+      <p class="lead">Resumo da política, para consulta rápida. Em caso de dúvida ou exceção, fale com o Francisco.</p>
+      <h4>Encargos sobre o atraso</h4>
+      <p><b>Multa:</b> 2% fixos (uma vez) sobre o valor da parcela. <b>Juros:</b> 2% ao mês, pró-rata por dia corrido a partir do vencimento, até a data de pagamento do acordo. Sem teto: os juros correm cheios. Cálculo idêntico ao Asaas. Se o pagamento for futuro, as parcelas a vencer que vencem até essa data passam a contar como atraso.</p>
+      <h4>Parcelas negativadas</h4>
+      <p>Voltam ao <b>valor original</b> (sem juros nem multa). Na quitação só de negativadas, o desconto na negociação vai até o <b>piso de R$ 500,00</b> e não pode ficar abaixo disso.</p>
+      <h4>Descontos na quitação total</h4>
+      <p>Só em atraso: 1ª oferta com juros e multa; se o aluno achar caro, retira juros e multa (cobra só o original). Atraso + a vencer: retira os juros do atraso + até <b>10%</b> nas a vencer. Só a vencer: até <b>10%</b>. Negativadas + atraso: retira os juros do atraso (negativadas no valor original). Pode haver desconto adicional sobre o total, caso a caso.</p>
+      <h4>Quitação parcial</h4>
+      <p>Valores cheios por padrão. Opcionalmente, é possível retirar os juros das parcelas em atraso (a multa e os demais descontos são só da quitação total). Para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link.</p>
+      <h4>Reparcelamento</h4>
+      <p>De 2x a 12x. Negativadas são quitadas <b>antes</b> (não entram no reparcelamento). Dívidas antigas podem receber % de desconto <b>só sobre os juros</b> do atraso, caso a caso. Vencimento padrão da 1ª parcela: hoje no 1º reparcelamento e hoje + 7 dias no 2º.</p>
+      <h4>2º reparcelamento: formalização</h4>
+      <p>Após o aceite: enviar <b>formulário</b> de dados → montar <b>contrato de confissão de dívida e parcelamento</b> → enviar para <b>assinatura</b> → liberar o boleto da 1ª parcela.</p>
+      <h4>Acesso e extensão</h4>
+      <p>Curso de 12 meses expira em liberação + 12 meses. Extensão concedida no pagamento, conforme o progresso do aluno. <b>Acima de 90 dias → análise do Francisco</b>. Na quitação parcial, a proposta não fala de prazo de acesso.</p>
+      <h4>ONION (aplicativo)</h4>
+      <p>Produto digital da <b>ONION - O Novo Inconsciente LTDA</b> (empresa própria, CNPJ diferente do IBFT). <b>Mesmos encargos</b> dos demais produtos (multa de 2% e juros de 2%/mês sobre o atraso) e mesma política de descontos. Acesso de <b>12 meses</b>, sem renovação automática. A proposta usa texto próprio de aplicativo (sem regras de produtos IBFT/CITRG) e <b>não se mistura</b> com cursos do IBFT na mesma proposta.</p>
+    </div>
   </div>
 </div>
 
 <div class="overlay" id="novidadesOverlay" onclick="if(event.target===this)toggleNovidades()">
-  <div class="ajuda-box">
-    <button class="ajuda-close" onclick="toggleNovidades()">Fechar ✕</button>
-    <h3>Novidades da calculadora</h3>
-    <p class="hint" style="margin-top:-6px">O que mudou em cada versão. A mais recente fica no topo.</p>
-    <h4>v26 · out/2026</h4>
-    <p>Correção: o <b>ONION</b> passa a ter <b>multa de 2% e juros de 2%/mês</b> sobre as parcelas em atraso, igual aos demais produtos (na v25 ele entrava sem encargos). Voltam para ele o desconto nos juros, a retirada de juros/multa na quitação e as orientações padrão. Continuam o texto próprio de aplicativo e a regra de não misturar com cursos do IBFT.</p>
-    <h4>v25 · out/2026</h4>
-    <p>Novo produto: <b>ONION - O Novo Inconsciente (aplicativo)</b>, acesso de 12 meses. Para ele, as parcelas em atraso <b>não têm multa nem juros</b> (entram pelo valor original) e a proposta tem <b>texto próprio de aplicativo</b> ("acesso ao aplicativo", sem regras de produtos IBFT/CITRG). Os controles de juros/multa somem quando não se aplicam, e o ONION não pode ser combinado com cursos do IBFT na mesma proposta (empresa diferente). Demais produtos: nada mudou.</p>
-    <h4>v24 · ago/2026</h4>
-    <p><b>Correção do modo escuro.</b> Os menus de seleção (tipo de proposta, produto, tipo de acesso e o seletor de zoom) mostravam um padrão repetido de setas sobre o texto; agora exibem uma seta única e limpa. Também entrou um pequeno reforço de segurança (escape dos valores nos campos gerados). Nenhuma regra de cálculo mudou.</p>
-    <h4>v23 · jul/2026</h4>
-    <p><b>Redesenho visual completo.</b> Novas fontes (Inter + Space Grotesk), tipografia e espaçamentos revistos, menus de seleção com estilo próprio, botões com mais destaque (o <b>Copiar</b> em dourado da marca), contraste reforçado, animações discretas (entrada das seções, micro-interações, overlays) e layout responsivo para telas menores. Nenhuma regra de cálculo mudou.</p>
-    <h4>v22 · jul/2026</h4>
-    <p>Correção: no <b>reparcelamento com desconto nos juros</b>, quando havia só parcelas em atraso (um único grupo), o valor total aparecia duplicado. Agora mostra uma linha só, igual à quitação.</p>
-    <h4>v21 · jul/2026</h4>
-    <p>A abertura <b>"condição especial"</b> na quitação agora só aparece quando há realmente algum desconto/isenção aplicado. O <b>valor da parcela a vencer</b> é preenchido automaticamente com o valor da parcela em atraso (só edite se for diferente). O <b>histórico</b> passou a guardar <b>todas</b> as propostas (não só 150). Mais uma rodada de <b>refinamento visual</b> (scrollbars, cabeçalhos de seção, tabelas, seleção de parcelas, overlays e micro-interações).</p>
-    <h4>v20 · jul/2026</h4>
-    <p><b>Visual premium</b> repaginado (tipografia, sombras, botões, cores e resumo mais refinados). <b>Reparcelamento com desconto nos juros</b> agora mostra o valor cheio → descontos → valor final (o aluno enxerga o que ganhou). <b>Quitação parcial</b>: dá para retirar os juros das atrasadas; sem nenhuma isenção, a abertura fica neutra (sem "condição especial"). <b>Quitação total</b>: fim da repetição do valor total quando há só um tipo de parcela.</p>
-    <h4>v19 · jul/2026</h4>
-    <p>Cada seção ganhou um <b>"🧹 limpar"</b> no título, para zerar só aquela seção sem precisar limpar a proposta inteira em "Nova proposta".</p>
-    <h4>v18 · jul/2026</h4>
-    <p><b>Correção na edição manual da data</b> das parcelas em atraso: dava para digitar só o primeiro número porque o campo era recriado a cada dígito. Agora dá para digitar a data inteira normalmente (a atualização acontece quando a data fica completa).</p>
-    <h4>v17 · jun/2026</h4>
-    <p><b>Correção nos vencimentos:</b> quando o vencimento é dia 31 (ou o último dia do mês), as parcelas seguintes caem no último dia de cada mês (31/03 → 30/04 → 31/05 → 30/06). Antes gerava data errada e chegava a repetir o mês. Vale para todos os tipos de proposta e para o cálculo de expiração do acesso. Produto novo: <b>"BF - Formação Avançada em Master Terapeuta + Formação em Leitura Corporal e Comportamental"</b> (vitalício).</p>
-    <h4>v16 · jun/2026</h4>
-    <p>Botão <b>"📏 Regras"</b> com resumo da política (encargos, descontos, piso, extensão, fluxo do 2º reparcelamento). Novo seletor de <b>zoom</b> no topo (100% a 200%, igual ao Sheets — escala a tela toda e fica salvo). <b>Modo escuro com contraste corrigido</b> (títulos, totais e valores não ficam mais apagados). Supervisão do setor passou para o Francisco (antes Lays).</p>
-    <h4>v15 · jun/2026</h4>
-    <p>Seções agora <b>recolhem/expandem</b> ao clicar no título (some o que já está pronto). Barra de progresso diz <b>o que ainda falta</b> (em vez de "X de N"). <b>Tooltips de ajuda</b> em cada campo (passe o mouse no "i"). Novo <b>contador de propostas do dia</b> no topo (zera todo dia, só neste navegador).</p>
-    <h4>v14 · jun/2026</h4>
-    <p>2º reparcelamento agora explica o passo do <b>formulário → contrato de confissão de dívida → assinatura → boleto</b>. Quitação parcial aparece como <b>"simulação de Quitação parcial"</b> no texto. Histórico passou a guardar as <b>últimas 150</b> propostas. Visual com sombras e espaçamentos mais suaves. Esta tela de novidades.</p>
-    <h4>v13 · jun/2026</h4>
-    <p>Removidos linha do tempo, modo comparativo e cálculo por mês (não agregavam). Ícones nas seções, validação de coerência (avisos em âmbar) e barra de pesquisa do histórico.</p>
-    <h4>v12 · jun/2026</h4>
-    <p>Texto mais persuasivo: abertura adaptável, % de economia em destaque, chamada final (CTA) e frase anti-confusão sobre parcelas.</p>
-    <h4>v11 · jun/2026</h4>
-    <p>Novo produto no catálogo, histórico sem duplicatas, desconto adicional sobre o total na quitação e proposta de quitação reformulada (composição → valor atual → descontos → valor final).</p>
-    <h4>Versões anteriores</h4>
-    <p>Cálculo de juros/multa validado contra o Asaas, quitação parcial sem desconto, multi-produto, desconto nos juros, acesso &amp; extensão, edição manual da proposta, pré-visualização estilo WhatsApp, tema escuro e painel "Como usar".</p>
+  <div class="ajuda-box" role="dialog" aria-modal="true" aria-labelledby="novTit" tabindex="-1">
+    <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <div class="dlg-body">
+      <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v27 · out/2026</h4>
+      <p><b>Visual refinado e mais rápido de usar.</b> O fio dourado do topo virou a barra de progresso, e ao rolar a página aparece uma barra fina com o botão <b>"Copiar proposta"</b>. O tipo de proposta virou botões e as opções viraram interruptores. A prévia agora parece uma mensagem de WhatsApp de verdade. <b>"Limpar"</b> e <b>"Nova proposta"</b> não pedem mais confirmação: limpam na hora e oferecem <b>Desfazer</b>. Copiar com algo faltando leva você direto ao campo. O histórico mostra data e hora. O modo escuro foi refeito e, na primeira vez, o tema segue o do computador. As janelas fecham com <kbd>Esc</kbd>. O texto das Regras sobre a quitação parcial foi corrigido (dá para retirar os juros das parcelas em atraso). Nenhuma regra de cálculo mudou.</p>
+      <h4>v26 · out/2026</h4>
+      <p>Correção: o <b>ONION</b> passa a ter <b>multa de 2% e juros de 2%/mês</b> sobre as parcelas em atraso, igual aos demais produtos (na v25 ele entrava sem encargos). Voltam para ele o desconto nos juros, a retirada de juros/multa na quitação e as orientações padrão. Continuam o texto próprio de aplicativo e a regra de não misturar com cursos do IBFT.</p>
+      <h4>v25 · out/2026</h4>
+      <p>Novo produto: <b>ONION - O Novo Inconsciente (aplicativo)</b>, acesso de 12 meses. Para ele, as parcelas em atraso <b>não têm multa nem juros</b> (entram pelo valor original) e a proposta tem <b>texto próprio de aplicativo</b> ("acesso ao aplicativo", sem regras de produtos IBFT/CITRG). Os controles de juros/multa somem quando não se aplicam, e o ONION não pode ser combinado com cursos do IBFT na mesma proposta (empresa diferente). Demais produtos: nada mudou.</p>
+      <h4>v24 · ago/2026</h4>
+      <p><b>Correção do modo escuro.</b> Os menus de seleção (tipo de proposta, produto, tipo de acesso e o seletor de zoom) mostravam um padrão repetido de setas sobre o texto; agora exibem uma seta única e limpa. Também entrou um pequeno reforço de segurança (escape dos valores nos campos gerados). Nenhuma regra de cálculo mudou.</p>
+      <h4>v23 · jul/2026</h4>
+      <p><b>Redesenho visual completo.</b> Novas fontes (Inter + Space Grotesk), tipografia e espaçamentos revistos, menus de seleção com estilo próprio, botões com mais destaque (o <b>Copiar</b> em dourado da marca), contraste reforçado, animações discretas (entrada das seções, micro-interações, overlays) e layout responsivo para telas menores. Nenhuma regra de cálculo mudou.</p>
+      <h4>v22 · jul/2026</h4>
+      <p>Correção: no <b>reparcelamento com desconto nos juros</b>, quando havia só parcelas em atraso (um único grupo), o valor total aparecia duplicado. Agora mostra uma linha só, igual à quitação.</p>
+      <h4>v21 · jul/2026</h4>
+      <p>A abertura <b>"condição especial"</b> na quitação agora só aparece quando há realmente algum desconto/isenção aplicado. O <b>valor da parcela a vencer</b> é preenchido automaticamente com o valor da parcela em atraso (só edite se for diferente). O <b>histórico</b> passou a guardar <b>todas</b> as propostas (não só 150). Mais uma rodada de <b>refinamento visual</b> (scrollbars, cabeçalhos de seção, tabelas, seleção de parcelas, overlays e micro-interações).</p>
+      <h4>v20 · jul/2026</h4>
+      <p><b>Visual premium</b> repaginado (tipografia, sombras, botões, cores e resumo mais refinados). <b>Reparcelamento com desconto nos juros</b> agora mostra o valor cheio → descontos → valor final (o aluno enxerga o que ganhou). <b>Quitação parcial</b>: dá para retirar os juros das atrasadas; sem nenhuma isenção, a abertura fica neutra (sem "condição especial"). <b>Quitação total</b>: fim da repetição do valor total quando há só um tipo de parcela.</p>
+      <h4>v19 · jul/2026</h4>
+      <p>Cada seção ganhou um <b>"🧹 limpar"</b> no título, para zerar só aquela seção sem precisar limpar a proposta inteira em "Nova proposta".</p>
+      <h4>v18 · jul/2026</h4>
+      <p><b>Correção na edição manual da data</b> das parcelas em atraso: dava para digitar só o primeiro número porque o campo era recriado a cada dígito. Agora dá para digitar a data inteira normalmente (a atualização acontece quando a data fica completa).</p>
+      <h4>v17 · jun/2026</h4>
+      <p><b>Correção nos vencimentos:</b> quando o vencimento é dia 31 (ou o último dia do mês), as parcelas seguintes caem no último dia de cada mês (31/03 → 30/04 → 31/05 → 30/06). Antes gerava data errada e chegava a repetir o mês. Vale para todos os tipos de proposta e para o cálculo de expiração do acesso. Produto novo: <b>"BF - Formação Avançada em Master Terapeuta + Formação em Leitura Corporal e Comportamental"</b> (vitalício).</p>
+      <h4>v16 · jun/2026</h4>
+      <p>Botão <b>"📏 Regras"</b> com resumo da política (encargos, descontos, piso, extensão, fluxo do 2º reparcelamento). Novo seletor de <b>zoom</b> no topo (100% a 200%, igual ao Sheets — escala a tela toda e fica salvo). <b>Modo escuro com contraste corrigido</b> (títulos, totais e valores não ficam mais apagados). Supervisão do setor passou para o Francisco (antes Lays).</p>
+      <h4>v15 · jun/2026</h4>
+      <p>Seções agora <b>recolhem/expandem</b> ao clicar no título (some o que já está pronto). Barra de progresso diz <b>o que ainda falta</b> (em vez de "X de N"). <b>Tooltips de ajuda</b> em cada campo (passe o mouse no "i"). Novo <b>contador de propostas do dia</b> no topo (zera todo dia, só neste navegador).</p>
+      <h4>v14 · jun/2026</h4>
+      <p>2º reparcelamento agora explica o passo do <b>formulário → contrato de confissão de dívida → assinatura → boleto</b>. Quitação parcial aparece como <b>"simulação de Quitação parcial"</b> no texto. Histórico passou a guardar as <b>últimas 150</b> propostas. Visual com sombras e espaçamentos mais suaves. Esta tela de novidades.</p>
+      <h4>v13 · jun/2026</h4>
+      <p>Removidos linha do tempo, modo comparativo e cálculo por mês (não agregavam). Ícones nas seções, validação de coerência (avisos em âmbar) e barra de pesquisa do histórico.</p>
+      <h4>v12 · jun/2026</h4>
+      <p>Texto mais persuasivo: abertura adaptável, % de economia em destaque, chamada final (CTA) e frase anti-confusão sobre parcelas.</p>
+      <h4>v11 · jun/2026</h4>
+      <p>Novo produto no catálogo, histórico sem duplicatas, desconto adicional sobre o total na quitação e proposta de quitação reformulada (composição → valor atual → descontos → valor final).</p>
+      <h4>Versões anteriores</h4>
+      <p>Cálculo de juros/multa validado contra o Asaas, quitação parcial sem desconto, multi-produto, desconto nos juros, acesso &amp; extensão, edição manual da proposta, pré-visualização estilo WhatsApp, tema escuro e painel "Como usar".</p>
+    </div>
   </div>
 </div>
 
-<div id="toast">✓ Proposta copiada!</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script>
-function toggleAjuda(){document.getElementById('ajudaOverlay').classList.toggle('show');}
-function toggleNovidades(){document.getElementById('novidadesOverlay').classList.toggle('show');}
-function toggleRegras(){document.getElementById('regrasOverlay').classList.toggle('show');}
+// ícones SVG da interface (traço 1.75, mesmo estilo dos estáticos)
+const ICO={
+  x:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>',
+  ok:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m8 12.3 2.7 2.7L16 9.6"/></svg>',
+  aviso:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>',
+  erro:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v4.5M12 16h.01"/></svg>',
+  lapis:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>',
+  olho:'<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>'
+};
+const semMovimento=()=>!!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+// diálogos (Como usar, Regras, Novidades): Esc fecha, foco entra e volta, rolagem da página travada, entrada e saída animadas
+const dlgAbertos=[];
+function abrirDlg(id){
+  const ov=document.getElementById(id); if(!ov||ov.classList.contains('show'))return;
+  ov._origem=document.activeElement;
+  ov.classList.add('show'); void ov.offsetWidth; ov.classList.add('in');
+  dlgAbertos.push(ov); document.documentElement.classList.add('lock');
+  const box=ov.querySelector('.ajuda-box'); if(box){box.querySelector('.dlg-body').scrollTop=0;box.focus({preventScroll:true});}
+}
+function fecharDlg(id){
+  const ov=document.getElementById(id); if(!ov||!ov.classList.contains('in'))return;
+  ov.classList.remove('in');
+  const i=dlgAbertos.indexOf(ov); if(i>=0)dlgAbertos.splice(i,1);
+  if(!dlgAbertos.length) document.documentElement.classList.remove('lock');
+  setTimeout(()=>{ if(!ov.classList.contains('in')) ov.classList.remove('show'); },200);
+  try{ if(ov._origem&&ov._origem.focus) ov._origem.focus({preventScroll:true}); }catch(e){}
+}
+function toggleDlg(id){const ov=document.getElementById(id);if(ov&&ov.classList.contains('in'))fecharDlg(id);else abrirDlg(id);}
+function toggleAjuda(){toggleDlg('ajudaOverlay');}
+function toggleNovidades(){toggleDlg('novidadesOverlay');}
+function toggleRegras(){toggleDlg('regrasOverlay');}
 // 41 · zoom selecionável (igual ao Sheets); escala a área de trabalho e lembra a preferência
 function aplicarZoom(z){
   z=parseFloat(z)||1;
-  ['.progresso','.wrap'].forEach(sel=>{const el=document.querySelector(sel);if(el)el.style.zoom=z;});
+  ['.prog-line','.wrap'].forEach(sel=>{const el=document.querySelector(sel);if(el)el.style.zoom=z;});
+  const w=document.querySelector('.wrap'); if(w)w.style.setProperty('--z',z);   // compensa o 100vh da coluna direita
   const s=document.getElementById('zoomSel'); if(s)s.value=String(z);
   try{localStorage.setItem('ibft_zoom',String(z));}catch(e){}
 }
-// 43 · recolher/expandir seção (não recolhe se a seção estiver oculta)
-function toggleCard(h2){h2.parentElement.classList.toggle('collapsed');}
+// 43 · recolher/expandir seção (animado; o conteúdo só corta durante a animação)
+function toggleCard(h2){
+  const card=h2.parentElement;
+  card.classList.add('anim'); clearTimeout(card._anim);
+  const fechado=card.classList.toggle('collapsed');
+  h2.setAttribute('aria-expanded',fechado?'false':'true');
+  card._anim=setTimeout(()=>card.classList.remove('anim'),340);
+}
 // 50 · contador de propostas copiadas hoje (zera por dia, por navegador)
 function renderContador(){
   const el=document.getElementById('contDia'); if(!el)return;
   let n=0;
   try{const o=JSON.parse(localStorage.getItem('ibft_diario')||'{}'); if(o.d===hojeISO()) n=o.n||0;}catch(e){}
-  el.textContent='📋 '+n+(n===1?' proposta hoje':' propostas hoje');
+  el.textContent=n+(n===1?' proposta hoje':' propostas hoje');
 }
 function incrementaContador(){
   try{const o=JSON.parse(localStorage.getItem('ibft_diario')||'{}'); const n=(o.d===hojeISO()?(o.n||0):0)+1;
     localStorage.setItem('ibft_diario',JSON.stringify({d:hojeISO(),n}));}catch(e){}
   renderContador();
 }
-function toggleDark(){const d=document.body.classList.toggle('dark');document.getElementById('btnDark').textContent=d?'☀️':'🌙';try{localStorage.setItem('ibft_dark',d?'1':'0');}catch(e){}}
+// tema: classe "dark" no <html> (tokens) e no <body> (compatibilidade); troca com crossfade quando o navegador suporta
+function aplicarTema(d){
+  document.documentElement.classList.toggle('dark',d); document.body.classList.toggle('dark',d);
+  const b=document.getElementById('btnDark'); if(b){const l=d?'Usar tema claro':'Usar tema escuro';b.setAttribute('aria-label',l);b.title=l;}
+}
+function toggleDark(){
+  const d=!document.documentElement.classList.contains('dark');
+  if(document.startViewTransition && !semMovimento()) document.startViewTransition(()=>aplicarTema(d)); else aplicarTema(d);
+  try{localStorage.setItem('ibft_dark',d?'1':'0');}catch(e){}
+}
 const PRODUTOS=[
  {n:"Formação de Terapeutas - TRG",a:"12m"},
  {n:"Formação de Terapeutas - TRG + Formação em Leitura Corporal e Comportamental",a:"12m"},
@@ -537,8 +890,8 @@ function updProdutoExtra(i,v){produtosExtra[i]=parseInt(v);render();}
 function renderProdutosExtra(){
   const c=document.getElementById('produtosExtra');c.innerHTML='';
   produtosExtra.forEach((idx,i)=>{
-    const div=document.createElement('div');div.style.cssText='display:flex;gap:8px;align-items:center;margin-top:8px';
-    div.innerHTML=`<select onchange="updProdutoExtra(${i},this.value)" style="flex:1"><option value="-1">— produto adicional —</option>${optionsProdutos(idx)}</select><button class="btn btn-del btn-sm" onclick="delProdutoExtra(${i})">✕</button>`;
+    const div=document.createElement('div');div.className='prod-extra';
+    div.innerHTML=`<select onchange="updProdutoExtra(${i},this.value)" aria-label="Produto adicional"><option value="-1">— produto adicional —</option>${optionsProdutos(idx)}</select><button type="button" class="btn-x" onclick="delProdutoExtra(${i})" aria-label="Remover produto" title="Remover produto">${ICO.x}</button>`;
     c.appendChild(div);
   });
 }
@@ -583,6 +936,13 @@ function limparCard2(){atrasos=[];document.getElementById('genQtd').value='';doc
 function limparCard3(){vincValManual=false;document.getElementById('vincQtd').value='0';document.getElementById('vincVal').value=document.getElementById('genVal').value;document.getElementById('vincVenc').value='';render();}
 function limparCardDesc(){document.getElementById('retJuros').checked=false;document.getElementById('retMulta').checked=false;document.getElementById('descVincPerc').value='0';document.getElementById('descNegPerc').value='0';document.getElementById('descGeralPerc').value='0';document.getElementById('isentarJurosNeg').checked=true;render();}
 function limparCardAcesso(){document.getElementById('dataLib').value='';document.getElementById('extDias').value='0';render();}
+// estado completo para o "Desfazer" (snapshot + o que ele não guarda: espelhamento e edição manual do texto)
+function capturar(){return {snap:snapshot(),vm:vincValManual,em:editadoManual,txt:document.getElementById('saida').value};}
+function voltar(c){
+  restore(c.snap); vincValManual=c.vm;
+  if(c.em){ editadoManual=true; document.getElementById('saida').value=c.txt; document.getElementById('editNotice').style.display='block'; document.getElementById('preview').innerHTML=renderPreview(c.txt); }
+}
+function limparSecao(fn){const c=capturar();fn();showToast('Seção limpa',{tipo:'ok',acao:{rotulo:'Desfazer',fn:()=>voltar(c)}});}
 // escapa valores antes de ir para atributos HTML (defesa em profundidade)
 function escAtr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
 function atualCellHTML(p){
@@ -596,11 +956,11 @@ function renderAtrasos(){
   atrasos.forEach((p,i)=>{
     const tr=document.createElement('tr');
     tr.innerHTML=`
-      <td><input type="text" inputmode="decimal" value="${escAtr(p.valor)}" oninput="maskMoeda(this);updValor(${i},this.value)"></td>
-      <td><input type="date" value="${escAtr(p.venc)}" onchange="updVenc(${i},this.value)"></td>
-      <td class="check" style="${showNeg?'':'display:none'}"><input type="checkbox" ${p.negativada?'checked':''} onchange="updAtraso(${i},'negativada',this.checked)"></td>
+      <td><input type="text" inputmode="decimal" value="${escAtr(p.valor)}" oninput="maskMoeda(this);updValor(${i},this.value)" aria-label="Valor original da parcela ${i+1}"></td>
+      <td><input type="date" value="${escAtr(p.venc)}" onchange="updVenc(${i},this.value)" aria-label="Vencimento da parcela ${i+1}"></td>
+      <td class="check" style="${showNeg?'':'display:none'}"><input type="checkbox" ${p.negativada?'checked':''} onchange="updAtraso(${i},'negativada',this.checked)" aria-label="Parcela ${i+1} negativada"></td>
       <td class="val-atual" id="atual${i}">${atualCellHTML(p)}</td>
-      <td><button class="btn btn-del btn-sm" onclick="delAtraso(${i})">✕</button></td>`;
+      <td><button type="button" class="btn-x" onclick="delAtraso(${i})" aria-label="Apagar parcela ${i+1}" title="Apagar parcela">${ICO.x}</button></td>`;
     tb.appendChild(tr);
   });
 }
@@ -688,14 +1048,16 @@ function expBase(){const l=document.getElementById('dataLib').value;return l?add
 
 function renderParcGrid(){
   const total=totalGeral(),g=document.getElementById('parcGrid');g.innerHTML='';
-  for(let n=2;n<=12;n++){const d=document.createElement('div');   // reparcelamento: 2x a 12x (1x = quitação)
-    d.className='parc-op'+(n===parcelasEscolhidas?' sel':'');d.onclick=()=>{parcelasEscolhidas=n;render();};
+  for(let n=2;n<=12;n++){const d=document.createElement('button');d.type='button';   // reparcelamento: 2x a 12x (1x = quitação)
+    d.className='parc-op'+(n===parcelasEscolhidas?' sel':'');d.setAttribute('role','radio');d.setAttribute('aria-checked',n===parcelasEscolhidas?'true':'false');
+    d.onclick=()=>{parcelasEscolhidas=n;render();const s=document.querySelector('#parcGrid .sel');if(s)s.focus({preventScroll:true});};
     d.innerHTML=`${n}x<b>${total>0?brl(total/n):'—'}</b>`;g.appendChild(d);}
 }
 
+let ultimoTotal=null, pulsoIni=0;   // pulso do total no resumo
 function renderResumo(){
   const lin=(l,v,c)=>`<div class="lin"${c?` style="color:${c}"`:''}><span>${l}</span><b>${brl(v)}</b></div>`;
-  const sub=(l,v,c)=>`<div class="lin" style="color:${c||'var(--suave)'};font-size:12px;padding-left:8px"><span>${l}</span><b>${brl(v)}</b></div>`;
+  const sub=(l,v,c)=>`<div class="lin sub"${c?` style="color:${c}"`:''}><span>${l}</span><b>${brl(v)}</b></div>`;
   const RED='var(--vermelho)', GREEN='var(--verde)';
   const nCross=crossedVinc().length, tbl=pAtrasoTable().length;
   const lblAtraso = nCross>0 ? `em atraso (${tbl} vencida(s) + ${nCross} que venceu até o pagamento)` : 'em atraso';
@@ -720,14 +1082,19 @@ function renderResumo(){
     if(descJurosTotal()>0) h+=sub(`↳ desconto nos juros (${Math.round(jurosDescFrac()*100)}%)`,-descJurosTotal(),GREEN);
     if(qtdVinc()) h+=lin(`${qtdVinc()} parcela(s) a vencer`,totalVinc());
   }
-  if(nCross>0) h+=`<div class="lin" style="color:var(--alerta);font-size:11px;font-style:italic;border-top:1px dashed #f6c668;margin-top:4px;padding-top:5px"><span>⚠️ ${nCross} parcela(s) que estava(m) "a vencer" passou(aram) a contar como atraso, pois vence(m) até a data de pagamento escolhida.</span></div>`;
-  h+=`<div class="lin tot"><span>TOTAL</span><span>${brl(totalGeral())}</span></div>`;
+  if(nCross>0) h+=`<div class="lin cross"><span>${nCross} parcela(s) que estava(m) "a vencer" passou(aram) a contar como atraso, pois vence(m) até a data de pagamento escolhida.</span></div>`;
+  // pulso suave no total só quando o valor realmente muda (o resumo é recriado a cada tecla: o atraso negativo continua o pulso sem reiniciar)
+  const tg=totalGeral();
+  if(ultimoTotal!==null && tg!==ultimoTotal) pulsoIni=Date.now();
+  ultimoTotal=tg;
+  const decorrido=Date.now()-pulsoIni, pulsando=decorrido<600;
+  h+=`<div class="lin tot${pulsando?' pulse':''}"${pulsando?` style="animation-delay:-${decorrido}ms"`:''}><span>Total</span><span>${brl(tg)}</span></div>`;
   const economia = ehQuit()? quitModel().descTotal : descJurosTotal();
   const baseEcon = ehQuit()? quitModel().bruto : (atrasoComEnc()+totalVinc());
   const econPct = baseEcon>0?Math.round(economia/baseEcon*100):0;
-  if(economia>0) h+=`<div class="lin" style="color:var(--verde);font-weight:700;margin-top:2px"><span>💚 Economia (${econPct}%)</span><span>${brl(economia)}</span></div>`;
+  if(economia>0) h+=`<div class="lin econ"><span>Economia (${econPct}%)</span><span>${brl(economia)}</span></div>`;
   if(!ehQuit() && parcelasEscolhidas>0 && totalGeral()>0)
-    h+=`<div class="lin" style="margin-top:4px"><span>${parcelasEscolhidas}x de</span><b>${brl(totalGeral()/parcelasEscolhidas)}</b></div>`;
+    h+=`<div class="lin parc"><span>${parcelasEscolhidas}x de</span><b>${brl(totalGeral()/parcelasEscolhidas)}</b></div>`;
   // mini-gráfico da composição (mostra que a maior parte é o valor original, não juros)
   const cOrig=atrasoOriginal()+negOriginal()+totalVinc(), cMulta=atrasoMultaV(), cJuros=atrasoJurosV();
   const cTot=cOrig+cMulta+cJuros;
@@ -889,8 +1256,8 @@ function aplicarStatus(){
     const card=document.getElementById(cardId),b=document.getElementById(badgeId);
     if(!card||!b)return;
     card.classList.remove('ok','falta'); b.classList.remove('show','badge-ok','badge-falta');
-    if(st==='ok'){card.classList.add('ok');b.classList.add('show','badge-ok');b.textContent='✓ Preenchida';}
-    else if(st==='falta'){card.classList.add('falta');b.classList.add('show','badge-falta');b.textContent='⚠ Preencher obrigatórios';}
+    if(st==='ok'){card.classList.add('ok');b.classList.add('show','badge-ok');b.textContent='Pronta';}
+    else if(st==='falta'){card.classList.add('falta');b.classList.add('show','badge-falta');b.textContent='Falta preencher';}
   }
   const parcial=quit&&!document.getElementById('quitTotal').checked;
   const prodOk=parseInt(document.getElementById('produto').value)>=0;
@@ -932,7 +1299,7 @@ function renderCoerencia(){
   if(dl && dl>hoje) av.push('Data de liberação do acesso está no futuro.');
   if(atrasos.some(p=>!p.negativada && p.venc && p.venc>hoje)) av.push('Há parcela em "em atraso" com vencimento futuro (ainda não venceu).');
   el.style.display = av.length ? 'block':'none';
-  el.innerHTML = av.length ? '⚠️ '+av.join('<br>⚠️ ') : '';
+  el.innerHTML = av.length ? av.join('<br>') : '';
 }
 function atualizarProgresso(){
   const prodOk=parseInt(document.getElementById('produto').value)>=0;
@@ -943,7 +1310,10 @@ function atualizarProgresso(){
   const vencOk=!!document.getElementById('dataVenc').value;
   const etapas=[prodOk,valOk,vencOk]; if(precisaAcesso) etapas.push(acessoOk);
   const done=etapas.filter(Boolean).length, total=etapas.length, pct=Math.round(done/total*100);
+  // o fio dourado (header e barra fixa) é a barra de progresso; ao chegar a 100% o brilho passa uma vez
   document.getElementById('progBar').style.width=pct+'%';
+  const pb2=document.getElementById('progBar2'); if(pb2) pb2.style.width=pct+'%';
+  document.querySelectorAll('.fio').forEach(f=>f.classList.toggle('done',pct===100));
   document.getElementById('progPct').textContent=pct+'%';
   // 44 · nomeia o que ainda falta, em vez de só "X de N"
   const falta=[];
@@ -951,13 +1321,39 @@ function atualizarProgresso(){
   if(!valOk) falta.push('valores das parcelas');
   if(!vencOk) falta.push('vencimento da 1ª parcela');
   if(precisaAcesso && !acessoOk) falta.push('data de liberação do acesso');
-  document.getElementById('progTxt').textContent = falta.length===0
-    ? '✓ Tudo preenchido — proposta pronta para copiar'
-    : 'Falta: '+falta.join(', ');
+  const txtProg = falta.length===0 ? 'Tudo preenchido. Proposta pronta para copiar' : 'Falta: '+falta.join(', ');
+  document.getElementById('progTxt').textContent = txtProg;
+  document.getElementById('progLine').classList.toggle('done',falta.length===0);
+  const t2=document.getElementById('progTxt2');
+  if(t2){ t2.textContent = falta.length===0 ? 'Proposta pronta para copiar' : txtProg; t2.classList.toggle('done',falta.length===0); }
+}
+
+// controle segmentado do tipo de proposta: escreve no <select id="tipoProposta"> (que continua existindo) e se sincroniza a partir dele
+function syncSeg(){
+  const seg=document.getElementById('segTipo'); if(!seg)return;
+  const v=document.getElementById('tipoProposta').value;
+  seg.querySelectorAll('button[role=radio]').forEach((b,i)=>{const on=b.dataset.v===v;b.setAttribute('aria-checked',on?'true':'false');b.tabIndex=on?0:-1;if(on)seg.dataset.i=String(i);});
+}
+function setTipo(v){const s=document.getElementById('tipoProposta');if(s.value===v){syncSeg();return;}s.value=v;onTipoChange();}
+function initSeg(){
+  const seg=document.getElementById('segTipo'); if(!seg)return;
+  const bts=[...seg.querySelectorAll('button[role=radio]')];
+  bts.forEach((b,i)=>{
+    b.addEventListener('click',()=>setTipo(b.dataset.v));
+    b.addEventListener('keydown',e=>{
+      let j=null;
+      if(e.key==='ArrowRight'||e.key==='ArrowDown') j=(i+1)%bts.length;
+      else if(e.key==='ArrowLeft'||e.key==='ArrowUp') j=(i-1+bts.length)%bts.length;
+      else if(e.key==='Home') j=0; else if(e.key==='End') j=bts.length-1;
+      if(j===null)return;
+      e.preventDefault(); setTipo(bts[j].dataset.v); bts[j].focus();
+    });
+  });
 }
 
 function render(){
   renderAtrasos();
+  syncSeg();
   const quit=ehQuit();
   if(!quit && parcelasEscolhidas<2) parcelasEscolhidas=2;   // reparcelamento começa em 2x
   document.getElementById('quitTotalWrap').style.display = quit ? 'block' : 'none';
@@ -988,21 +1384,21 @@ function render(){
     document.getElementById('alertaNeg').classList.toggle('show',negClamped);
     let g='';
     if(!total){
-      g='💡 <b>Quitação parcial</b> — soma as parcelas selecionadas com os valores cheios (juros e multa). Use para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link. Se quiser, marque <b>"Retirar os juros das parcelas em atraso"</b> acima para conceder essa isenção nesta quitação parcial.';
+      g='<b>Quitação parcial</b> — soma as parcelas selecionadas com os valores cheios (juros e multa). Use para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link. Se quiser, ligue <b>"Retirar os juros das parcelas em atraso"</b> abaixo para conceder essa isenção nesta quitação parcial.';
     }
     else if(!N&&!A&&!V) g='Adicione as parcelas para ver a estratégia sugerida.';
-    else if(N&&!A&&!V) g='💡 Apenas parcelas <b>negativadas</b>. Conceda desconto até o piso de R$ 500,00.';
-    else if(!N&&A&&!V) g='💡 Apenas parcelas <b>em atraso</b>. 1ª oferta: valor cheio (com juros e multa). Se o aluno achar caro, marque retirar juros e multa (cobra só o valor original).';
-    else if(!N&&!A&&V) g='💡 Apenas parcelas <b>a vencer</b>. Conceda até 10% de desconto.';
-    else if(!N&&A&&V) g='💡 Atraso + a vencer. Estratégia: retirar os juros do atraso e até 10% de desconto nas parcelas a vencer.';
-    else if(N&&A&&!V) g='💡 Negativadas + atraso. Estratégia: retirar os juros do atraso (as negativadas permanecem no valor original).';
-    else g='💡 Combinação: negativadas no valor original, retire os juros do atraso e até 10% nas parcelas a vencer.';
+    else if(N&&!A&&!V) g='Apenas parcelas <b>negativadas</b>. Conceda desconto até o piso de R$ 500,00.';
+    else if(!N&&A&&!V) g='Apenas parcelas <b>em atraso</b>. 1ª oferta: valor cheio (com juros e multa). Se o aluno achar caro, ligue retirar juros e multa (cobra só o valor original).';
+    else if(!N&&!A&&V) g='Apenas parcelas <b>a vencer</b>. Conceda até 10% de desconto.';
+    else if(!N&&A&&V) g='Atraso + a vencer. Estratégia: retirar os juros do atraso e até 10% de desconto nas parcelas a vencer.';
+    else if(N&&A&&!V) g='Negativadas + atraso. Estratégia: retirar os juros do atraso (as negativadas permanecem no valor original).';
+    else g='Combinação: negativadas no valor original, retire os juros do atraso e até 10% nas parcelas a vencer.';
     document.getElementById('quitGuide').innerHTML=g;
   }
 
   document.getElementById('lblSec2').textContent = quit ? 'Parcelas em atraso / Parcelas negativadas' : 'Parcelas em atraso';
   const bN=document.getElementById('btnTodasNeg');
-  if(bN){ bN.style.display = (quit && atrasos.length>0) ? 'inline-block' : 'none';
+  if(bN){ bN.style.display = (quit && atrasos.length>0) ? 'inline-flex' : 'none';
     bN.textContent = (atrasos.length>0 && atrasos.every(p=>p.negativada)) ? 'Desmarcar todas as negativadas' : 'Marcar todas como negativadas'; }
 
   const tipoAc=document.getElementById('tipoAcesso').value,info=document.getElementById('acessoInfo'),nota=document.getElementById('notaConclusao');
@@ -1050,21 +1446,72 @@ function atualizarSaida(){
 }
 
 function onSaidaInput(){ editadoManual=true; document.getElementById('editNotice').style.display='block'; document.getElementById('preview').innerHTML=renderPreview(document.getElementById('saida').value); }
-function modoVer(){ var ta=document.getElementById('saida'),pv=document.getElementById('preview'),b=document.getElementById('btnEdit'); ta.style.display='none';pv.style.display='block';if(b)b.textContent='✏️ Editar';pv.innerHTML=renderPreview(ta.value); }
+// prévia (balão do WhatsApp) ↔ edição: troca com fade curto
+function rotuloEdit(editando){ var b=document.getElementById('btnEdit'); if(b) b.innerHTML = editando ? ICO.olho+'Ver prévia' : ICO.lapis+'Editar texto'; }
+function mostrarSo(el,outro){ outro.style.display='none'; el.style.display='block'; el.classList.remove('fade-in'); void el.offsetWidth; el.classList.add('fade-in'); }
+function modoVer(){ var ta=document.getElementById('saida'),pv=document.getElementById('preview'),bb=document.getElementById('waBubble'); if(ta.style.display!=='none') mostrarSo(bb,ta); rotuloEdit(false); pv.innerHTML=renderPreview(ta.value); }
 function regerar(){ editadoManual=false; document.getElementById('editNotice').style.display='none'; render(); modoVer(); }
-function toggleEdit(){ var ta=document.getElementById('saida'); if(ta.style.display==='none'){ document.getElementById('preview').style.display='none'; ta.style.display='block'; document.getElementById('btnEdit').textContent='✓ Ver proposta'; ta.focus(); } else { modoVer(); } }
+function toggleEdit(){ var ta=document.getElementById('saida'); if(ta.style.display==='none'){ mostrarSo(ta,document.getElementById('waBubble')); rotuloEdit(true); ta.focus(); } else { modoVer(); } }
 function renderPreview(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*(.+?)\*/g,'<b>$1</b>'); }
 
+// avisos empilháveis embaixo, no centro (substituem alert/confirm)
+function showToast(msg,o){
+  o=o||{}; const tipo=o.tipo||'ok', box=document.getElementById('toasts'); if(!box)return;
+  const el=document.createElement('div'); el.className='toast t-'+tipo; el.setAttribute('role',tipo==='erro'?'alert':'status');
+  el.innerHTML='<span class="t-ic">'+(ICO[tipo]||ICO.ok)+'</span><span class="t-msg"></span>';
+  el.querySelector('.t-msg').textContent=msg;
+  let t=null; const fechar=()=>{ if(el._fim)return; el._fim=1; clearTimeout(t); el.classList.remove('in'); el.classList.add('out'); setTimeout(()=>el.remove(),240); };
+  if(o.acao){ const b=document.createElement('button'); b.type='button'; b.className='t-act'; b.textContent=o.acao.rotulo; b.onclick=()=>{ fechar(); o.acao.fn(); }; el.appendChild(b); }
+  box.appendChild(el);
+  while(box.children.length>3) box.firstElementChild.remove();
+  requestAnimationFrame(()=>requestAnimationFrame(()=>el.classList.add('in')));
+  const ms=o.ms||(o.acao?7000:4000);
+  t=setTimeout(fechar,ms);
+  el.addEventListener('mouseenter',()=>clearTimeout(t));
+  el.addEventListener('mouseleave',()=>{ if(!el._fim) t=setTimeout(fechar,2500); });
+  return {fechar};
+}
+// leva o atendente até o que falta: rola, abre o card se estiver recolhido, pulsa a barra lateral e foca o campo
+function irPara(cardId,campoId){
+  const card=document.getElementById(cardId), campo=document.getElementById(campoId);
+  if(card && card.classList.contains('collapsed')){ const h=card.querySelector(':scope > h2'); if(h) toggleCard(h); }
+  const alvo=card||campo; if(!alvo)return;
+  alvo.scrollIntoView({behavior:semMovimento()?'auto':'smooth',block:'start'});
+  if(card){ card.classList.remove('pulse-bar'); void card.offsetWidth; card.classList.add('pulse-bar'); setTimeout(()=>card.classList.remove('pulse-bar'),1100); }
+  if(campo) setTimeout(()=>{ try{campo.focus({preventScroll:true});}catch(e){} },semMovimento()?0:350);
+}
+// área de transferência com plano B (textarea + execCommand) para quando a API moderna falha
+function copiarTexto(t){
+  const planoB=()=>{ const ativo=document.activeElement; let ok=false;
+    try{ const ta=document.createElement('textarea'); ta.value=t; ta.setAttribute('readonly',''); ta.style.cssText='position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none';
+      document.body.appendChild(ta); ta.select(); ok=document.execCommand('copy'); ta.remove(); }catch(e){ ok=false; }
+    try{ if(ativo&&ativo.focus) ativo.focus({preventScroll:true}); }catch(e){}
+    return ok; };
+  if(navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t).then(()=>true,()=>planoB());
+  return Promise.resolve(planoB());
+}
+function feedbackCopiado(){
+  ['btnCopiar','btnCopiar2'].forEach(id=>{ const b=document.getElementById(id); if(!b)return; const l=b.querySelector('.lbl');
+    b.classList.add('copied'); if(l) l.textContent='Copiado ✓'; clearTimeout(b._t);
+    b._t=setTimeout(()=>{ b.classList.remove('copied'); if(l) l.textContent='Copiar proposta'; },1600); });
+  const bb=document.getElementById('waBubble'); if(bb){ bb.classList.remove('flash'); void bb.offsetWidth; bb.classList.add('flash'); }
+  showToast('Proposta copiada',{tipo:'ok'});
+}
 function copiar(){
   // guarda-corpos: confere o essencial antes de copiar
-  const probs=[];
-  if(parseInt(document.getElementById('produto').value)<0) probs.push('selecionar o produto');
-  if(totalGeral()<=0) probs.push('informar valores (parcelas em atraso, negativadas ou a vencer)');
-  if(!document.getElementById('dataVenc').value) probs.push('definir o vencimento da 1ª parcela');
-  if(probs.length){ alert('Antes de copiar, falta:\n\n• '+probs.join('\n• ')); return; }
+  const probs=[], alvos=[];
+  if(parseInt(document.getElementById('produto').value)<0){ probs.push('produto'); alvos.push(['card1','produto']); }
+  if(totalGeral()<=0){ probs.push('valores das parcelas');
+    const q=document.getElementById('genQtd').value.trim(), v=document.getElementById('genVenc').value;
+    alvos.push(['card2', !q||q==='0' ? 'genQtd' : (!v ? 'genVenc' : 'genVal')]); }
+  if(!document.getElementById('dataVenc').value){ probs.push('vencimento da 1ª parcela'); alvos.push(['cardResumo','dataVenc']); }
+  if(probs.length){ showToast('Falta: '+probs.join(', '),{tipo:'aviso'}); irPara(alvos[0][0],alvos[0][1]); return; }
   salvarHist();   // guarda no histórico a proposta copiada
   incrementaContador();   // 50 · soma no contador do dia
-  navigator.clipboard.writeText(document.getElementById('saida').value).then(()=>{const tt=document.getElementById('toast');tt.classList.add('show');setTimeout(()=>tt.classList.remove('show'),2000);});
+  copiarTexto(document.getElementById('saida').value).then(ok=>{
+    if(ok) feedbackCopiado();
+    else showToast('Não foi possível copiar. Selecione o texto em Editar texto e use Ctrl+C.',{tipo:'erro',ms:8000});
+  });
 }
 
 // recuperação sutil da proposta anterior (guardada na própria página)
@@ -1090,7 +1537,7 @@ function restore(s){
   produtosExtra=s.produtosExtra||[];
   atrasos=s.atrasos||[];parcelasEscolhidas=s.parcelasEscolhidas||2;editadoManual=false;document.getElementById('editNotice').style.display='none';render();
 }
-// histórico das últimas 10 propostas geradas
+// histórico de todas as propostas copiadas (sem limite fixo; só encolhe se o armazenamento do navegador encher)
 function resumoSnap(){
   const tipoMap={rep1:'1º Reparc.',rep2:'2º Reparc.',quit:'Quitação'};
   const pi=parseInt(document.getElementById('produto').value);
@@ -1115,17 +1562,30 @@ function renderHist(){
   if(!historico.length){wrap.style.display='none';return;}
   wrap.style.display='block';
   const termo=(document.getElementById('histSearch').value||'').toLowerCase();
+  const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const p2=n=>('0'+n).slice(-2);
   let o='';
-  historico.forEach((s,i)=>{const r=(s._resumo||'');if(termo && r.toLowerCase().indexOf(termo)<0)return;
-    const h=new Date(s._ts||Date.now());const hh=('0'+h.getHours()).slice(-2)+':'+('0'+h.getMinutes()).slice(-2);
-    o+=`<div onclick="restaurarHist(${i})" style="padding:7px 10px;font-size:12px;cursor:pointer;border-bottom:1px solid var(--cinza)" onmouseover="this.style.background='var(--cinza)'" onmouseout="this.style.background=''">[${hh}] ${r.replace(/</g,'&lt;')}</div>`;
+  historico.forEach((s,i)=>{const r=(s._resumo||'');
+    const h=new Date(s._ts||Date.now());
+    const quando=p2(h.getDate())+'/'+p2(h.getMonth()+1)+' · '+p2(h.getHours())+':'+p2(h.getMinutes());
+    if(termo && (r+' '+quando).toLowerCase().indexOf(termo)<0)return;
+    // _resumo = "tipo · produto · valor[ · Nx] · venc dd/mm"
+    const partes=r.split(' · '), tipo=partes[0]||'', prod=partes[1]||'', valor=partes[2]||'', resto=partes.slice(3).join(' · ');
+    o+=`<button type="button" class="hist-item" onclick="restaurarHist(${i})" title="${esc(r)}"><span class="hi-dt">${quando}</span><span class="hi-chip${tipo.indexOf('Quit')===0?' q':''}">${esc(tipo)}</span><span class="hi-prod">${esc(prod)}${resto?`<small>${esc(resto)}</small>`:''}</span><span class="hi-val">${esc(valor)}</span></button>`;
   });
-  lista.innerHTML = o || '<div style="padding:8px 10px;font-size:12px;color:var(--suave)">Nenhuma proposta encontrada.</div>';
+  lista.innerHTML = o || '<div class="hist-vazio">Nenhuma proposta com esse termo.</div>';
+  fadeHist();
 }
-function restaurarHist(i){ if(i==null)return; restore(historico[parseInt(i)]); }
+// máscara de fade em cima/embaixo só quando há rolagem naquele sentido
+function fadeHist(){
+  const l=document.getElementById('histLista'); if(!l)return;
+  l.classList.toggle('fade-t',l.scrollTop>2);
+  l.classList.toggle('fade-b',l.scrollTop+l.clientHeight<l.scrollHeight-2);
+}
+function restaurarHist(i){ if(i==null)return; restore(historico[parseInt(i)]); modoVer(); showToast('Proposta recuperada',{tipo:'ok'}); }
 
 function novaProposta(){
-  if(!confirm('Limpar todos os campos para iniciar uma nova proposta?')) return;
+  const antes=capturar();   // para o Desfazer
   salvarHist();   // guarda a proposta atual no histórico antes de limpar
   document.getElementById('tipoProposta').value='rep1';
   document.getElementById('produto').value='-1';
@@ -1151,21 +1611,50 @@ function novaProposta(){
   setVencDefault();
   render();
   modoVer();
+  showToast('Nova proposta iniciada',{tipo:'ok',acao:{rotulo:'Desfazer',fn:()=>voltar(antes)}});
 }
 
 initProdutos();
 document.getElementById('genVenc').value=hojeISO();
 setVencDefault();
 addAtraso();
+initSeg();
 render();
 try{historico=JSON.parse(localStorage.getItem('ibft_hist')||'[]')||[];}catch(e){historico=[];}
 renderHist();
 renderContador();   // 50 · mostra o contador do dia ao abrir
-try{if(localStorage.getItem('ibft_dark')==='1'){document.body.classList.add('dark');document.getElementById('btnDark').textContent='☀️';}}catch(e){}   // preferência de tema
+modoVer();   // rótulo do botão Editar texto
+// preferência de tema: a salva vale; sem nenhuma, segue o sistema (e acompanha se o sistema mudar)
+aplicarTema(document.documentElement.classList.contains('dark'));
+try{ if(localStorage.getItem('ibft_dark')===null && window.matchMedia){ const mq=matchMedia('(prefers-color-scheme: dark)');
+  const seguir=ev=>{ try{ if(localStorage.getItem('ibft_dark')===null) aplicarTema(ev.matches); }catch(e){} };
+  if(mq.addEventListener) mq.addEventListener('change',seguir); } }catch(e){}
 try{const z=localStorage.getItem('ibft_zoom');if(z&&z!=='1')aplicarZoom(z);}catch(e){}   // preferência de zoom
 try{document.getElementById('produto').focus();}catch(e){}   // auto-foco no produto
-// atalho: Ctrl+C copia a proposta quando nada está selecionado na tela
+// logo da barra fixa reaproveita a do header (sem duplicar o base64)
+try{document.getElementById('tbLogo').src=document.querySelector('.logo-ibft').src;}catch(e){}
+// barra fixa: aparece quando o header sai da tela
+try{ new IntersectionObserver(es=>{ document.body.classList.toggle('bar-on',!es[0].isIntersecting); }).observe(document.querySelector('header')); }catch(e){}
+// entrada escalonada dos cards só no carregamento (nunca nos re-renders)
+if(!semMovimento()){
+  document.querySelectorAll('.wrap .card').forEach((c,i)=>{ c.style.animationDelay=(i*40)+'ms'; c.classList.add('enter'); });
+  setTimeout(()=>document.querySelectorAll('.wrap .card.enter').forEach(c=>{ c.classList.remove('enter'); c.style.animationDelay=''; }),900);
+}
+document.getElementById('histLista').addEventListener('scroll',fadeHist,{passive:true});
+window.addEventListener('resize',fadeHist);
+// atalhos: Ctrl+C copia (quando nada está selecionado), Alt+N nova proposta, Alt+E editar/ver, Esc fecha diálogos
 document.addEventListener('keydown',function(e){
+  const dlg=dlgAbertos[dlgAbertos.length-1];
+  if(e.key==='Escape' && dlg){ e.preventDefault(); fecharDlg(dlg.id); return; }
+  if(e.key==='Tab' && dlg){   // mantém o foco dentro do diálogo aberto
+    const f=[...dlg.querySelectorAll('button,a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])')].filter(x=>x.offsetParent!==null);
+    if(f.length){ const a=f[0], z=f[f.length-1];
+      if(e.shiftKey && (document.activeElement===a||document.activeElement===dlg.querySelector('.ajuda-box'))){ e.preventDefault(); z.focus(); }
+      else if(!e.shiftKey && document.activeElement===z){ e.preventDefault(); a.focus(); } }
+    return;
+  }
+  if(dlg) return;
+  if((e.key==='Enter'||e.key===' ') && e.target.matches && e.target.matches('.card.col > h2')){ e.preventDefault(); toggleCard(e.target); return; }
   if((e.ctrlKey||e.metaKey) && (e.key==='c'||e.key==='C') && (''+window.getSelection()).trim()===''
      && document.activeElement && ['INPUT','TEXTAREA','SELECT'].indexOf(document.activeElement.tagName)<0){
     copiar();
