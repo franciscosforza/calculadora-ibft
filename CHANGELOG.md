@@ -4,6 +4,14 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v30 — out/2026
+- **Proposta no formato do modelo (pacote de melhorias):** blocos "Como está hoje" (ou "Como fica em dd/mm" com pagamento futuro), "Desconto(s) que apliquei para você", "Sua proposta" (parcelas, datas, total, formas de pagamento), "Seu acesso" (dias restantes, liberação, extensão), regras do reparcelamento em uma linha, validade ("valores valem para pagamento até dd/mm") e pergunta final "É só responder SIM". Sem CNPJ.
+- **Centavos:** o aviso da última parcela saiu do texto do aluno; continua no resumo da tela.
+- **Acesso:** expirado sem extensão diz a data de encerramento e que o acordo não altera o prazo; expirado com extensão (ou expirando antes do vencimento) conta os dias a partir do pagamento e não promete liberação automática; aviso de coerência na tela quando o acesso expira antes do vencimento. Quitação só de parcelas a vencer não fala em "liberação".
+- **Outros:** quitação parcial avisa que as demais parcelas seguem; livro usa "compra do livro"; 1º reparcelamento (até 11x) ganhou "Se a parcela não couber no seu mês, me fala que eu vejo outra opção com você".
+- **Seletor de produto:** o destaque acompanha o mouse; o produto escolhido tem barra azul à esquerda.
+- **Nenhuma regra de cálculo mudou:** 33 cenários com totais e resumo idênticos aos da v29.
+
 ## v29 — out/2026
 - **Abertura adequada ao meio da conversa:** a proposta não começa mais com "Oi, Maria! Aqui é…", porque é enviada depois de conversar com o aluno. O nome entra na primeira frase ("Maria, preparei uma condição especial…"; na quitação sem desconto, "Maria, sua simulação…"). O campo "Seu nome" foi removido.
 - **Frase de objetivo por produto:** novo atributo `obj` em `PRODUTOS` (nomes, acessos e ordem inalterados). A abertura passa a ser "…regularizar e voltar a focar no que importa: concluir sua formação e começar a atender." (ONION: "…regularizar e continuar usando o ONION no seu dia a dia."). Livro, acesso expirado sem extensão e quitação parcial mantêm a abertura neutra.

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v29">
+<meta name="versao" content="v30">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -230,6 +230,7 @@
   .cb-opt .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .cb-opt .nm small{color:var(--text-faint);font-size:11.5px;margin-left:6px;}
   .cb-opt.on{background:var(--info-bg);}
+  .cb-opt[aria-selected="true"]{box-shadow:inset 3px 0 0 var(--accent);}
   .cb-opt[aria-selected="true"] .nm{font-weight:600;color:var(--heading);}
   .cb-chip{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--text-muted);border:1px solid var(--line);white-space:nowrap;}
   .cb-chip.v{background:var(--pos-bg);color:var(--pos);border-color:transparent;}
@@ -726,7 +727,7 @@
       <h4>Progresso e barra fixa</h4>
       <p>O <b>fio dourado</b> na base do topo enche conforme você preenche. A linha logo abaixo dele diz o que ainda falta. Ao rolar a página, uma barra fina desce do topo com o que falta e o botão <b>"Copiar proposta"</b>. Assim você copia de qualquer ponto.</p>
       <h4>Proposta gerada</h4>
-      <p>No reparcelamento, a proposta traz as <b>datas das parcelas</b>. Quando o total não divide certinho, a última parcela absorve os centavos, para a soma bater com o total.</p>
+      <p>No reparcelamento, a proposta traz as <b>datas das parcelas</b>. Quando o total não divide certinho, a última parcela absorve os centavos, para a soma bater com o total. Esse ajuste aparece só no resumo da tela (para você gerar os boletos), não no texto para o aluno.</p>
       <p>A prévia mostra a mensagem como o aluno vai ver no WhatsApp. <b>"Editar texto"</b> deixa você ajustar à mão, e <b>"Regerar do zero"</b> volta ao texto automático. <b>"Copiar proposta"</b> copia o texto para colar no Kommo. Se faltar algo, a tela leva você direto ao campo. Revise sempre antes de enviar.</p>
       <h4>Nova proposta e histórico</h4>
       <p><b>"Nova proposta"</b> limpa tudo na hora, sem caixa de confirmação. Se foi sem querer, clique em <b>Desfazer</b> no aviso. Toda proposta copiada fica no histórico, com <b>data e hora</b>. Filtre por nome, produto, tipo, valor ou data e clique para recuperar.</p>
@@ -741,7 +742,7 @@
   </div>
 </div>
 
-<footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v29</a> · out/2026</footer>
+<footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v30</a> · out/2026</footer>
 
 <div class="overlay" id="regrasOverlay" onclick="if(event.target===this)toggleRegras()">
   <div class="ajuda-box" role="dialog" aria-modal="true" aria-labelledby="regrasTit" tabindex="-1">
@@ -773,6 +774,10 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v30 · out/2026</h4>
+      <p><b>Proposta no formato novo.</b> O texto foi reorganizado em blocos curtos, como no modelo do pacote de melhorias: <b>Como está hoje</b> (parcelas, desde quando estão em atraso e até quando a multa e os juros foram calculados), <b>descontos</b>, <b>Sua proposta</b> (parcelas, datas, total e formas de pagamento), <b>Seu acesso</b> (quantos dias ainda restam, a liberação e a extensão) e uma linha dizendo até quando os valores valem. O aviso do ajuste de centavos da última parcela saiu do texto e continua no resumo da tela, para você gerar os boletos.</p>
+      <p><b>Acesso expirado.</b> Sem extensão, a proposta diz em que data o acesso se encerrou e que o acordo não altera esse prazo. Com extensão, os dias contam a partir do pagamento, e a proposta não promete mais "liberação automática". Se o acesso expirar antes do vencimento escolhido, aparece um aviso na tela. <b>Quitação parcial</b> agora avisa que as demais parcelas seguem normalmente. No <b>livro</b>, o texto fala em "compra do livro", não em "curso". Com pagamento em data futura, o primeiro bloco vira "Como fica em dd/mm". O 1º reparcelamento ganhou a frase "Se a parcela não couber no seu mês, me fala que eu vejo outra opção com você" (do guia do público), exceto em 12x.</p>
+      <p><b>Seletor de produto.</b> O destaque agora acompanha o mouse; o produto escolhido fica marcado com uma barra azul à esquerda. Nenhuma regra de cálculo mudou.</p>
       <h4>v29 · out/2026</h4>
       <p><b>Abertura que combina com a conversa.</b> A proposta não começa mais com "Oi, Maria! Aqui é…", porque normalmente ela é enviada no meio de uma conversa. Agora o nome entra na primeira frase ("Maria, preparei uma condição especial…"), e o campo "Seu nome" saiu. A abertura também fala do <b>objetivo do aluno com o produto</b>, por exemplo "voltar a focar no que importa: concluir sua formação e começar a atender". Cada produto tem a sua frase. Nenhuma regra de cálculo mudou.</p>
       <h4>v28 · out/2026</h4>
@@ -979,7 +984,7 @@ function fraseProdutos(){
   if(ehApp()) return `referente ao seu aplicativo *${prodSel().txt||prodSel().n}*`;
   const nomes=nomesProdutos();
   if(nomes.length===0) return 'referente ao seu curso de *(NOME DO PRODUTO)*';
-  if(nomes.length===1) return `referente ao seu curso de *${nomes[0]}*`;
+  if(nomes.length===1) return (prodSel() && prodSel().a==='livro') ? `referente à compra do *${nomes[0]}*` : `referente ao seu curso de *${nomes[0]}*`;
   return `referente aos seus cursos de ${nomes.map(n=>'*'+n+'*').join(', ').replace(/, ([^,]*)$/,' e $1')}`;
 }
 
@@ -1134,18 +1139,16 @@ function planoParcelas(total,n){
   n=Math.max(1,n|0); const c=Math.round(total*100), b=Math.round(c/n);
   return {base:b/100, ultima:(c-b*(n-1))/100};
 }
-// cronograma em texto: 1ª parcela, demais (dia do mês, de/até) e a última quando o valor for diferente
-function textoCronograma(n,vencISO,pp){
-  if(!vencISO) return '';
-  const hoje = vencISO===hojeISO();
-  const primeira = hoje ? `hoje, *${dataBR(vencISO).slice(0,5)}*` : `*${dataBR(vencISO)}*`;
-  if(n<=1) return `🗓️ *Vencimento:* ${primeira}\n\n`;
+// cronograma em texto, dentro do bloco "Sua proposta": 1ª parcela e demais (dia do mês, até quando)
+// (o ajuste de centavos da última parcela aparece só no resumo da tela, para o atendente gerar os boletos; não vai para o aluno)
+function textoCronograma(n,vencISO){
+  const primeira = !vencISO ? '*(DATA DA 1ª PARCELA)*' : vencISO===hojeISO() ? `hoje, *${dataBR(vencISO).slice(0,5)}*` : `*${dataBR(vencISO)}*`;
+  let s=`• 1ª parcela: ${primeira}\n`;
+  if(!vencISO || n<2) return s;
   const dia=parseInt(vencISO.slice(8,10),10), ult=addMonths(vencISO,n-1);
-  let s=`🗓️ *Datas das parcelas:*\n• 1ª parcela: ${primeira}\n`;
   if(n===2) s+=`• 2ª parcela: ${dataBR(ult)}\n`;
-  else      s+=`• Demais: todo dia ${dia}${dia>28?' (ou o último dia do mês, nos meses mais curtos)':''}, de ${dataBR(addMonths(vencISO,1))} a ${dataBR(ult)}\n`;
-  if(Math.abs(pp.ultima-pp.base)>0.001) s+=`• A última parcela fica em ${brl(pp.ultima)} (ajuste de centavos)\n`;
-  return s+'\n';
+  else      s+=`• Demais: todo dia ${dia}${dia>28?' (ou o último dia do mês, nos meses mais curtos)':''}, até ${dataBR(ult)}\n`;
+  return s;
 }
 // economia com o percentual primeiro (lido mais rápido); sem "0%" quando o percentual arredonda para zero
 function economiaTexto(v,pct){ return pct>0 ? `cerca de ${pct}% (${brl(v)})` : brl(v); }
@@ -1232,6 +1235,7 @@ function renderResumo(){
   document.getElementById('resumo').innerHTML=h;
 }
 
+// texto da proposta (v30): blocos curtos — abertura · Como está hoje · descontos · Sua proposta · acesso · regras · validade · pergunta final
 function gerarTexto(){
   const tipoAc=document.getElementById('tipoAcesso').value;
   const tipoProp=document.getElementById('tipoProposta').value;
@@ -1243,9 +1247,9 @@ function gerarTexto(){
   let titulo=tituloMap[tipoProp]||'Reparcelamento';
   if(quit) titulo = parcial ? 'Quitação parcial' : 'Quitação';
 
-  const exp=expBase(), expirou=exp && exp<hojeISO();
+  const hoje=hojeISO(), exp=expBase(), expirou=exp && exp<hoje;
   const m = quit ? quitModel() : null;
-  // o aluno vai ter acesso? (vigente, vitalício, ou expirado mas com extensão) — define o tom da abertura/fecho
+  // o aluno vai ter acesso? (vigente, vitalício, ou expirado mas com extensão) — define o tom da abertura
   const vaiEstudar = (tipoAc==='vital') || (tipoAc==='12m' && !parcial && (!expirou || ext>0));
   // qualquer quitação (total ou parcial) SEM desconto/isenção não é "condição especial" → abertura neutra
   const quitSemBeneficio = quit && !(m && m.descTotal>0);
@@ -1255,8 +1259,10 @@ function gerarTexto(){
   const nomeAl=nomeAlunoTexto();
   const abre=frase=>nomeAl ? `${nomeAl}, ${frase.charAt(0).toLowerCase()}${frase.slice(1)}` : frase;
   const obj = prodSel() && prodSel().obj;
-  // ancoragem: deixa claro até quando a multa e os juros do atraso foram calculados
-  const encAte=` com multa e juros até ${dataBR(refCalc()).slice(0,5)}`;
+  const curta=iso=>iso.slice(0,4)===hoje.slice(0,4) ? dataBR(iso).slice(0,5) : dataBR(iso);   // dd/mm no ano corrente
+  const qtd=(n,um,varios)=>`${n} ${n===1?um:varios}`;
+  const ref=refCalc(), refTxt = ref===hoje ? `hoje, *${curta(ref)}*` : `*${curta(ref)}*`;
+
   let t='';
   if(!quitSemBeneficio){
     t += abre((vaiEstudar && app)
@@ -1267,128 +1273,118 @@ function gerarTexto(){
       ? `Preparei uma condição especial pra você regularizar e voltar a focar nos seus estudos com tranquilidade. 😊\n\n`
       : `Preparei uma condição especial pra você regularizar sua situação da melhor forma. 😊\n\n`);
   }
-  t+=(quitSemBeneficio ? abre('Sua') : 'Sua')+` *simulação de ${titulo}* ${fraseProdutos()} ficou da seguinte maneira:\n\n`;
+  t+=(quitSemBeneficio ? abre('Segue') : 'Segue')+` a sua *simulação de ${titulo}* ${fraseProdutos()}:\n\n`;
 
+  // ----- Como está hoje -----
+  const nN = quit ? m.N : 0, nA = quit ? m.A : qtdAtraso(), nV = quit ? m.V : qtdVinc();
+  const vencs=pAtraso().map(p=>p.venc).filter(Boolean).sort();
+  const desde = !vencs.length ? '' : nA===1 ? ` (venceu em ${curta(vencs[0])})` : ` (desde ${curta(vencs[0])})`;
+  t+= ref===hoje ? `📋 *Como está hoje*\n` : `📋 *Como fica em ${curta(ref)}*\n`;   // pagamento futuro: valores já projetados até a data
+  if(nN>0) t+=`• ${qtd(nN,'parcela negativada','parcelas negativadas')}: *${brl(negOriginal()+m.jurosNeg)}*\n`;
+  if(nA>0) t+=`• ${qtd(nA,'parcela em atraso','parcelas em atraso')}${desde}: *${brl(atrasoComEnc())}*, já com multa e juros até ${curta(ref)}\n`;
+  if(nV>0) t+=`• ${qtd(nV,'parcela a vencer','parcelas a vencer')}: *${brl(totalVinc())}*\n`;
+  const grupos=(nN>0?1:0)+(nA>0?1:0)+(nV>0?1:0);
+
+  // ----- descontos (reciprocidade: "que apliquei para você") -----
+  const descs=[];
+  let bruto=0, descTot=0;
   if(quit){
-    const bruto = m.bruto;   // valor atual (cheio) da dívida
-    const grupos = (m.N>0?1:0)+(m.A>0?1:0)+(m.V>0?1:0);
-    const descUnico = m.N>0 ? `${m.N} ${m.N===1?'parcela negativada':'parcelas negativadas'}`
-                    : m.A>0 ? `${m.A} ${m.A===1?'parcela em atraso':'parcelas em atraso'}`
-                    :         `${m.V} ${m.V===1?'parcela a vencer':'parcelas a vencer'}`;
-    // itemiza a composição só quando há mais de um grupo (evita repetir o mesmo valor)
-    if(grupos>1){
-      if(m.N>0) t+=`• *${m.N}* ${m.N===1?'parcela negativada':'parcelas negativadas'}: ${brl(negOriginal()+m.jurosNeg)}\n`;
-      if(m.A>0) t+=`• *${m.A}* ${m.A===1?'parcela em atraso':'parcelas em atraso'}: ${brl(atrasoComEnc())} (${encAte.trim()})\n`;
-      if(m.V>0) t+=`• *${m.V}* ${m.V===1?'parcela a vencer':'parcelas a vencer'}: ${brl(totalVinc())}\n`;
-    }
-    const sufixoUnico = grupos<=1 ? ` (${descUnico}${m.N===0&&m.A>0?','+encAte:''})` : '';
-    if(m.descTotal>0){
-      t+=`${grupos>1?'\n':''}💵 *Valor atual da dívida: ${brl(bruto)}*${sufixoUnico}\n`;
-      t+=`\n✅ *Descontos que apliquei para você:*\n`;
-      if(m.jurosNeg>0) t+=`• Isenção dos juros das parcelas negativadas: − ${brl(m.jurosNeg)}\n`;
-      if(m.jurosRem>0) t+=`• Isenção dos juros das parcelas em atraso: − ${brl(m.jurosRem)}\n`;
-      if(m.multaRem>0) t+=`• Isenção da multa das parcelas em atraso: − ${brl(m.multaRem)}\n`;
-      if(m.vincDesc>0) t+=`• ${m.dv}% de desconto nas parcelas a vencer: − ${brl(m.vincDesc)}\n`;
-      if(m.negDesc>0)  t+=`• ${m.negPct}% de desconto na dívida negativada: − ${brl(m.negDesc)}\n`;
-      if(m.geralDesc>0) t+=`• ${m.dg}% de desconto adicional: − ${brl(m.geralDesc)}\n`;
-      t+=`\n📌 *Valor final para quitação: ${brl(m.total)}* — à vista no boleto bancário, PIX ou cartão de crédito.\n`;
-      const pctEcon = bruto>0?Math.round(m.descTotal/bruto*100):0;
-      t+=`💚 *Você economiza ${economiaTexto(m.descTotal,pctEcon)} quitando nessa condição!*\n\n`;
-    }else{
-      t+=`${grupos>1?'\n':''}📌 *Valor total para quitação: ${brl(m.total)}*${sufixoUnico} — à vista no boleto bancário, PIX ou cartão de crédito.\n\n`;
-    }
+    bruto=m.bruto; descTot=m.descTotal;
+    if(m.jurosNeg>0) descs.push(`• Isenção dos juros das parcelas negativadas: − ${brl(m.jurosNeg)}`);
+    if(m.jurosRem>0) descs.push(`• Isenção dos juros das parcelas em atraso: − ${brl(m.jurosRem)}`);
+    if(m.multaRem>0) descs.push(`• Isenção da multa das parcelas em atraso: − ${brl(m.multaRem)}`);
+    if(m.vincDesc>0) descs.push(`• ${m.dv}% de desconto nas parcelas a vencer: − ${brl(m.vincDesc)}`);
+    if(m.negDesc>0)  descs.push(`• ${m.negPct}% de desconto na dívida negativada: − ${brl(m.negDesc)}`);
+    if(m.geralDesc>0) descs.push(`• ${m.dg}% de desconto adicional: − ${brl(m.geralDesc)}`);
+  }else if(descJurosTotal()>0){
+    bruto=atrasoComEnc()+totalVinc(); descTot=descJurosTotal();
+    descs.push(`• ${Math.round(jurosDescFrac()*100)}% de desconto nos juros das parcelas em atraso: − ${brl(descJurosTotal())}`);
+  }
+  if(descs.length){
+    if(grupos>1) t+=`💵 *Valor atual da dívida: ${brl(bruto)}*\n`;   // com um grupo só, o valor já está na linha acima
+    t+=`\n🎁 *${descs.length>1?'Descontos que apliquei':'Desconto que apliquei'} para você:*\n`+descs.join('\n')+'\n';
+  }
+  t+='\n';
+  const pctEcon = bruto>0 ? Math.round(descTot/bruto*100) : 0;
+
+  // ----- Sua proposta -----
+  const formas='• Boleto bancário, PIX ou cartão de crédito.\n';
+  if(quit){
+    const rotulo = parcial ? 'Valor para quitar essas parcelas' : descs.length ? 'Valor final para quitação' : 'Valor para quitação';
+    t+=`✅ *${rotulo}: ${brl(m.total)}*\n`;
+    t+= !vencISO ? `• À vista, com vencimento em *(DATA DE VENCIMENTO)*\n`
+      : vencISO===hoje ? `• À vista, com vencimento hoje, *${curta(vencISO)}*\n` : `• À vista, com vencimento em *${dataBR(vencISO)}*\n`;
+    t+=formas;
+    if(parcial) t+=`• As demais parcelas do seu parcelamento seguem normalmente.\n`;
+    if(descs.length) t+=`\n💚 *Você economiza ${economiaTexto(descTot,pctEcon)} quitando nessa condição!*\n`;
+    t+='\n';
     // negativadas: prazo de retirada da restrição depois do pagamento
     if(m.N>0) t+=`🔓 Assim que o pagamento for identificado, pedimos a retirada da restrição do seu nome, que sai em até *5 dias úteis*.\n\n`;
   }else{
-    const total=totalGeral(),parc=parcelasEscolhidas,pp=planoParcelas(total,parc);
-    const nA=qtdAtraso(), nV=qtdVinc();
-    const formaParc = parc>1 ? `em *${parc}x de ${brl(pp.base)}* no boleto bancário, PIX ou cartão de crédito` : `à vista no boleto bancário, PIX ou cartão de crédito`;
-    if(descJurosTotal()>0){
-      // com desconto nos juros: mostra o valor CHEIO → descontos → valor final (não deixa o desconto invisível)
-      const bruto = atrasoComEnc()+totalVinc();
-      const grupos = (nA>0?1:0)+(nV>0?1:0);
-      const descUnico = nA>0 ? `${nA} ${nA===1?'parcela em atraso':'parcelas em atraso'},${encAte}` : `${nV} ${nV===1?'parcela a vencer':'parcelas a vencer'}`;
-      // itemiza só quando há mais de um grupo (evita repetir o mesmo valor)
-      if(grupos>1){
-        if(nA>0) t+=`• *${nA}* ${nA===1?'parcela em atraso':'parcelas em atraso'}: ${brl(atrasoComEnc())} (${encAte.trim()})\n`;
-        if(nV>0) t+=`• *${nV}* ${nV===1?'parcela a vencer':'parcelas a vencer'}: ${brl(totalVinc())}\n`;
-      }
-      t+=`${grupos>1?'\n':''}💵 *Valor atual da dívida: ${brl(bruto)}*${grupos<=1?` (${descUnico})`:''}\n`;
-      t+=`\n✅ *Descontos que apliquei para você:*\n`;
-      t+=`• ${Math.round(jurosDescFrac()*100)}% de desconto nos juros das parcelas em atraso: − ${brl(descJurosTotal())}\n`;
-      t+=`\n📌 *Valor final: ${brl(total)}* — ${formaParc}.\n`;
-      const pctEcon = bruto>0?Math.round(descJurosTotal()/bruto*100):0;
-      t+=`💚 *Você economiza ${economiaTexto(descJurosTotal(),pctEcon)} com esse desconto!*\n\n`;
-    }else{
-      if(nA>0)t+=`• *${nA}* ${nA===1?'parcela em atraso':'parcelas em atraso'} no valor de *${brl(totalAtraso())}* (já${encAte});\n`;
-      if(nV>0) t+=`• *${nV}* ${nV===1?'parcela a vencer':'parcelas a vencer'} no valor de *${brl(totalVinc())}*;\n`;
-      t+=`\n`;
-      t+=`📌 O *total* fica em *${brl(total)}*, ${formaParc}.\n\n`;
-    }
-    // cronograma do acordo: datas e ajuste de centavos na última parcela (a soma das parcelas fecha com o total)
-    t+=textoCronograma(parc,vencISO,pp);
-    if(parc>1) t+=`💡 *Importante:* dividir em mais vezes *não gera juros nem aumenta o total*. Os únicos encargos são a multa e os juros das parcelas que já estavam em atraso — e já estão incluídos no valor acima.\n\n`;
+    const total=totalGeral(), parc=parcelasEscolhidas, pp=planoParcelas(total,parc);
+    t+= parc>1 ? `✅ *Sua proposta: ${parc}x de ${brl(pp.base)}*\n` : `✅ *Sua proposta: ${brl(total)} à vista*\n`;
+    t+=textoCronograma(parc,vencISO);
+    t+=`• Total do acordo: *${brl(total)}*${descs.length?', já com o desconto':''}.${parc>1?' Dividir em mais vezes *não aumenta* esse valor.':''}\n`;
+    t+=formas;
+    if(descs.length) t+=`\n💚 *Você economiza ${economiaTexto(descTot,pctEcon)} com esse desconto!*\n`;
+    t+='\n';
   }
 
-  if(quit){   // no reparcelamento a data da 1ª parcela já está no cronograma
-    const labelVenc = 'O *vencimento para pagamento* desse acordo';
-    if(vencISO===hojeISO()) t+=`🗓️ ${labelVenc} fica para hoje mesmo, dia *${dataBR(vencISO).slice(0,5)}*.\n\n`;
-    else                    t+=`🗓️ ${labelVenc} fica para *${dataBR(vencISO)}*.\n\n`;
-  }
-
+  // ----- acesso -----
+  const refPag = quit ? 'o pagamento' : 'o pagamento da 1ª parcela';
+  // acesso pausado hoje? (há parcela vencida de fato; a vencer que só cruza a data de pagamento ainda não bloqueia)
+  const pausado = pAtrasoTable().length>0 || (quit && m.N>0);
   if(parcial){
-    // quitação parcial pode envolver produtos com acessos/datas distintos → não afirma expiração
+    // quitação parcial pode envolver produtos com acessos/datas distintos → não afirma prazo nem liberação
     t+=`🔎 Nosso acordo é *exclusivamente financeiro*.\n\n`;
-  }else if(tipoAc==='12m' && app){
-    // aplicativo: fala em "acesso ao aplicativo" (não em plataforma de aulas, formação ou certificado)
-    const verbo = expirou ? 'expirou no dia' : 'expira no dia';
-    t+=`🔎 Nosso acordo é *exclusivamente financeiro* e não altera o prazo de acesso ao aplicativo *${nomeApp}*, que é de 12 meses conforme previsto em contrato. Ou seja, *seu acesso ao aplicativo ${verbo} ${exp?dataBR(exp):'XXXX'}*.\n\n`;
-    if(ext>0){
-      const refPag = quit ? 'o pagamento deste acordo' : 'o pagamento da primeira parcela deste acordo';
-      if(!expirou) t+=`Assim que o sistema identificar ${refPag}, consigo liberar para você uma extensão de mais *${ext} dias* de acesso ao aplicativo, estendendo seu acesso até *${dataBR(addDays(exp,ext))}*. Assim você segue a sua jornada no ${nomeApp} com mais tranquilidade.\n\n`;
-      else         t+=`Assim que o sistema identificar ${refPag}, consigo liberar para você uma extensão de *${ext} dias* de acesso ao aplicativo, contados a partir da data em que o pagamento for identificado. Assim você segue a sua jornada no ${nomeApp} com mais tranquilidade.\n\n`;
-    }
   }else if(tipoAc==='12m'){
-    const verbo = expirou ? 'expirou no dia' : 'expira no dia';
-    t+=`🔎 Nosso acordo é *exclusivamente financeiro* e não altera o prazo do material pedagógico que expira com os 12 meses conforme previsto em contrato. Ou seja, *seu acesso à plataforma de aulas ${verbo} ${exp?dataBR(exp):'XXXX'}*.\n\n`;
-    if(ext>0){
-      const refPag = quit ? 'o pagamento deste acordo' : 'o pagamento da primeira parcela deste acordo';
-      if(!expirou){
-        t+=`Assim que o sistema identificar ${refPag}, consigo liberar para você uma extensão de mais *${ext} dias* de acesso à plataforma, estendendo seu acesso até *${dataBR(addDays(exp,ext))}*. Isso te dá a oportunidade de concluir sua formação com mais tranquilidade.\n\n`;
-      }else{
-        t+=`Assim que o sistema identificar ${refPag}, consigo liberar para você uma extensão de *${ext} dias* de acesso à plataforma, contados a partir da data em que o pagamento for identificado. Isso te dá a oportunidade de concluir sua formação com mais tranquilidade.\n\n`;
-      }
+    const onde = app ? `ao aplicativo *${nomeApp}*` : 'à plataforma de aulas';
+    const venceAntes = exp && !expirou && vencISO && exp<vencISO;   // expira antes da data de pagamento
+    let a = app ? `📱 *Seu acesso*\n` : `🎓 *Seu acesso*\n`;
+    if(!exp) a+=`Seu acesso ${onde} vai até *(DATA DE EXPIRAÇÃO)*.`;
+    else if(expirou) a+=`Seu acesso ${onde} se encerrou em *${dataBR(exp)}*, ao fim dos 12 meses previstos em contrato.`;
+    else{
+      const d=Math.round((new Date(exp+'T00:00:00')-new Date(hoje+'T00:00:00'))/864e5);
+      a+= d===0 ? `Seu acesso ${onde} vai até hoje, *${dataBR(exp)}*.` : `Você ainda tem *${qtd(d,'dia','dias')}* de acesso ${onde}, até ${dataBR(exp)}.`;
     }
+    const extAte = exp ? `*${dataBR(addDays(exp,ext))}*` : '*(DATA)*';
+    if(pausado && !expirou && !venceAntes){
+      a+=` Assim que ${refPag} for identificado, ele é liberado automaticamente`;
+      a+= ext>0 ? ` e eu consigo te dar *mais ${ext} dias*, até ${extAte}.` : '.';
+    }else if(ext>0){
+      a+= (expirou || venceAntes)
+        ? ` Assim que ${refPag} for identificado, eu consigo liberar *${ext} dias* de acesso, contados a partir dessa data.`
+        : ` Assim que ${refPag} for identificado, eu consigo te dar *mais ${ext} dias*, até ${extAte}.`;
+    }
+    if(ext>0) a+= app ? ` Assim você segue a sua jornada no ${nomeApp} com mais tranquilidade.`
+                      : ` Isso te dá mais tempo para ${obj||'concluir sua formação com tranquilidade'}.`;
+    a+= (expirou && ext===0) ? `\nEste acordo é exclusivamente financeiro e não altera esse prazo.`
+      : app ? `\nEste acordo é exclusivamente financeiro e não altera o prazo de 12 meses de acesso ao aplicativo previsto em contrato.`
+            : `\nEste acordo é exclusivamente financeiro e não altera o prazo de 12 meses previsto em contrato.`;
+    t+=a+'\n\n';
   }else if(tipoAc==='vital'){
-    t+=`🔎 Nosso acordo é *exclusivamente financeiro*. Seu acesso ao material desse produto é *vitalício* e permanece disponível normalmente.\n\n`;
-  }else{
-    t+=`🔎 Nosso acordo é *exclusivamente financeiro*.\n\n`;
+    t+=`🎓 *Seu acesso*\nO seu acesso a esse material é *vitalício*.${pausado?` Assim que ${refPag} for identificado, ele é liberado automaticamente e você já retoma os estudos.`:''}\n\n`;
   }
+  // livro: sem bloco de acesso
 
-  if(!quit && !app){   // só no reparcelamento de produtos do IBFT; quitação e aplicativo (outra empresa) não entram
-    t+=`Enquanto houver um reparcelamento ativo:\n\n`;
-    t+=`• *Produtos do IBFT* → só podem ser comprados à vista. O parcelamento só será liberado depois da quitação total do reparcelamento.\n\n`;
-    t+=`• *Filiação ao CITRG* → pode ser comprada de forma parcelada normalmente, mesmo durante um reparcelamento ativo.\n\n`;
-  }
+  // ----- regras do reparcelamento (só produtos do IBFT; quitação e aplicativo, outra empresa, não entram) -----
+  if(!quit && !app) t+=`📌 Enquanto o reparcelamento estiver ativo, os produtos do IBFT só podem ser comprados à vista (o parcelamento volta depois que o acordo for quitado). A filiação ao CITRG continua podendo ser parcelada normalmente.\n\n`;
 
-  let mantem;
-  if(parcial) mantem=false;             // acesso ambíguo entre produtos → não promete liberação
-  else if(tipoAc==='livro') mantem=false;
-  else if(tipoAc==='vital') mantem=true;
-  else mantem = !(expirou && ext===0);
-  if(mantem){
-    const refPag = quit ? 'o pagamento deste acordo' : 'o pagamento da primeira parcela';
-    if(app) t+=`Lembrando que, assim que o sistema identificar ${refPag}, o seu acesso ao aplicativo é liberado automaticamente — aí você já retoma a sua jornada no ${nomeApp}. 📱\n\n`;
-    else    t+=`Lembrando que, assim que o sistema identificar ${refPag}, o seu acesso é liberado automaticamente — aí você já retoma os estudos. 📚\n\n`;
-  }
+  // ----- validade: a data até a qual multa e juros foram calculados (urgência real, não inventada) -----
+  if(descs.length)  t+=`⏳ Esta condição vale para pagamento até ${refTxt}.\n\n`;
+  else if(nA>0)     t+=`⏳ Os juros das parcelas em atraso correm por dia, então estes valores valem para pagamento até ${refTxt}.\n\n`;
 
   // 2º reparcelamento: é o último possível para essa dívida (limite de 2 por dívida de cada produto)
   if(tipoProp==='rep2') t+=`⚠️ *Atenção:* este é o último reparcelamento possível para essa dívida. Se alguma parcela deste acordo atrasar, não conseguiremos fazer um novo parcelamento.\n\n`;
+  // 1º reparcelamento: porta aberta se a parcela não couber (guia do público: parcela que cabe no mês pesa mais que desconto)
+  if(tipoProp==='rep1' && parcelasEscolhidas<12) t+=`Se a parcela não couber no seu mês, me fala que eu vejo outra opção com você.\n\n`;
 
-  // CTA por último, com resposta de uma palavra (compromisso): PIX na quitação; boleto no 1º reparc.; formulário/contrato no 2º reparc.
-  if(quit)                  t+=`Posso já gerar o seu *PIX* pra você garantir essa condição? É só responder *SIM*. A confirmação é na hora. ✅`;
-  else if(tipoProp==='rep2')t+=`Se estiver tudo certo pra você, o próximo passo é preencher um *formulário rápido* com seus dados pessoais. Com ele eu preparo o *contrato de confissão de dívida e parcelamento* e te envio para assinatura — e logo em seguida liberamos o *boleto* da primeira parcela. Posso te enviar o formulário pra darmos início? É só responder *SIM*. ✅`;
-  else                      t+=`Posso já gerar o seu *boleto* da primeira parcela pra darmos início? É só responder *SIM*. ✅`;
+  // pergunta final, com resposta de uma palavra (compromisso): PIX na quitação; boleto no 1º reparc.; formulário/contrato no 2º reparc.
+  if(quit)                  t+= quitSemBeneficio
+                              ? `Posso já gerar o seu *PIX*? É só responder *SIM*. A confirmação é na hora. ✅`
+                              : `Posso já gerar o seu *PIX* pra você garantir essa condição? É só responder *SIM*. A confirmação é na hora. ✅`;
+  else if(tipoProp==='rep2')t+=`Se estiver tudo certo pra você, o próximo passo é preencher um *formulário rápido* com seus dados pessoais. Com ele eu preparo o *contrato de confissão de dívida e parcelamento* e te envio para assinatura — e logo em seguida liberamos o *boleto* da 1ª parcela. Posso te enviar o formulário? É só responder *SIM*. ✅`;
+  else                      t+=`Posso te mandar o *boleto* da 1ª parcela agora? É só responder *SIM*. ✅`;
   return t;
 }
 
@@ -1441,6 +1437,8 @@ function renderCoerencia(){
   const dl=document.getElementById('dataLib').value;
   if(dl && dl>hoje) av.push('Data de liberação do acesso está no futuro.');
   if(atrasos.some(p=>!p.negativada && p.venc && p.venc>hoje)) av.push('Há parcela em "em atraso" com vencimento futuro (ainda não venceu).');
+  const ex=expBase(), dv=document.getElementById('dataVenc').value, parcialC=ehQuit()&&!document.getElementById('quitTotal').checked;
+  if(document.getElementById('tipoAcesso').value==='12m' && !parcialC && ex && ex>=hoje && dv && ex<dv) av.push('O acesso expira em '+dataBR(ex)+', antes do vencimento escolhido. A proposta não promete a liberação automática, e a extensão (se houver) conta a partir do pagamento.');
   el.style.display = av.length ? 'block':'none';
   el.innerHTML = av.length ? av.join('<br>') : '';
 }
@@ -1566,6 +1564,12 @@ function initProdBusca(){
   });
   inp.addEventListener('blur',()=>setTimeout(()=>{ if(document.activeElement!==inp) fecharProdutos(); },120));
   pop.addEventListener('mousedown',e=>e.preventDefault());   // mantém o foco no campo ao clicar na lista
+  // o destaque segue o mouse (a mesma opção que as setas movem); sem redesenhar a lista, para não pular a rolagem
+  pop.addEventListener('mousemove',e=>{
+    const o=e.target.closest('.cb-opt'); if(!o || o.classList.contains('on')) return;
+    pop.querySelectorAll('.cb-opt.on').forEach(x=>x.classList.remove('on'));
+    o.classList.add('on'); cbAtivo=parseInt(o.id.slice(3)); inp.setAttribute('aria-activedescendant',o.id);
+  });
   pop.addEventListener('click',e=>{ const o=e.target.closest('.cb-opt'); if(o) escolherProduto(parseInt(o.dataset.i)); });
 }
 

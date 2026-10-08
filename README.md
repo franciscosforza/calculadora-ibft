@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v30** | out/2026 | Proposta no formato do modelo (Como está hoje · Sua proposta · Seu acesso · validade), sem aviso de centavos e sem CNPJ; acesso expirado e extensão tratados corretamente; destaque do mouse no seletor de produto. Cálculos inalterados. |
 | **v29** | out/2026 | Abertura adequada ao meio da conversa ("Maria, preparei…", sem saudação nem apresentação) e frase de objetivo por produto. Cálculos inalterados. |
 | v28 | out/2026 | Proposta personalizada (nome do aluno e do atendente), datas das parcelas com ajuste de centavos, busca de produtos com mais negociados, tipo de acesso em botões, backup do histórico e aviso de nova versão. Cálculos inalterados. |
 | v27 | out/2026 | Refino visual e de UX: fio dourado como barra de progresso, barra fixa com Copiar, tipo em botões, interruptores, prévia estilo WhatsApp, Desfazer no lugar das confirmações, histórico com data, modo escuro refeito. Cálculos e textos inalterados. |
