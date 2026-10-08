@@ -40,7 +40,8 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
-| **v28** | out/2026 | Proposta personalizada (nome do aluno e do atendente), datas das parcelas com ajuste de centavos, busca de produtos com mais negociados, tipo de acesso em botões, backup do histórico e aviso de nova versão. Cálculos inalterados. |
+| **v29** | out/2026 | Abertura adequada ao meio da conversa ("Maria, preparei…", sem saudação nem apresentação) e frase de objetivo por produto. Cálculos inalterados. |
+| v28 | out/2026 | Proposta personalizada (nome do aluno e do atendente), datas das parcelas com ajuste de centavos, busca de produtos com mais negociados, tipo de acesso em botões, backup do histórico e aviso de nova versão. Cálculos inalterados. |
 | v27 | out/2026 | Refino visual e de UX: fio dourado como barra de progresso, barra fixa com Copiar, tipo em botões, interruptores, prévia estilo WhatsApp, Desfazer no lugar das confirmações, histórico com data, modo escuro refeito. Cálculos e textos inalterados. |
 | v26 | out/2026 | Correção: **ONION** passa a ter multa de 2% e juros de 2%/mês, igual aos demais produtos. Mantém o texto de aplicativo. |
 | v25 | out/2026 | Novo produto **ONION (aplicativo)**: atraso sem multa e sem juros, texto de proposta próprio de aplicativo, acesso de 12 meses. Demais produtos inalterados. |

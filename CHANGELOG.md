@@ -4,6 +4,11 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v29 — out/2026
+- **Abertura adequada ao meio da conversa:** a proposta não começa mais com "Oi, Maria! Aqui é…", porque é enviada depois de conversar com o aluno. O nome entra na primeira frase ("Maria, preparei uma condição especial…"; na quitação sem desconto, "Maria, sua simulação…"). O campo "Seu nome" foi removido.
+- **Frase de objetivo por produto:** novo atributo `obj` em `PRODUTOS` (nomes, acessos e ordem inalterados). A abertura passa a ser "…regularizar e voltar a focar no que importa: concluir sua formação e começar a atender." (ONION: "…regularizar e continuar usando o ONION no seu dia a dia."). Livro, acesso expirado sem extensão e quitação parcial mantêm a abertura neutra.
+- **Nenhuma regra de cálculo mudou:** os 11 cenários de regressão dão os mesmos totais da v27/v28.
+
 ## v28 — out/2026
 - **Centavos e cronograma:** as parcelas do acordo são calculadas em centavos inteiros e a última absorve a diferença, então a soma sempre fecha com o total (antes, 6x de R$ 389,10 somavam R$ 0,02 a mais que R$ 2.334,58). O reparcelamento mostra a 1ª parcela, o dia das demais (de/até) e o valor da última quando difere. Grade de parcelas e resumo usam o mesmo cálculo.
 - **Personalização:** campos "Nome do aluno" (colar o nome completo do Kommo deixa só o primeiro nome) e "Seu nome" (salvo no navegador, chave `ibft_atendente`). A proposta abre com "Oi, Maria! Aqui é Aretha, do Financeiro do IBFT.". O nome entra no histórico e na busca.

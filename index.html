@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v28">
+<meta name="versao" content="v29">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -527,8 +527,7 @@
       <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">1</span><span>Aluno, tipo e produto</span><span class="info-i" title="Informe o primeiro nome do aluno (opcional), escolha o tipo de proposta e o produto. O tipo de acesso ajusta sozinho conforme o produto.">i</span><span class="h-sp"></span><span class="badge-sec" id="badge1"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCard1)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
       <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
         <div class="row">
-          <div><label for="nomeAluno">Nome do aluno<span class="info-i" title="Opcional. A proposta começa com &quot;Oi, Maria!&quot;. Pode colar o nome completo: a calculadora usa só o primeiro nome.">i</span></label><input type="text" id="nomeAluno" autocomplete="off" spellcheck="false" placeholder="Ex.: Maria" oninput="render()" onpaste="colarNome(event)" onblur="ajustarNome()"></div>
-          <div><label for="nomeAtendente">Seu nome<span class="info-i" title="Opcional. Entra na abertura (&quot;Aqui é Aretha, do Financeiro do IBFT&quot;). Fica salvo neste navegador.">i</span></label><input type="text" id="nomeAtendente" autocomplete="off" spellcheck="false" placeholder="Ex.: Aretha" oninput="salvarAtendente();render()"></div>
+          <div><label for="nomeAluno">Nome do aluno<span class="info-i" title="Opcional. A proposta começa com &quot;Maria, preparei…&quot;. Pode colar o nome completo: a calculadora usa só o primeiro nome.">i</span></label><input type="text" id="nomeAluno" autocomplete="off" spellcheck="false" placeholder="Ex.: Maria" oninput="render()" onpaste="colarNome(event)" onblur="ajustarNome()"></div>
         </div>
         <label id="lblTipo">Tipo de proposta<span class="info-i" title="1º Reparcelamento (venc. padrão hoje), 2º Reparcelamento (venc. padrão +7 dias) ou Quitação. Na quitação aparece a opção de quitação total/parcial.">i</span></label>
         <select id="tipoProposta" class="sr-only" tabindex="-1" aria-hidden="true" onchange="onTipoChange()">
@@ -714,7 +713,7 @@
     <div class="dlg-body">
       <p class="lead">Preencha as seções da esquerda. A proposta se monta sozinha à direita, pronta para copiar e colar no Kommo.</p>
       <h4>1 · Aluno, tipo e produto</h4>
-      <p>Escreva o <b>nome do aluno</b> para a proposta começar com "Oi, Maria!". Pode colar o nome completo do Kommo: a calculadora fica só com o primeiro nome. Um nome composto digitado à mão, como "Maria Clara", é mantido. O <b>seu nome</b> entra na abertura ("Aqui é Aretha, do Financeiro do IBFT") e fica salvo neste navegador. Os dois campos são opcionais.</p>
+      <p>Escreva o <b>nome do aluno</b> (opcional) para a proposta começar com "Maria, preparei uma condição especial…". Como a proposta vai no meio da conversa, ela não tem saudação nem apresentação. Pode colar o nome completo do Kommo: a calculadora fica só com o primeiro nome. Um nome composto digitado à mão, como "Maria Clara", é mantido. A abertura também cita o objetivo do aluno com aquele produto, por exemplo "concluir sua formação e começar a atender".</p>
       <p>Escolha o tipo nos botões: <b>1º Reparcelamento</b>, <b>2º Reparcelamento</b> ou <b>Quitação</b>. Na quitação, deixe o interruptor <b>"Quita toda a dívida"</b> ligado para a quitação total, com descontos. Desligue para a <b>quitação parcial</b>: o aluno paga só algumas parcelas, até de produtos diferentes, num único link. No campo do produto, digite parte do nome para buscar (sem precisar de acento). Os produtos que <b>você</b> mais negociou nos últimos 90 dias aparecem primeiro. Ao escolher o produto, o tipo de acesso se ajusta sozinho e aparece "Automático pelo produto". Se você trocar, aparece "Alterado manualmente", com a opção de voltar ao padrão.</p>
       <h4>2 · Parcelas em atraso</h4>
       <p>Informe a quantidade, o vencimento da mais antiga e o valor. As parcelas mensais aparecem sozinhas. Edite o valor ou a data de cada linha, ou apague as que não batem. A multa de 2% e os juros de 2% ao mês (por dia, até a data de pagamento) entram sozinhos. Na quitação, marque <b>"Negat."</b> nas parcelas negativadas. No reparcelamento, há o campo opcional de desconto nos juros, para dívidas antigas.</p>
@@ -742,7 +741,7 @@
   </div>
 </div>
 
-<footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v28</a> · out/2026</footer>
+<footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v29</a> · out/2026</footer>
 
 <div class="overlay" id="regrasOverlay" onclick="if(event.target===this)toggleRegras()">
   <div class="ajuda-box" role="dialog" aria-modal="true" aria-labelledby="regrasTit" tabindex="-1">
@@ -774,6 +773,8 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v29 · out/2026</h4>
+      <p><b>Abertura que combina com a conversa.</b> A proposta não começa mais com "Oi, Maria! Aqui é…", porque normalmente ela é enviada no meio de uma conversa. Agora o nome entra na primeira frase ("Maria, preparei uma condição especial…"), e o campo "Seu nome" saiu. A abertura também fala do <b>objetivo do aluno com o produto</b>, por exemplo "voltar a focar no que importa: concluir sua formação e começar a atender". Cada produto tem a sua frase. Nenhuma regra de cálculo mudou.</p>
       <h4>v28 · out/2026</h4>
       <p><b>Proposta mais pessoal e mais clara.</b> Novos campos para o <b>nome do aluno</b> (pode colar o nome completo: fica só o primeiro) e o <b>seu nome</b>, que abrem a proposta com "Oi, Maria! Aqui é Aretha, do Financeiro do IBFT.". O reparcelamento passa a mostrar as <b>datas das parcelas</b>, e a última parcela absorve os centavos para a soma bater com o total (antes, 6x de R$ 389,10 somavam R$ 0,02 a mais que o total). A proposta também diz até quando a multa e os juros foram calculados, mostra a economia com o percentual primeiro e termina pedindo uma resposta simples (<b>SIM</b>). Na quitação com negativadas, informa que a restrição sai em até 5 dias úteis. No 2º reparcelamento, avisa que é o último possível. A frase da extensão de acesso não promete mais o certificado: fala em concluir a formação com mais tranquilidade.</p>
       <p><b>Na tela:</b> o produto agora tem <b>busca</b> e mostra primeiro os que você mais negociou. O tipo de acesso virou três botões, com aviso quando foi alterado à mão. O histórico ganhou <b>Exportar</b> e <b>Importar</b> (backup) e mostra o nome do aluno. Quando houver versão nova, aparece um aviso com o botão <b>Atualizar</b>, que mantém a proposta da tela. Nenhuma regra de cálculo mudou.</p>
@@ -892,29 +893,29 @@ function toggleDark(){
   try{localStorage.setItem('ibft_dark',d?'1':'0');}catch(e){}
 }
 const PRODUTOS=[
- {n:"Formação de Terapeutas - TRG",a:"12m"},
- {n:"Formação de Terapeutas - TRG + Formação em Leitura Corporal e Comportamental",a:"12m"},
- {n:"Formação Avançada em Master Terapeuta",a:"12m"},
- {n:"Formação Avançada em Transtornos Graves",a:"12m"},
- {n:"Formação Avançada em Transtorno de Ansiedade e Sonoros",a:"12m"},
- {n:"Formação Avançada em Transtornos Alimentares e de Imagem",a:"12m"},
- {n:"Formação Avançada em Traumas e Fobias",a:"12m"},
- {n:"Formação Avançada em Transtornos Sexuais",a:"12m"},
- {n:"Formação de Terapeutas - TRG + Mentoria da Prosperidade",a:"12m"},
- {n:"BF - Formação Avançada em Master Terapeuta + Formação em Leitura Corporal e Comportamental",a:"vital"},
- {n:"Formação em Leitura Corporal e Comportamental",a:"12m"},
- {n:"Mentoria da Prosperidade",a:"12m"},
- {n:"TRG Kids",a:"12m"},
- {n:"O Caminho para Prosperidade",a:"12m"},
- {n:"Marketing e Vendas para Terapeutas",a:"12m"},
- {n:"Programa Livre da Depressão",a:"12m"},
- {n:"Formação de Terapeutas - TRG (Renovação)",a:"12m"},
- {n:"Livro - Entendendo e Superando Traumas Emocionais com a TRG",a:"livro"},
- {n:"Black Friday 2025 - Vitalício",a:"vital"},
- {n:"Formação em Leitura Corporal e Comportamental + Mentoria da Prosperidade",a:"12m"},
+ {n:"Formação de Terapeutas - TRG",a:"12m",obj:"concluir sua formação e começar a atender"},
+ {n:"Formação de Terapeutas - TRG + Formação em Leitura Corporal e Comportamental",a:"12m",obj:"concluir sua formação e começar a atender"},
+ {n:"Formação Avançada em Master Terapeuta",a:"12m",obj:"aprofundar sua prática como terapeuta TRG"},
+ {n:"Formação Avançada em Transtornos Graves",a:"12m",obj:"concluir sua formação avançada em transtornos graves"},
+ {n:"Formação Avançada em Transtorno de Ansiedade e Sonoros",a:"12m",obj:"concluir sua formação avançada em ansiedade e transtornos sonoros"},
+ {n:"Formação Avançada em Transtornos Alimentares e de Imagem",a:"12m",obj:"concluir sua formação avançada em transtornos alimentares e de imagem"},
+ {n:"Formação Avançada em Traumas e Fobias",a:"12m",obj:"concluir sua formação avançada em traumas e fobias"},
+ {n:"Formação Avançada em Transtornos Sexuais",a:"12m",obj:"concluir sua formação avançada em transtornos sexuais"},
+ {n:"Formação de Terapeutas - TRG + Mentoria da Prosperidade",a:"12m",obj:"concluir sua formação e começar a atender"},
+ {n:"BF - Formação Avançada em Master Terapeuta + Formação em Leitura Corporal e Comportamental",a:"vital",obj:"aprofundar sua prática como terapeuta TRG"},
+ {n:"Formação em Leitura Corporal e Comportamental",a:"12m",obj:"concluir sua formação em leitura corporal e comportamental"},
+ {n:"Mentoria da Prosperidade",a:"12m",obj:"seguir acompanhando a sua mentoria"},
+ {n:"TRG Kids",a:"12m",obj:"concluir sua especialização para atender crianças"},
+ {n:"O Caminho para Prosperidade",a:"12m",obj:"continuar sua jornada no programa"},
+ {n:"Marketing e Vendas para Terapeutas",a:"12m",obj:"aprender a divulgar seus atendimentos"},
+ {n:"Programa Livre da Depressão",a:"12m",obj:"continuar o seu programa no seu ritmo"},
+ {n:"Formação de Terapeutas - TRG (Renovação)",a:"12m",obj:"seguir com a sua formação até o fim"},
+ {n:"Livro - Entendendo e Superando Traumas Emocionais com a TRG",a:"livro",obj:"regularizar a compra do seu livro"},
+ {n:"Black Friday 2025 - Vitalício",a:"vital",obj:"seguir estudando no seu ritmo"},
+ {n:"Formação em Leitura Corporal e Comportamental + Mentoria da Prosperidade",a:"12m",obj:"concluir sua formação em leitura corporal e comportamental"},
  // aplicativo (empresa própria: ONION - O Novo Inconsciente LTDA) — mesmos encargos; texto da proposta próprio e não se mistura com produtos do IBFT
- {n:"ONION - O Novo Inconsciente (aplicativo)",a:"12m",app:true,txt:"ONION"},
-];   // novos produtos sempre no FINAL: o histórico guarda o produto pela posição na lista
+ {n:"ONION - O Novo Inconsciente (aplicativo)",a:"12m",app:true,txt:"ONION",obj:"continuar usando o *ONION* no seu dia a dia"},
+];   // novos produtos sempre no FINAL: o histórico guarda o produto pela posição na lista · obj = frase de objetivo usada na abertura da proposta
 
 let atrasos=[]; let parcelasEscolhidas=2; let editadoManual=false; let produtosExtra=[]; let historico=[];
 let vincValManual=false;   // vira true quando o atendente edita o valor da parcela a vencer (para o espelhamento parar)
@@ -1176,7 +1177,6 @@ function ajustarNome(){
   const el=document.getElementById('nomeAluno'), v=el.value.trim();
   if(v.split(/\s+/).length>=3){ el.value=primeiroNome(v); render(); }
 }
-function salvarAtendente(){ try{localStorage.setItem('ibft_atendente',document.getElementById('nomeAtendente').value.trim());}catch(e){} }
 
 let ultimoTotal=null, pulsoIni=0;   // pulso do total no resumo
 function renderResumo(){
@@ -1250,20 +1250,24 @@ function gerarTexto(){
   // qualquer quitação (total ou parcial) SEM desconto/isenção não é "condição especial" → abertura neutra
   const quitSemBeneficio = quit && !(m && m.descTotal>0);
   const app = ehApp(), nomeApp = app ? (prodSel().txt||prodSel().n) : '';
-  // personalização: "Oi, Maria! Aqui é Aretha, do Financeiro do IBFT." (cada parte só entra se o campo estiver preenchido)
-  const nomeAl=nomeAlunoTexto(), atend=(document.getElementById('nomeAtendente').value||'').trim();
+  // personalização: a proposta vai no meio de uma conversa, então sem saudação nem apresentação;
+  // o nome do aluno abre a primeira frase ("Maria, preparei…") e a frase de objetivo vem do produto
+  const nomeAl=nomeAlunoTexto();
+  const abre=frase=>nomeAl ? `${nomeAl}, ${frase.charAt(0).toLowerCase()}${frase.slice(1)}` : frase;
+  const obj = prodSel() && prodSel().obj;
   // ancoragem: deixa claro até quando a multa e os juros do atraso foram calculados
   const encAte=` com multa e juros até ${dataBR(refCalc()).slice(0,5)}`;
   let t='';
-  if(nomeAl||atend) t=`Oi${nomeAl?', '+nomeAl:''}!${atend?` Aqui é ${atend}, do Financeiro${app?'':' do IBFT'}.`:''}\n\n`;
   if(!quitSemBeneficio){
-    t += (vaiEstudar && app)
-      ? `Preparei uma condição especial pra você regularizar e continuar aproveitando o seu aplicativo *${nomeApp}* com tranquilidade. 😊\n\n`
+    t += abre((vaiEstudar && app)
+      ? `Preparei uma condição especial pra você regularizar e ${obj||`continuar aproveitando o seu aplicativo *${nomeApp}*`}. 😊\n\n`
+      : (vaiEstudar && obj)
+      ? `Preparei uma condição especial pra você regularizar e voltar a focar no que importa: ${obj}. 😊\n\n`
       : vaiEstudar
       ? `Preparei uma condição especial pra você regularizar e voltar a focar nos seus estudos com tranquilidade. 😊\n\n`
-      : `Preparei uma condição especial pra você regularizar sua situação da melhor forma. 😊\n\n`;
+      : `Preparei uma condição especial pra você regularizar sua situação da melhor forma. 😊\n\n`);
   }
-  t+=`Sua *simulação de ${titulo}* ${fraseProdutos()} ficou da seguinte maneira:\n\n`;
+  t+=(quitSemBeneficio ? abre('Sua') : 'Sua')+` *simulação de ${titulo}* ${fraseProdutos()} ficou da seguinte maneira:\n\n`;
 
   if(quit){
     const bruto = m.bruto;   // valor atual (cheio) da dívida
@@ -1902,7 +1906,6 @@ addAtraso();
 initSeg();
 initProdBusca();
 initAcesso();
-try{document.getElementById('nomeAtendente').value=localStorage.getItem('ibft_atendente')||'';}catch(e){}
 try{historico=JSON.parse(localStorage.getItem('ibft_hist')||'[]')||[];}catch(e){historico=[];}   // antes do render: o ranking de produtos usa o histórico
 render();
 renderHist();
