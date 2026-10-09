@@ -4,6 +4,15 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v31 — out/2026
+- **Vencimento com o nome certo:** o campo de data passa a se chamar "Vencimento da quitação" na quitação total e "Vencimento do pagamento" na quitação parcial (no reparcelamento continua "Vencimento da 1ª parcela do acordo"). Os avisos de "falta preencher", a barra de progresso e a checagem antes de copiar usam o mesmo nome.
+- **Botão "Nova proposta"** com o azul-marinho do IBFT (degradê navy, texto branco), no tema claro e no escuro.
+- **Nenhuma regra de cálculo mudou** (só a mensagem de "falta" em `atualizarSaida`).
+- **Rolagem em área de trabalho (desktop ≥ 941px de largura e ≥ 560px de altura):** o cabeçalho fica fixo e cada coluna rola sozinha, lado a lado (sem rolagem dentro de rolagem). A altura das colunas acompanha a janela e o zoom. As bordas de cima e de baixo das colunas esmaecem quando há conteúdo escondido.
+- **Barra de copiar** no pé da coluna direita, com total e forma de pagamento, aparece quando o botão "Copiar proposta" sai de vista (e só quando há valores).
+- **Histórico com rolagem própria:** a lista mostra 5 propostas por vez (altura medida pelos próprios itens) e as demais ficam na rolagem da lista, com esmaecimento nas bordas; ao chegar ao fim da lista, a rolagem continua na coluna. O rodapé passou para o fim da coluna direita.
+- No celular e em telas estreitas, continua uma coluna com a página rolando.
+
 ## v30 — out/2026
 - **Proposta no formato do modelo (pacote de melhorias):** blocos "Como está hoje" (ou "Como fica em dd/mm" com pagamento futuro), "Desconto(s) que apliquei para você", "Sua proposta" (parcelas, datas, total, formas de pagamento), "Seu acesso" (dias restantes, liberação, extensão), regras do reparcelamento em uma linha, validade ("valores valem para pagamento até dd/mm") e pergunta final "É só responder SIM". Sem CNPJ.
 - **Centavos:** o aviso da última parcela saiu do texto do aluno; continua no resumo da tela.

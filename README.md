@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v31** | out/2026 | Vencimento com o nome certo na quitação, botão Nova proposta em azul IBFT, rolagem por coluna no desktop com barra de copiar fixa e histórico com 5 propostas e rolagem. Cálculos inalterados. |
 | **v30** | out/2026 | Proposta no formato do modelo (Como está hoje · Sua proposta · Seu acesso · validade), sem aviso de centavos e sem CNPJ; acesso expirado e extensão tratados corretamente; destaque do mouse no seletor de produto. Cálculos inalterados. |
 | **v29** | out/2026 | Abertura adequada ao meio da conversa ("Maria, preparei…", sem saudação nem apresentação) e frase de objetivo por produto. Cálculos inalterados. |
 | v28 | out/2026 | Proposta personalizada (nome do aluno e do atendente), datas das parcelas com ajuste de centavos, busca de produtos com mais negociados, tipo de acesso em botões, backup do histórico e aviso de nova versão. Cálculos inalterados. |

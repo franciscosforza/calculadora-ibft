@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v30">
+<meta name="versao" content="v31">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -153,6 +153,27 @@
   /* ===== layout ===== */
   .wrap{max-width:1220px;margin:0 auto;padding:16px 24px 24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;}
   .sticky{position:sticky;top:calc(64px / var(--z,1));max-height:calc((100vh - 80px) / var(--z,1));overflow:auto;overscroll-behavior:contain;margin:0 -6px;padding:0 6px 6px;}
+  /* área de trabalho (desktop): cabeçalho fixo e cada coluna com a sua própria rolagem, lado a lado; a página não rola */
+  html.shell,html.shell body{height:100%;overflow:hidden;}
+  html.shell .wrap{padding-bottom:0;grid-template-rows:minmax(0,1fr);}
+  html.shell .wrap > div{min-height:0;height:100%;}
+  html.shell .pane{height:100%;overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable;margin:0 -8px;padding:2px 8px 20px;}
+  html.shell .sticky{position:static;max-height:none;}
+  html.shell .card{scroll-margin-top:12px;}
+  html.shell .pane.sc-t{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16px);mask-image:linear-gradient(180deg,transparent 0,#000 16px);}
+  html.shell .pane.sc-b{-webkit-mask-image:linear-gradient(0deg,transparent 0,#000 22px);mask-image:linear-gradient(0deg,transparent 0,#000 22px);}
+  html.shell .pane.sc-t.sc-b{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 16px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(180deg,transparent 0,#000 16px,#000 calc(100% - 22px),transparent);}
+  html.shell .pane::-webkit-scrollbar{width:10px;}
+  html.shell .pane::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:10px;border:3px solid transparent;background-clip:padding-box;}
+  html.shell .pane::-webkit-scrollbar-thumb:hover{background:var(--text-faint);background-clip:padding-box;}
+  /* barra de copiar no pé da coluna direita: aparece quando o botão principal sai de vista */
+  .dock{display:none;}
+  html.shell .dock{position:sticky;bottom:0;z-index:6;display:flex;align-items:center;gap:12px;padding:10px 12px 10px 16px;margin-top:4px;background:var(--surface);background:color-mix(in srgb,var(--surface) 92%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;box-shadow:var(--e2);opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity var(--d2) var(--ease-out),transform var(--d2) var(--ease-out),visibility 0s linear var(--d2);}
+  html.shell .dock.on{opacity:1;visibility:visible;transform:none;transition:opacity var(--d2) var(--ease-out),transform var(--d2) var(--ease-out),visibility 0s;}
+  .dock-info{flex:1;min-width:0;display:flex;align-items:baseline;gap:8px;white-space:nowrap;overflow:hidden;}
+  .dock-info small{font-size:11.5px;color:var(--text-muted);font-weight:500;}
+  .dock-info b{font-family:var(--display);font-size:17px;color:var(--heading);}
+  .dock-info span{font-size:12.5px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;}
 
   /* ===== cards ===== */
   .card{position:relative;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:18px 22px 20px;margin-bottom:18px;box-shadow:var(--e1);scroll-margin-top:72px;}
@@ -307,6 +328,9 @@
   .btn-primary .i-ok{display:none;}
   .btn-primary.copied .i-ok{display:block;}
   .btn-primary.copied .i-copy{display:none;}
+  .btn-nova{background:linear-gradient(180deg,var(--navy-mid),var(--navy));color:#fff;border-color:var(--navy);box-shadow:0 1px 0 rgba(255,255,255,.12) inset,0 6px 14px -8px rgba(14,42,85,.6);}
+  .btn-nova:hover{background:linear-gradient(180deg,#2352A0,var(--navy-mid));color:#fff;}
+  :root.dark .btn-nova{border-color:var(--info-line);}
   .btn-secondary{background:var(--surface);color:var(--text);border-color:var(--line-strong);}
   .btn-secondary:hover{background:var(--surface-2);border-color:var(--accent);color:var(--heading);}
   .btn-text{background:transparent;color:var(--accent);padding:0 10px;height:32px;}
@@ -392,7 +416,7 @@
   .hist .affix input{height:36px;font-size:13px;}
   .hist .affix.pre > input{padding-left:34px;}
   .hist .affix .ax .ic{width:15px;height:15px;}
-  .hist-list{max-height:240px;overflow:auto;margin-top:8px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);overscroll-behavior:contain;}
+  .hist-list{overflow-y:auto;overflow-x:hidden;margin-top:8px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);}
   .hist-list.fade-t{-webkit-mask-image:linear-gradient(180deg,transparent,#000 22px);mask-image:linear-gradient(180deg,transparent,#000 22px);}
   .hist-list.fade-b{-webkit-mask-image:linear-gradient(0deg,transparent,#000 22px);mask-image:linear-gradient(0deg,transparent,#000 22px);}
   .hist-list.fade-t.fade-b{-webkit-mask-image:linear-gradient(180deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);mask-image:linear-gradient(180deg,transparent,#000 22px,#000 calc(100% - 22px),transparent);}
@@ -444,6 +468,9 @@
   .toast .t-act:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(246,184,88,.5);}
 
   /* ===== rodapé ===== */
+  .hist-mais{display:block;width:100%;padding:9px 12px;border:none;background:transparent;color:var(--accent);font:600 12.5px var(--font);cursor:pointer;}
+  .hist-mais:hover{background:var(--info-bg);}
+  .hist-mais:focus-visible{outline:none;box-shadow:var(--ring);}
   .rodape{text-align:center;color:var(--text-muted);font-size:11px;padding:6px 16px 22px;}
   .rodape a{color:inherit;text-decoration:underline dotted;text-underline-offset:2px;cursor:pointer;}
   .rodape a:hover{color:var(--text-muted);}
@@ -523,7 +550,7 @@
 <div class="prog-line" id="progLine"><span id="progTxt">Comece preenchendo as seções</span><span id="progPct">0%</span></div>
 
 <div class="wrap">
-  <div>
+  <div class="pane" id="colEsq">
     <div class="card col" id="card1">
       <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">1</span><span>Aluno, tipo e produto</span><span class="info-i" title="Informe o primeiro nome do aluno (opcional), escolha o tipo de proposta e o produto. O tipo de acesso ajusta sozinho conforme o produto.">i</span><span class="h-sp"></span><span class="badge-sec" id="badge1"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCard1)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
       <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
@@ -660,12 +687,12 @@
   </div>
 
   <div>
-    <div class="sticky" id="colDir">
+    <div class="sticky pane" id="colDir">
       <div class="card" id="cardResumo">
         <h2>Resumo financeiro</h2>
         <div class="note-warn" id="coerencia" style="display:none"></div>
         <div class="resumo" id="resumo"></div>
-        <label for="dataVenc">Vencimento da 1ª parcela do acordo</label>
+        <label for="dataVenc" id="lblVenc">Vencimento da 1ª parcela do acordo</label>
         <input type="date" id="dataVenc" oninput="render()">
         <div id="vencHint" class="hint"></div>
         <div id="parcWrap">
@@ -678,7 +705,7 @@
           <h2>Proposta gerada</h2>
           <div class="out-acts">
             <button type="button" class="btn btn-secondary btn-sm" id="btnEdit" onclick="toggleEdit()" title="Editar o texto à mão (Alt+E)"></button>
-            <button type="button" class="btn btn-secondary btn-sm" onclick="novaProposta()" title="Limpar tudo e começar outra proposta (Alt+N)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11.5v6M9 14.5h6"/></svg>Nova proposta</button>
+            <button type="button" class="btn btn-nova btn-sm" onclick="novaProposta()" title="Limpar tudo e começar outra proposta (Alt+N)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M12 11.5v6M9 14.5h6"/></svg>Nova proposta</button>
           </div>
         </div>
         <p class="revise"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><span>Antes de enviar, revise a proposta e confira se ela corresponde à situação real do aluno.</span></p>
@@ -704,6 +731,8 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v31</a> · out/2026</footer>
+      <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+C)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
 </div>
@@ -742,7 +771,7 @@
   </div>
 </div>
 
-<footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v30</a> · out/2026</footer>
+
 
 <div class="overlay" id="regrasOverlay" onclick="if(event.target===this)toggleRegras()">
   <div class="ajuda-box" role="dialog" aria-modal="true" aria-labelledby="regrasTit" tabindex="-1">
@@ -774,6 +803,9 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v31 · out/2026</h4>
+      <p><b>Vencimento com o nome certo.</b> Na quitação, o campo passa a se chamar "Vencimento da quitação" (na parcial, "Vencimento do pagamento"), e os avisos de "falta preencher" acompanham. O botão <b>"Nova proposta"</b> ganhou o azul-marinho do IBFT.</p>
+      <p><b>Rolagem mais simples.</b> No computador, o cabeçalho fica fixo e cada coluna rola sozinha, lado a lado: os campos à esquerda, o resumo e a proposta à direita. Acabou a rolagem dentro da rolagem. Quando o botão "Copiar proposta" sai de vista, aparece uma barra no pé da coluna direita com o total e o botão de copiar. O histórico mostra 5 propostas por vez; as demais ficam na rolagem da própria lista. No celular, continua uma coluna só. Nenhuma regra de cálculo mudou.</p>
       <h4>v30 · out/2026</h4>
       <p><b>Proposta no formato novo.</b> O texto foi reorganizado em blocos curtos, como no modelo do pacote de melhorias: <b>Como está hoje</b> (parcelas, desde quando estão em atraso e até quando a multa e os juros foram calculados), <b>descontos</b>, <b>Sua proposta</b> (parcelas, datas, total e formas de pagamento), <b>Seu acesso</b> (quantos dias ainda restam, a liberação e a extensão) e uma linha dizendo até quando os valores valem. O aviso do ajuste de centavos da última parcela saiu do texto e continua no resumo da tela, para você gerar os boletos.</p>
       <p><b>Acesso expirado.</b> Sem extensão, a proposta diz em que data o acesso se encerrou e que o acordo não altera esse prazo. Com extensão, os dias contam a partir do pagamento, e a proposta não promete mais "liberação automática". Se o acesso expirar antes do vencimento escolhido, aparece um aviso na tela. <b>Quitação parcial</b> agora avisa que as demais parcelas seguem normalmente. No <b>livro</b>, o texto fala em "compra do livro", não em "curso". Com pagamento em data futura, o primeiro bloco vira "Como fica em dd/mm". O 1º reparcelamento ganhou a frase "Se a parcela não couber no seu mês, me fala que eu vejo outra opção com você" (do guia do público), exceto em 12x.</p>
@@ -863,6 +895,7 @@ function toggleRegras(){toggleDlg('regrasOverlay');}
 function aplicarZoom(z){
   z=parseFloat(z)||1;
   ['.prog-line','.wrap'].forEach(sel=>{const el=document.querySelector(sel);if(el)el.style.zoom=z;});
+  if(typeof ajustarPaineis==='function') ajustarPaineis();
   const w=document.querySelector('.wrap'); if(w)w.style.setProperty('--z',z);   // compensa o 100vh da coluna direita
   const s=document.getElementById('zoomSel'); if(s)s.value=String(z);
   try{localStorage.setItem('ibft_zoom',String(z));}catch(e){}
@@ -1051,6 +1084,8 @@ function renderLeve(){
 }
 
 function ehQuit(){return document.getElementById('tipoProposta').value==='quit';}
+// nome do vencimento: 1ª parcela no reparcelamento; pagamento único na quitação (total ou parcial)
+function nomeVenc(){ return !ehQuit() ? 'vencimento da 1ª parcela' : document.getElementById('quitTotal').checked ? 'vencimento da quitação' : 'vencimento do pagamento'; }
 function ehQuitTotal(){return ehQuit() && document.getElementById('quitTotal').checked;}
 
 // parcelas a vencer: se houver data informada, divide em "já cruzaram a data de pagamento" (viram atraso) e "ainda a vencer"
@@ -1233,6 +1268,13 @@ function renderResumo(){
     h+=`<div class="compo-leg"><span><i style="background:#2b6cb0"></i>Original ${p(cOrig)}%</span><span><i style="background:#dd9b2e"></i>Multa ${p(cMulta)}%</span><span><i style="background:#c53030"></i>Juros ${p(cJuros)}%</span></div>`;
   }
   document.getElementById('resumo').innerHTML=h;
+  atualizarDock(); if(typeof checarDock==='function') checarDock();
+}
+// barra de copiar no pé da coluna direita: total e forma de pagamento
+function atualizarDock(){
+  const tot=document.getElementById('dockTot'); if(!tot) return;
+  const t=totalGeral(); tot.textContent=brl(t);
+  document.getElementById('dockSub').textContent = t<=0 ? '' : ehQuit() ? 'à vista' : parcelasEscolhidas+'x de '+brl(planoParcelas(t,parcelasEscolhidas).base);
 }
 
 // texto da proposta (v30): blocos curtos — abertura · Como está hoje · descontos · Sua proposta · acesso · regras · validade · pergunta final
@@ -1460,7 +1502,7 @@ function atualizarProgresso(){
   const falta=[];
   if(!prodOk) falta.push('produto');
   if(!valOk) falta.push('valores das parcelas');
-  if(!vencOk) falta.push('vencimento da 1ª parcela');
+  if(!vencOk) falta.push(nomeVenc());
   if(precisaAcesso && !acessoOk) falta.push('data de liberação do acesso');
   const txtProg = falta.length===0 ? 'Tudo preenchido. Proposta pronta para copiar' : 'Falta: '+falta.join(', ');
   document.getElementById('progTxt').textContent = txtProg;
@@ -1663,7 +1705,8 @@ function render(){
 
   const tp=document.getElementById('tipoProposta').value;
   const vEmpty=!document.getElementById('dataVenc').value;
-  document.getElementById('vencHint').innerHTML = (vEmpty?'<span style="color:var(--vermelho);font-weight:700">⚠ Defina o vencimento da 1ª parcela (obrigatório). </span>':'')+(tp==='rep1'?'Padrão: hoje (1º reparcelamento). ':tp==='rep2'?'Padrão: +7 dias (2º reparcelamento). ':'Padrão: hoje. ')+'<b>Os valores em atraso são atualizados até esta data de vencimento (o campo logo acima).</b>';
+  const nv=nomeVenc(); document.getElementById('lblVenc').textContent = nv.charAt(0).toUpperCase()+nv.slice(1)+(ehQuit()?'':' do acordo');
+  document.getElementById('vencHint').innerHTML = (vEmpty?'<span style="color:var(--vermelho);font-weight:700">⚠ Defina o '+nv+' (obrigatório). </span>':'')+(tp==='rep1'?'Padrão: hoje (1º reparcelamento). ':tp==='rep2'?'Padrão: +7 dias (2º reparcelamento). ':'Padrão: hoje. ')+'<b>Os valores em atraso são atualizados até esta data de vencimento (o campo logo acima).</b>';
 
   // campo de venc. das vincendas só aparece quando é relevante (pagamento futuro + há parcelas a vencer)
   const futuro = refCalc()>hojeISO();
@@ -1682,7 +1725,7 @@ function atualizarSaida(){
   const falta=[];
   if(parseInt(document.getElementById('produto').value)<0) falta.push('selecione o produto');
   if(totalGeral()<=0) falta.push('informe as parcelas / valores');
-  if(!document.getElementById('dataVenc').value) falta.push('defina o vencimento da 1ª parcela');
+  if(!document.getElementById('dataVenc').value) falta.push('defina o '+nomeVenc());
   const txt = falta.length
     ? '📝 A proposta vai sendo montada automaticamente conforme você preenche os campos.\n\nPara começar, falta:\n• '+falta.join('\n• ')
     : gerarTexto();
@@ -1740,7 +1783,7 @@ function copiarTexto(t){
   return Promise.resolve(planoB());
 }
 function feedbackCopiado(){
-  ['btnCopiar','btnCopiar2'].forEach(id=>{ const b=document.getElementById(id); if(!b)return; const l=b.querySelector('.lbl');
+  ['btnCopiar','btnCopiar2','btnCopiar3'].forEach(id=>{ const b=document.getElementById(id); if(!b)return; const l=b.querySelector('.lbl');
     b.classList.add('copied'); if(l) l.textContent='Copiado ✓'; clearTimeout(b._t);
     b._t=setTimeout(()=>{ b.classList.remove('copied'); if(l) l.textContent='Copiar proposta'; },1600); });
   const bb=document.getElementById('waBubble'); if(bb){ bb.classList.remove('flash'); void bb.offsetWidth; bb.classList.add('flash'); }
@@ -1753,7 +1796,7 @@ function copiar(){
   if(totalGeral()<=0){ probs.push('valores das parcelas');
     const q=document.getElementById('genQtd').value.trim(), v=document.getElementById('genVenc').value;
     alvos.push(['card2', !q||q==='0' ? 'genQtd' : (!v ? 'genVenc' : 'genVal')]); }
-  if(!document.getElementById('dataVenc').value){ probs.push('vencimento da 1ª parcela'); alvos.push(['cardResumo','dataVenc']); }
+  if(!document.getElementById('dataVenc').value){ probs.push(nomeVenc()); alvos.push(['cardResumo','dataVenc']); }
   if(probs.length){ showToast('Falta: '+probs.join(', '),{tipo:'aviso'}); irPara(alvos[0][0],alvos[0][1]); return; }
   salvarHist();   // guarda no histórico a proposta copiada
   incrementaContador();   // 50 · soma no contador do dia
@@ -1862,6 +1905,9 @@ function renderHist(){
     o+=`<button type="button" class="hist-item" onclick="restaurarHist(${i})" title="${esc(r)}"><span class="hi-dt">${quando}</span><span class="hi-chip${tipo.indexOf('Quit')===0?' q':''}">${esc(tipo)}</span><span class="hi-prod">${s.nomeAluno?`<b>${esc(formatarNome(s.nomeAluno))}</b> · `:''}${esc(prod)}${resto?`<small>${esc(resto)}</small>`:''}</span><span class="hi-val">${esc(valor)}</span></button>`;
   });
   lista.innerHTML = o || '<div class="hist-vazio">Nenhuma proposta com esse termo.</div>';
+  // altura de 5 propostas; as demais ficam na rolagem da lista
+  const its=lista.querySelectorAll('.hist-item'); let hMax=0; for(let k=0;k<Math.min(5,its.length);k++) hMax+=its[k].offsetHeight;
+  lista.style.maxHeight = (its.length>5 && hMax>0) ? (hMax+2)+'px' : '';
   fadeHist();
 }
 // máscara de fade em cima/embaixo só quando há rolagem naquele sentido
@@ -1949,6 +1995,39 @@ if(!semMovimento()){
   setTimeout(()=>document.querySelectorAll('.wrap .card.enter').forEach(c=>{ c.classList.remove('enter'); c.style.animationDelay=''; }),900);
 }
 document.getElementById('histLista').addEventListener('scroll',fadeHist,{passive:true});
+// ===== área de trabalho no desktop: altura das colunas = janela − cabeçalho (compensa o zoom) =====
+function ajustarPaineis(){
+  const w=document.querySelector('.wrap'); if(!w) return;
+  const on=window.matchMedia('(min-width: 941px) and (min-height: 560px)').matches;
+  const era=document.documentElement.classList.contains('shell');
+  document.documentElement.classList.toggle('shell',on);
+  if(!on){ w.style.height=''; return; }
+  if(!era) window.scrollTo(0,0);
+  const z=parseFloat(w.style.zoom)||1;
+  w.style.height=Math.max(320,(window.innerHeight-w.getBoundingClientRect().top)/z)+'px';
+  sombrasPaineis(); checarDock();
+}
+// esmaece a borda de cima/baixo só quando há conteúdo escondido naquele sentido
+function sombrasPaineis(){
+  document.querySelectorAll('.pane').forEach(p=>{
+    const sh=document.documentElement.classList.contains('shell');
+    p.classList.toggle('sc-t',sh && p.scrollTop>2);
+    p.classList.toggle('sc-b',sh && p.id==='colEsq' && p.scrollTop+p.clientHeight<p.scrollHeight-2);
+  });
+}
+// barra de copiar: visível quando o botão principal está fora da área visível da coluna direita
+function checarDock(){
+  const d=document.getElementById('dock'), b=document.getElementById('btnCopiar'), c=document.getElementById('colDir'); if(!d||!b||!c) return;
+  const sh=document.documentElement.classList.contains('shell'), rb=b.getBoundingClientRect(), rc=c.getBoundingClientRect();
+  const vis = sh && totalGeral()>0 && (rb.bottom<rc.top+4 || rb.top>rc.bottom-4);   // sem valores, não há o que copiar
+  if(d.classList.contains('on')!==vis){ d.classList.toggle('on',vis); d.setAttribute('aria-hidden',vis?'false':'true'); document.getElementById('btnCopiar3').tabIndex=vis?0:-1; }
+}
+document.querySelectorAll('.pane').forEach(p=>p.addEventListener('scroll',()=>{ sombrasPaineis(); checarDock(); },{passive:true}));
+window.addEventListener('resize',ajustarPaineis);
+try{ const mqP=window.matchMedia('(min-width: 941px) and (min-height: 560px)'); if(mqP.addEventListener) mqP.addEventListener('change',ajustarPaineis); }catch(e){}
+try{ const ro=new ResizeObserver(()=>{ ajustarPaineis(); }); ro.observe(document.querySelector('header')); ro.observe(document.querySelector('.prog-line')); ro.observe(document.getElementById('colEsq')); }catch(e){}
+
+ajustarPaineis(); atualizarDock();
 window.addEventListener('resize',fadeHist);
 // atalhos: Ctrl+C copia (quando nada está selecionado), Alt+N nova proposta, Alt+E editar/ver, Esc fecha diálogos
 document.addEventListener('keydown',function(e){
