@@ -16,3 +16,6 @@ $RECYCLE.BIN/
 *.bak
 *.orig
 ~$*
+
+# Testes
+node_modules/

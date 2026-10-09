@@ -82,3 +82,15 @@ Autenticação: na 1ª vez em cada computador, o **Git Credential Manager** abre
 ---
 
 _Uso interno — Financeiro IBFT._
+
+## Teste automático
+
+Antes de cada publicação, o teste abre a própria `index.html` numa página simulada (data fixa em 08/10/2026), roda 33 cenários e compara com o resultado aprovado em `tests/esperado.json`. Também confere regras de texto (sem CNPJ, sem saudação, sem palavras que o guia manda evitar, negrito fechado, pergunta final com "SIM") e se a soma das parcelas fecha com o total em milhares de valores.
+
+```
+npm install            # uma vez por computador
+npm test               # confere
+npm run test:atualizar # aprova o resultado atual (só depois de conferir uma mudança proposital)
+```
+
+Um hook local (`.git/hooks/pre-push`) roda o teste em todo `git push` e bloqueia a publicação se falhar. Os cenários ficam em `tests/cenarios.js`.

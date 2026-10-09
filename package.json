@@ -1,0 +1,12 @@
+{
+  "name": "calculadora-ibft",
+  "private": true,
+  "description": "Calculadora de Propostas IBFT: testes automáticos dos cálculos e dos textos",
+  "scripts": {
+    "test": "node tests/run.js",
+    "test:atualizar": "node tests/run.js --atualizar"
+  },
+  "devDependencies": {
+    "jsdom": "^26.1.0"
+  }
+}
