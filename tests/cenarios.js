@@ -12,7 +12,7 @@ const S={
  r1_expirado_com_ext(){ base('rep1',0,3,-95,'450,00'); parcelasEscolhidas=5; set('dataLib',d(-400)); set('extDias','45');render(); },
  r1_sem_datalib(){ base('rep1',0,2,-40,'300,00'); parcelasEscolhidas=4; render(); },
  r1_expira_hoje(){ base('rep1',0,2,-40,'300,00'); parcelasEscolhidas=4; set('dataLib',addMonths(H,-12)); set('extDias','30'); render(); },
- r2_expira_antes_venc(){ base('rep2',0,2,-40,'300,00'); parcelasEscolhidas=4; set('dataLib',addMonths(d(3),-12)); set('extDias','30'); render(); },
+ r2_expira_antes_venc(){ base('rep2',0,2,-40,'300,00'); parcelasEscolhidas=4; set('dataLib',addMonths(H,-12)); set('extDias','30'); render(); },
  r1_desc_juros_1grupo(){ base('rep1',10,5,-300,'199,00'); set('descJurosPerc','40'); parcelasEscolhidas=10; set('dataLib',d(-30)); render(); },
  r1_desc_juros_2grupos(){ base('rep1',0,2,-60,'299,70'); set('vincQtd','4');render(); set('descJurosPerc','100'); parcelasEscolhidas=6; set('dataLib',d(-150)); render(); },
  r1_2x_1atraso(){ base('rep1',12,1,-15,'109,45'); parcelasEscolhidas=2; set('dataLib',d(-60)); render(); },
@@ -38,10 +38,17 @@ const S={
  q_expirado_sem_ext(){ base('quit',0,2,-50,'299,70'); chk('retJuros',true); set('dataLib',d(-450)); render(); },
  q_expirado_com_ext(){ base('quit',0,2,-50,'299,70'); set('dataLib',d(-450)); set('extDias','30'); render(); },
  q_onion(){ base('quit',20,2,-50,'97,00'); chk('retJuros',true); set('dataLib',d(-100)); set('extDias','15'); render(); },
+ venc_sabado(){ base('rep1',0,2,-40,'300,00'); set('dataVenc','2026-10-31'); parcelasEscolhidas=3; set('dataLib',d(-100)); render(); },
+ venc_feriado_finados(){ base('quit',0,2,-40,'300,00'); set('dataVenc','2026-11-02'); set('dataLib',d(-100)); render(); },
+ venc_dia_util(){ base('rep1',0,2,-40,'300,00'); set('dataVenc','2026-10-27'); parcelasEscolhidas=3; set('dataLib',d(-100)); render(); },
+ r2_venc_hoje(){ base('rep2',0,2,-40,'300,00'); set('dataVenc',d(0)); parcelasEscolhidas=3; set('dataLib',d(-100)); render(); },
+ r2_venc_manual_5dias(){ base('rep2',0,2,-40,'300,00'); set('dataVenc',d(5)); parcelasEscolhidas=3; set('dataLib',d(-100)); render(); },
+ r1_venc_amanha(){ base('rep1',0,2,-40,'300,00'); set('dataVenc',d(1)); parcelasEscolhidas=3; set('dataLib',d(-100)); render(); },
+ q_venc_amanha(){ base('quit',0,2,-40,'300,00'); set('dataVenc',d(1)); set('dataLib',d(-100)); render(); },
  q_livro(){ base('quit',17,2,-30,'59,90'); render(); },
 };
 const out={};
-for(const k in S){ novaProposta(); S[k](); out[k]={total:brl(totalGeral()),resumo:document.getElementById('resumo').innerText,txt:$('saida').value,coer:$('coerencia').innerText}; }
+for(const k in S){ novaProposta(); S[k](); out[k]={total:brl(totalGeral()),resumo:document.getElementById('resumo').innerText,txt:$('saida').value,coer:$('coerencia').textContent}; }
 novaProposta();
 return out;
 })()

@@ -4,6 +4,14 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v32 — out/2026
+- **Aviso de vencimento em fim de semana ou feriado:** se a data de vencimento cair em sábado, domingo ou feriado bancário (nacionais, Carnaval, Sexta-feira Santa e Corpus Christi), aparece um aviso no resumo com o próximo dia útil e o botão "Usar dd/mm", que troca a data e recalcula os valores. É só um alerta: o texto da proposta não muda e nada bloqueia a cópia.
+- **Teste automático:** 3 cenários novos (sábado, feriado, dia útil) e o aviso da tela passou a ser conferido.
+- **Nenhuma regra de cálculo nem de texto mudou:** os 33 cenários anteriores dão os mesmos totais, resumos e textos da v31.
+- **2º reparcelamento vence amanhã:** o vencimento padrão passou de hoje + 7 dias para amanhã. A proposta diz "1ª parcela: vencimento para amanhã, dia dd/mm"; se a data for mudada à mão, o texto acompanha ("vencimento para hoje, dia …" ou "vencimento em dd/mm/aaaa"). No 1º reparcelamento e na quitação, "amanhã" também aparece quando a data é amanhã. A validade ("valem para pagamento até amanhã, dd/mm") acompanha.
+- **Importar histórico:** se o navegador ficar sem espaço, o aviso informa quantas propostas antigas ficaram de fora (antes a falha era silenciosa). Exportar e Importar testados: ida e volta, duplicadas, arquivos inválidos, mistos e 400 propostas.
+- **Teste automático:** 40 cenários (4 novos de vencimento).
+
 ## v31 — out/2026
 - **Vencimento com o nome certo:** o campo de data passa a se chamar "Vencimento da quitação" na quitação total e "Vencimento do pagamento" na quitação parcial (no reparcelamento continua "Vencimento da 1ª parcela do acordo"). Os avisos de "falta preencher", a barra de progresso e a checagem antes de copiar usam o mesmo nome.
 - **Botão "Nova proposta"** com o azul-marinho do IBFT (degradê navy, texto branco), no tema claro e no escuro.

@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v32** | out/2026 | Aviso de vencimento em fim de semana ou feriado (com botão para o próximo dia útil); 2º reparcelamento vence amanhã e a proposta acompanha a data; aviso quando a importação do histórico não cabe no navegador. Cálculos inalterados. |
 | **v31** | out/2026 | Vencimento com o nome certo na quitação, botão Nova proposta em azul IBFT, rolagem por coluna no desktop com barra de copiar fixa e histórico com 5 propostas e rolagem. Cálculos inalterados. |
 | **v30** | out/2026 | Proposta no formato do modelo (Como está hoje · Sua proposta · Seu acesso · validade), sem aviso de centavos e sem CNPJ; acesso expirado e extensão tratados corretamente; destaque do mouse no seletor de produto. Cálculos inalterados. |
 | **v29** | out/2026 | Abertura adequada ao meio da conversa ("Maria, preparei…", sem saudação nem apresentação) e frase de objetivo por produto. Cálculos inalterados. |
@@ -85,7 +86,7 @@ _Uso interno — Financeiro IBFT._
 
 ## Teste automático
 
-Antes de cada publicação, o teste abre a própria `index.html` numa página simulada (data fixa em 08/10/2026), roda 33 cenários e compara com o resultado aprovado em `tests/esperado.json`. Também confere regras de texto (sem CNPJ, sem saudação, sem palavras que o guia manda evitar, negrito fechado, pergunta final com "SIM") e se a soma das parcelas fecha com o total em milhares de valores.
+Antes de cada publicação, o teste abre a própria `index.html` numa página simulada (data fixa em 08/10/2026), roda 40 cenários e compara com o resultado aprovado em `tests/esperado.json`. Também confere regras de texto (sem CNPJ, sem saudação, sem palavras que o guia manda evitar, negrito fechado, pergunta final com "SIM") e se a soma das parcelas fecha com o total em milhares de valores.
 
 ```
 npm install            # uma vez por computador

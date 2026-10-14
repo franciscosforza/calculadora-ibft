@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v31">
+<meta name="versao" content="v32">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -557,7 +557,7 @@
         <div class="row">
           <div><label for="nomeAluno">Nome do aluno<span class="info-i" title="Opcional. A proposta começa com &quot;Maria, preparei…&quot;. Pode colar o nome completo: a calculadora usa só o primeiro nome.">i</span></label><input type="text" id="nomeAluno" autocomplete="off" spellcheck="false" placeholder="Ex.: Maria" oninput="render()" onpaste="colarNome(event)" onblur="ajustarNome()"></div>
         </div>
-        <label id="lblTipo">Tipo de proposta<span class="info-i" title="1º Reparcelamento (venc. padrão hoje), 2º Reparcelamento (venc. padrão +7 dias) ou Quitação. Na quitação aparece a opção de quitação total/parcial.">i</span></label>
+        <label id="lblTipo">Tipo de proposta<span class="info-i" title="1º Reparcelamento (venc. padrão hoje), 2º Reparcelamento (venc. padrão amanhã) ou Quitação. Na quitação aparece a opção de quitação total/parcial.">i</span></label>
         <select id="tipoProposta" class="sr-only" tabindex="-1" aria-hidden="true" onchange="onTipoChange()">
           <option value="rep1">1º Reparcelamento</option>
           <option value="rep2">2º Reparcelamento</option>
@@ -731,7 +731,7 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v31</a> · out/2026</footer>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v32</a> · out/2026</footer>
       <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+C)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
@@ -787,7 +787,7 @@
       <h4>Quitação parcial</h4>
       <p>Valores cheios por padrão. Opcionalmente, é possível retirar os juros das parcelas em atraso (a multa e os demais descontos são só da quitação total). Para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link.</p>
       <h4>Reparcelamento</h4>
-      <p>De 2x a 12x. Negativadas são quitadas <b>antes</b> (não entram no reparcelamento). Dívidas antigas podem receber % de desconto <b>só sobre os juros</b> do atraso, caso a caso. Vencimento padrão da 1ª parcela: hoje no 1º reparcelamento e hoje + 7 dias no 2º. Normalmente oferecido a partir de 2 parcelas em atraso. <b>Limite de 2 reparcelamentos por dívida de cada produto</b>. O limite não é comentado com o aluno no 1º; no 2º, a proposta avisa que é o último e que, se uma parcela atrasar, não haverá novo parcelamento. Parcela do acordo paga com atraso tem multa e juros pelo Asaas.</p>
+      <p>De 2x a 12x. Negativadas são quitadas <b>antes</b> (não entram no reparcelamento). Dívidas antigas podem receber % de desconto <b>só sobre os juros</b> do atraso, caso a caso. Vencimento padrão da 1ª parcela: hoje no 1º reparcelamento e amanhã no 2º. Normalmente oferecido a partir de 2 parcelas em atraso. <b>Limite de 2 reparcelamentos por dívida de cada produto</b>. O limite não é comentado com o aluno no 1º; no 2º, a proposta avisa que é o último e que, se uma parcela atrasar, não haverá novo parcelamento. Parcela do acordo paga com atraso tem multa e juros pelo Asaas.</p>
       <h4>2º reparcelamento: formalização</h4>
       <p>Após o aceite: enviar <b>formulário</b> de dados → montar <b>contrato de confissão de dívida e parcelamento</b> → enviar para <b>assinatura</b> → liberar o boleto da 1ª parcela.</p>
       <h4>Acesso e extensão</h4>
@@ -803,6 +803,9 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v32 · out/2026</h4>
+      <p><b>2º reparcelamento vence amanhã.</b> O vencimento padrão do 2º reparcelamento passou de hoje + 7 dias para <b>amanhã</b>, e a proposta diz "vencimento para amanhã, dia 15/10". Se você mudar a data à mão, o texto acompanha: "vencimento para hoje, dia …" ou "vencimento em 20/10/2026". No 1º reparcelamento e na quitação, "amanhã" também aparece quando a data escolhida é amanhã.</p>
+      <p><b>Aviso de vencimento em fim de semana ou feriado.</b> Se a data de vencimento cair num sábado, domingo ou feriado em que os bancos não compensam boleto (inclui Carnaval, Sexta-feira Santa e Corpus Christi), aparece um aviso na área do resumo com o próximo dia útil e o botão <b>"Usar dd/mm"</b>, que troca a data e recalcula os valores. O aviso é só um alerta: o texto da proposta não muda e nada impede de copiar. Nenhuma regra de cálculo mudou.</p>
       <h4>v31 · out/2026</h4>
       <p><b>Vencimento com o nome certo.</b> Na quitação, o campo passa a se chamar "Vencimento da quitação" (na parcial, "Vencimento do pagamento"), e os avisos de "falta preencher" acompanham. O botão <b>"Nova proposta"</b> ganhou o azul-marinho do IBFT.</p>
       <p><b>Rolagem mais simples.</b> No computador, o cabeçalho fica fixo e cada coluna rola sozinha, lado a lado: os campos à esquerda, o resumo e a proposta à direita. Acabou a rolagem dentro da rolagem. Quando o botão "Copiar proposta" sai de vista, aparece uma barra no pé da coluna direita com o total e o botão de copiar. O histórico mostra 5 propostas por vez; as demais ficam na rolagem da própria lista. No celular, continua uma coluna só. Nenhuma regra de cálculo mudou.</p>
@@ -1022,7 +1025,7 @@ function fraseProdutos(){
 }
 
 function onTipoChange(){setVencDefault();render();}
-function setVencDefault(){const t=document.getElementById('tipoProposta').value;document.getElementById('dataVenc').value=(t==='rep2')?addDays(hojeISO(),7):hojeISO();}
+function setVencDefault(){const t=document.getElementById('tipoProposta').value;document.getElementById('dataVenc').value=(t==='rep2')?addDays(hojeISO(),1):hojeISO();}
 
 function gerarParcelas(){
   // espelha o valor da parcela em atraso no campo "a vencer" enquanto ele não for editado manualmente
@@ -1176,8 +1179,13 @@ function planoParcelas(total,n){
 }
 // cronograma em texto, dentro do bloco "Sua proposta": 1ª parcela e demais (dia do mês, até quando)
 // (o ajuste de centavos da última parcela aparece só no resumo da tela, para o atendente gerar os boletos; não vai para o aluno)
-function textoCronograma(n,vencISO){
-  const primeira = !vencISO ? '*(DATA DA 1ª PARCELA)*' : vencISO===hojeISO() ? `hoje, *${dataBR(vencISO).slice(0,5)}*` : `*${dataBR(vencISO)}*`;
+function textoCronograma(n,vencISO,rep2){
+  const hoje=hojeISO(), amanha=somaDiasUTC(hoje,1), dm=dataBR(vencISO||'').slice(0,5);
+  let primeira;
+  if(!vencISO) primeira='*(DATA DA 1ª PARCELA)*';
+  else if(rep2)   // 2º reparcelamento: o vencimento é dito por extenso e acompanha a data escolhida
+    primeira = vencISO===hoje ? `vencimento para hoje, dia *${dm}*` : vencISO===amanha ? `vencimento para amanhã, dia *${dm}*` : `vencimento em *${dataBR(vencISO)}*`;
+  else primeira = vencISO===hoje ? `hoje, *${dm}*` : vencISO===amanha ? `amanhã, *${dm}*` : `*${dataBR(vencISO)}*`;
   let s=`• 1ª parcela: ${primeira}\n`;
   if(!vencISO || n<2) return s;
   const dia=parseInt(vencISO.slice(8,10),10), ult=addMonths(vencISO,n-1);
@@ -1303,7 +1311,7 @@ function gerarTexto(){
   const obj = prodSel() && prodSel().obj;
   const curta=iso=>iso.slice(0,4)===hoje.slice(0,4) ? dataBR(iso).slice(0,5) : dataBR(iso);   // dd/mm no ano corrente
   const qtd=(n,um,varios)=>`${n} ${n===1?um:varios}`;
-  const ref=refCalc(), refTxt = ref===hoje ? `hoje, *${curta(ref)}*` : `*${curta(ref)}*`;
+  const ref=refCalc(), refTxt = ref===hoje ? `hoje, *${curta(ref)}*` : ref===somaDiasUTC(hoje,1) ? `amanhã, *${curta(ref)}*` : `*${curta(ref)}*`;
 
   let t='';
   if(!quitSemBeneficio){
@@ -1355,7 +1363,7 @@ function gerarTexto(){
     const rotulo = parcial ? 'Valor para quitar essas parcelas' : descs.length ? 'Valor final para quitação' : 'Valor para quitação';
     t+=`✅ *${rotulo}: ${brl(m.total)}*\n`;
     t+= !vencISO ? `• À vista, com vencimento em *(DATA DE VENCIMENTO)*\n`
-      : vencISO===hoje ? `• À vista, com vencimento hoje, *${curta(vencISO)}*\n` : `• À vista, com vencimento em *${dataBR(vencISO)}*\n`;
+      : vencISO===hoje ? `• À vista, com vencimento hoje, *${curta(vencISO)}*\n` : vencISO===somaDiasUTC(hoje,1) ? `• À vista, com vencimento amanhã, *${curta(vencISO)}*\n` : `• À vista, com vencimento em *${dataBR(vencISO)}*\n`;
     t+=formas;
     if(parcial) t+=`• As demais parcelas do seu parcelamento seguem normalmente.\n`;
     if(descs.length) t+=`\n💚 *Você economiza ${economiaTexto(descTot,pctEcon)} quitando nessa condição!*\n`;
@@ -1365,7 +1373,7 @@ function gerarTexto(){
   }else{
     const total=totalGeral(), parc=parcelasEscolhidas, pp=planoParcelas(total,parc);
     t+= parc>1 ? `✅ *Sua proposta: ${parc}x de ${brl(pp.base)}*\n` : `✅ *Sua proposta: ${brl(total)} à vista*\n`;
-    t+=textoCronograma(parc,vencISO);
+    t+=textoCronograma(parc,vencISO,tipoProp==='rep2');
     t+=`• Total do acordo: *${brl(total)}*${descs.length?', já com o desconto':''}.${parc>1?' Dividir em mais vezes *não aumenta* esse valor.':''}\n`;
     t+=formas;
     if(descs.length) t+=`\n💚 *Você economiza ${economiaTexto(descTot,pctEcon)} com esse desconto!*\n`;
@@ -1473,6 +1481,31 @@ function aplicarStatus(){
   setSec('cardAcesso','badge5',s5);
 }
 
+// ===== dia útil: sábado, domingo e feriados em que os bancos não compensam boleto =====
+// nacionais fixos + Carnaval (seg. e ter.), Sexta-feira Santa e Corpus Christi (os bancos fecham)
+const FERIADOS_FIXOS={'01-01':'Confraternização Universal','04-21':'Tiradentes','05-01':'Dia do Trabalho','09-07':'Independência','10-12':'Nossa Senhora Aparecida','11-02':'Finados','11-15':'Proclamação da República','11-20':'Consciência Negra','12-25':'Natal'};
+function pascoaISO(a){   // algoritmo de Meeus/Jones/Butcher
+  const g=a%19,c=Math.floor(a/100),h=(c-Math.floor(c/4)-Math.floor((8*c+13)/25)+19*g+15)%30,
+        i=h-Math.floor(h/28)*(1-Math.floor(29/(h+1))*Math.floor((21-g)/11)),
+        j=(a+Math.floor(a/4)+i+2-c+Math.floor(c/4))%7,l=i-j,m=3+Math.floor((l+40)/44),d=l+28-31*Math.floor(m/4);
+  return a+'-'+String(m).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+}
+function somaDiasUTC(iso,n){const p=iso.split('-').map(Number);const t=new Date(Date.UTC(p[0],p[1]-1,p[2]+n));return t.toISOString().slice(0,10);}
+const DIAS_SEMANA=['domingo','segunda-feira','terça-feira','quarta-feira','quinta-feira','sexta-feira','sábado'];
+function diaSemana(iso){const p=iso.split('-').map(Number);return new Date(Date.UTC(p[0],p[1]-1,p[2])).getUTCDay();}
+// motivo pelo qual o dia não é útil ('' = é útil)
+function motivoNaoUtil(iso){
+  if(!iso) return '';
+  const ds=diaSemana(iso); if(ds===0) return 'domingo'; if(ds===6) return 'sábado';
+  const a=iso.slice(0,4), fx=FERIADOS_FIXOS[iso.slice(5)]; if(fx) return 'feriado ('+fx+')';
+  const pas=pascoaISO(parseInt(a,10)), mov={};
+  mov[somaDiasUTC(pas,-48)]='segunda de Carnaval'; mov[somaDiasUTC(pas,-47)]='terça de Carnaval';
+  mov[somaDiasUTC(pas,-2)]='Sexta-feira Santa'; mov[somaDiasUTC(pas,60)]='Corpus Christi';
+  return mov[iso] ? 'feriado ('+mov[iso]+')' : '';
+}
+function proximoDiaUtil(iso){let d=iso;for(let i=0;i<10;i++){d=somaDiasUTC(d,1);if(!motivoNaoUtil(d))return d;}return d;}
+function usarVencimento(iso){document.getElementById('dataVenc').value=iso;render();}
+
 function renderCoerencia(){
   const el=document.getElementById('coerencia'); if(!el)return;
   const hoje=hojeISO(), av=[];
@@ -1481,6 +1514,10 @@ function renderCoerencia(){
   if(atrasos.some(p=>!p.negativada && p.venc && p.venc>hoje)) av.push('Há parcela em "em atraso" com vencimento futuro (ainda não venceu).');
   const ex=expBase(), dv=document.getElementById('dataVenc').value, parcialC=ehQuit()&&!document.getElementById('quitTotal').checked;
   if(document.getElementById('tipoAcesso').value==='12m' && !parcialC && ex && ex>=hoje && dv && ex<dv) av.push('O acesso expira em '+dataBR(ex)+', antes do vencimento escolhido. A proposta não promete a liberação automática, e a extensão (se houver) conta a partir do pagamento.');
+  // vencimento em fim de semana ou feriado: o boleto não compensa nesse dia
+  const mn=motivoNaoUtil(dv);
+  if(mn){ const prox=proximoDiaUtil(dv);
+    av.push('O vencimento ('+dataBR(dv)+') cai em '+(mn.indexOf('feriado')===0?'um ':'um ')+mn+'. Os bancos não compensam boleto nesse dia. Próximo dia útil: '+DIAS_SEMANA[diaSemana(prox)]+', '+dataBR(prox)+'. <button type="button" class="link-btn" onclick="usarVencimento(\''+prox+'\')">Usar '+dataBR(prox).slice(0,5)+'</button> <span class="hint-inline">Os valores em atraso são recalculados até a nova data.</span>'); }
   el.style.display = av.length ? 'block':'none';
   el.innerHTML = av.length ? av.join('<br>') : '';
 }
@@ -1706,7 +1743,7 @@ function render(){
   const tp=document.getElementById('tipoProposta').value;
   const vEmpty=!document.getElementById('dataVenc').value;
   const nv=nomeVenc(); document.getElementById('lblVenc').textContent = nv.charAt(0).toUpperCase()+nv.slice(1)+(ehQuit()?'':' do acordo');
-  document.getElementById('vencHint').innerHTML = (vEmpty?'<span style="color:var(--vermelho);font-weight:700">⚠ Defina o '+nv+' (obrigatório). </span>':'')+(tp==='rep1'?'Padrão: hoje (1º reparcelamento). ':tp==='rep2'?'Padrão: +7 dias (2º reparcelamento). ':'Padrão: hoje. ')+'<b>Os valores em atraso são atualizados até esta data de vencimento (o campo logo acima).</b>';
+  document.getElementById('vencHint').innerHTML = (vEmpty?'<span style="color:var(--vermelho);font-weight:700">⚠ Defina o '+nv+' (obrigatório). </span>':'')+(tp==='rep1'?'Padrão: hoje (1º reparcelamento). ':tp==='rep2'?'Padrão: amanhã (2º reparcelamento). ':'Padrão: hoje. ')+'<b>Os valores em atraso são atualizados até esta data de vencimento (o campo logo acima).</b>';
 
   // campo de venc. das vincendas só aparece quando é relevante (pagamento futuro + há parcelas a vencer)
   const futuro = refCalc()>hojeISO();
@@ -1849,9 +1886,11 @@ function salvarHist(){
   renderHist();
 }
 // grava no navegador; só remove as mais antigas se o armazenamento encher (quota ~5MB)
-function gravarHist(){
+function gravarHist(){   // devolve quantas propostas mais antigas não couberam no navegador (normalmente 0)
+  const n0=historico.length;
   try{localStorage.setItem('ibft_hist',JSON.stringify(historico));}
   catch(e){ while(historico.length>1){ historico.pop(); try{ localStorage.setItem('ibft_hist',JSON.stringify(historico)); break; }catch(e2){} } }
+  return n0-historico.length;
 }
 // backup: exporta todas as propostas num arquivo .json e importa de volta (junta sem duplicar)
 function exportarHist(){
@@ -1878,8 +1917,8 @@ function importarHist(input){
       itens.forEach(x=>{ if(!valido(x)){ruins++;return;} if(ja.has(chave(x)))return; historico.push(x); ja.add(chave(x)); n++; });
       if(!n && ruins && ruins===itens.length) throw new Error('itens');
       historico.sort((a,b)=>(b._ts||0)-(a._ts||0));
-      gravarHist(); renderHist();
-      showToast(n ? n+(n===1?' proposta importada':' propostas importadas') : 'Nenhuma proposta nova nesse arquivo',{tipo:'ok'});
+      const sobrou=gravarHist(); renderHist();
+      showToast((n ? n+(n===1?' proposta importada':' propostas importadas') : 'Nenhuma proposta nova nesse arquivo')+(sobrou?'. Atenção: o navegador ficou sem espaço e as '+sobrou+' propostas mais antigas ficaram de fora.':''),{tipo:sobrou?'aviso':'ok',ms:sobrou?8000:undefined});
     }catch(e){ showToast('Esse arquivo não é um backup da calculadora. Use um arquivo gerado em Exportar.',{tipo:'erro',ms:7000}); }
   };
   r.onerror=()=>showToast('Não foi possível ler o arquivo.',{tipo:'erro'});
