@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v34">
+<meta name="versao" content="v35">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -300,6 +300,7 @@
   /* ===== tabela de atrasos ===== */
   .tbl-wrap{overflow-x:auto;margin:9px -4px -3px;padding:3px 4px;}
   table{width:100%;border-collapse:collapse;}
+  .sel-prod{min-width:138px;max-width:190px;height:34px;padding:0 26px 0 9px;font-size:12.5px;}
   th,td{padding:6px 4px;text-align:left;font-size:12px;}
   th{color:var(--text-muted);font-weight:600;border-bottom:1px solid var(--line);font-size:12px;}
   td input{height:36px;}
@@ -313,6 +314,7 @@
   td.check{vertical-align:middle;}
   .prod-extra{display:flex;gap:8px;align-items:center;margin-top:8px;}
   .prod-extra select{flex:1;}
+  .prod-extra-cb{flex:1;min-width:0;}
 
   /* ===== botões (primário, secundário, terciário, destrutivo) ===== */
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 16px;border:1px solid transparent;border-radius:var(--r);font:600 13px var(--font);cursor:pointer;white-space:nowrap;text-decoration:none;transition:background-color var(--d1),border-color var(--d1),color var(--d1),box-shadow var(--d1),transform var(--d1);}
@@ -636,7 +638,7 @@
         <div id="produtosExtraWrap" style="display:none">
           <div id="produtosExtra"></div>
           <div class="acts"><button type="button" class="btn btn-text" onclick="addProdutoExtra()">+ Adicionar outro produto</button></div>
-          <p class="hint">Na quitação parcial, adicione aqui se as parcelas forem de produtos diferentes. A proposta lista todos.</p>
+          <p class="hint">Na quitação parcial, adicione aqui se as parcelas forem de produtos diferentes. Depois, na tabela de parcelas, escolha o produto de cada uma na coluna <b>"Produto"</b>. A proposta separa os valores por produto, com a data de cada parcela.</p>
         </div>
         <div id="tipoAcessoWrap">
           <label id="lblAcesso">Tipo de acesso<span class="info-i" title="Define se há expiração de acesso. 12 meses → calcula expiração e extensão. Vitalício/Livro → sem seção de acesso. Normalmente preenche sozinho pelo produto.">i</span></label>
@@ -667,7 +669,7 @@
           <p class="hint">As parcelas são geradas sozinhas (vencimentos mensais a partir da mais antiga) conforme você preenche. Apagar a quantidade zera tudo. Depois, é só editar ou apagar as linhas que não baterem, como uma parcela paga no meio.</p>
         </div>
         <div class="tbl-wrap"><table>
-          <thead><tr><th>Valor orig.</th><th>Vencimento</th><th id="thNegat" class="check">Negat.</th><th>Atualizado</th><th><span class="sr-only">Apagar</span></th></tr></thead>
+          <thead><tr><th>Valor orig.</th><th>Vencimento</th><th id="thProd" style="display:none">Produto</th><th id="thNegat" class="check">Negat.</th><th>Atualizado</th><th><span class="sr-only">Apagar</span></th></tr></thead>
           <tbody id="atrasoBody"></tbody>
         </table></div>
         <div class="acts">
@@ -787,7 +789,7 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v34</a> · out/2026</footer>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v35</a> · out/2026</footer>
       <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
@@ -859,6 +861,8 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v35 · out/2026</h4>
+      <p><b>Quitação parcial com mais de um produto.</b> A tabela de parcelas ganha a coluna <b>"Produto"</b>: cada parcela vem no produto principal e você troca para o outro na lista (as parcelas do segundo produto entram por "+ Adicionar parcela", com valor e vencimento próprios). A proposta separa por produto e mostra a data de cada parcela, por exemplo "Formação de Terapeutas - TRG · Parcela de 02/10: R$ 199,10". Se um produto da proposta ficar sem parcela, aparece um aviso. O seletor dos produtos adicionais agora é igual ao do produto principal: busca, "Mais negociados" e o tipo de acesso de cada produto; ele não oferece o produto principal nem os já escolhidos. Na quitação parcial de um produto só, 2 ou 3 parcelas aparecem com as datas ("02/08 e 02/10") em vez de "desde". Nenhuma regra de cálculo mudou.</p>
       <h4>v34 · out/2026</h4>
       <p><b>Mais rápido pelo teclado.</b> <kbd>Enter</kbd> leva ao próximo campo essencial (nome → produto → tipo → parcelas → acesso → vencimento → copiar), <kbd>Ctrl</kbd>+<kbd>Enter</kbd> copia de qualquer lugar, <kbd>Alt</kbd>+<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> escolhe o tipo de proposta e <kbd>Alt</kbd>+<kbd>P</kbd> abre a busca de produto. Os atalhos aparecem embaixo do botão de copiar. O "Limpar" das seções saiu do Tab (continua no mouse).</p>
       <p><b>Tela mais viva.</b> O total e o valor da parcela "rolam" até o número novo. A prévia do WhatsApp destaca por um instante as linhas que mudaram e o balão entra com uma animação curta. Seção recolhida mostra um resumo de uma linha (ex.: "Maria · TRG · 1º Reparc."). Sem proposta, a coluna da direita mostra os 3 passos, e cada um leva ao campo. Campo que falta treme de leve e diz o que fazer. Ao copiar, um confete discreto e o contador do dia pulsa. Quem usa "reduzir movimento" no computador vê tudo sem animação. Nenhuma regra de cálculo nem de texto mudou.</p>
@@ -1063,17 +1067,80 @@ function onProdutoChange(){const i=parseInt(document.getElementById('produto').v
 
 // multi-produto (quitação parcial) — aplicativos (ONION, outra empresa) não se misturam com os produtos do IBFT
 function optionsProdutos(sel){return PRODUTOS.map((p,i)=>p.app?'':`<option value="${i}" ${i===sel?'selected':''}>${i+1}. ${p.n}</option>`).join('');}
-function addProdutoExtra(){produtosExtra.push(-1);render();}
+function addProdutoExtra(){produtosExtra.push(-1);render();
+  const ins=document.querySelectorAll('#produtosExtra .prod-extra-cb input'), u=ins[ins.length-1]; if(u && u.offsetParent){ u.focus(); u.click(); }}
 function delProdutoExtra(i){produtosExtra.splice(i,1);render();}
 function updProdutoExtra(i,v){produtosExtra[i]=parseInt(v);render();}
+// produtos adicionais (quitação parcial): mesmo seletor com busca do produto principal
+let extraChave='';
 function renderProdutosExtra(){
-  const c=document.getElementById('produtosExtra');c.innerHTML='';
+  const c=document.getElementById('produtosExtra');
+  const chave=produtosExtra.join(',')+'|'+document.getElementById('produto').value;
+  if(chave===extraChave && c.children.length===produtosExtra.length) return;   // nada mudou: não recria (mantém foco e lista aberta)
+  extraChave=chave; c.innerHTML='';
   produtosExtra.forEach((idx,i)=>{
     const div=document.createElement('div');div.className='prod-extra';
-    div.innerHTML=`<select onchange="updProdutoExtra(${i},this.value)" aria-label="Produto adicional"><option value="-1">— produto adicional —</option>${optionsProdutos(idx)}</select><button type="button" class="btn-x" onclick="delProdutoExtra(${i})" aria-label="Remover produto" title="Remover produto">${ICO.x}</button>`;
+    const host=document.createElement('div'); host.className='prod-extra-cb'; div.appendChild(host);
+    const x=document.createElement('span'); x.innerHTML=`<button type="button" class="btn-x" onclick="delProdutoExtra(${i})" aria-label="Remover produto" title="Remover produto">${ICO.x}</button>`; div.appendChild(x.firstElementChild);
     c.appendChild(div);
+    montarComboProduto(host,{valor:idx, rotulo:'Produto adicional '+(i+1), placeholder:'Buscar outro produto',
+      // não oferece aplicativo (outra empresa), o produto principal nem os já escolhidos nas outras linhas
+      filtro:k=>!PRODUTOS[k].app && k!==parseInt(document.getElementById('produto').value) && produtosExtra.every((e,j)=>j===i||e!==k),
+      aoEscolher:k=>updProdutoExtra(i,k)});
   });
 }
+let cbSeq=0;
+function montarComboProduto(host,o){
+  const id='cbx'+(++cbSeq);
+  host.innerHTML=`<div class="combo"><svg class="ic combo-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input type="text" role="combobox" aria-expanded="false" aria-controls="${id}L" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="${escAtr(o.placeholder||'Buscar produto')}" aria-label="${escAtr(o.rotulo||'Produto')}"><svg class="ic combo-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><div class="combo-pop" id="${id}L" role="listbox" aria-label="Produtos" hidden></div></div>`;
+  const wrap=host.firstElementChild, inp=wrap.querySelector('input'), pop=wrap.querySelector('.combo-pop');
+  let valor=o.valor, ativo=0, vis=[], q='';
+  const mostrarValor=()=>{ inp.value = valor>=0 ? PRODUTOS[valor].n : ''; };
+  mostrarValor();
+  function desenhar(){
+    const cont=rankingProdutos(), termos=semAcento(q.trim()).split(/\s+/).filter(Boolean);
+    const ordem=PRODUTOS.map((p,i)=>i).filter(o.filtro).sort((a,b)=>(cont[b]||0)-(cont[a]||0)||PRODUTOS[a].n.localeCompare(PRODUTOS[b].n,'pt-BR'));
+    let h='',k=0; vis=[];
+    const item=i=>{ vis.push(i); const n=cont[i]||0;
+      return `<div class="cb-opt${k===ativo?' on':''}" role="option" id="${id}o${k++}" data-i="${i}" aria-selected="${i===valor}"><span class="nm">${escH(PRODUTOS[i].n)}${n&&!termos.length?`<small>${n}×</small>`:''}</span>${chipAcesso(PRODUTOS[i])}</div>`; };
+    if(!termos.length){
+      const top=ordem.filter(i=>cont[i]>0).slice(0,5);
+      if(top.length){ h+='<div class="cb-grp">Mais negociados por você</div>'; top.forEach(i=>h+=item(i)); h+='<div class="cb-grp">Todos os produtos</div>'; }
+      ordem.filter(i=>top.indexOf(i)<0).forEach(i=>h+=item(i));
+    }else{
+      ordem.filter(i=>{const n=semAcento(PRODUTOS[i].n);return termos.every(t=>n.indexOf(t)>=0);}).forEach(i=>h+=item(i));
+      if(!vis.length) h='<div class="cb-vazio">Nenhum produto com esse nome.</div>';
+    }
+    pop.innerHTML=h;
+    inp.setAttribute('aria-activedescendant',vis.length?id+'o'+ativo:'');
+    const on=pop.querySelector('.cb-opt.on'); if(on) on.scrollIntoView({block:'nearest'});
+  }
+  function abrir(){ if(!pop.hidden) return; q=''; pop.hidden=false; wrap.classList.add('open'); inp.setAttribute('aria-expanded','true'); ativo=0; desenhar(); const k=vis.indexOf(valor); if(k>=0){ ativo=k; desenhar(); } }
+  function fechar(){ if(pop.hidden) return; pop.hidden=true; wrap.classList.remove('open'); inp.setAttribute('aria-expanded','false'); mostrarValor(); }
+  function escolher(i){ valor=i; fechar(); o.aoEscolher(i); }
+  inp.addEventListener('focus',()=>inp.select());
+  inp.addEventListener('click',abrir);
+  inp.addEventListener('input',()=>{ abrir(); q=inp.value; ativo=0; desenhar(); });
+  inp.addEventListener('keydown',e=>{
+    const aberto=!pop.hidden;
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); if(!aberto){abrir();return;} ativo = e.key==='ArrowDown' ? Math.min(ativo+1,vis.length-1) : Math.max(ativo-1,0); desenhar(); }
+    else if(e.key==='Enter' && aberto){ e.preventDefault(); e.stopPropagation(); if(vis.length) escolher(vis[ativo]); }
+    else if(e.key==='Escape' && aberto){ e.preventDefault(); e.stopPropagation(); fechar(); inp.select(); }
+    else if(e.key==='Tab' && aberto){ fechar(); }
+  });
+  inp.addEventListener('blur',()=>setTimeout(()=>{ if(document.activeElement!==inp) fechar(); },120));
+  pop.addEventListener('mousedown',e=>e.preventDefault());
+  pop.addEventListener('click',e=>{ const op=e.target.closest('.cb-opt'); if(op) escolher(parseInt(op.dataset.i)); });
+  pop.addEventListener('mousemove',e=>{ const op=e.target.closest('.cb-opt'); if(!op||op.classList.contains('on')) return;
+    pop.querySelectorAll('.cb-opt.on').forEach(x=>x.classList.remove('on')); op.classList.add('on'); ativo=parseInt(op.id.slice((id+'o').length)); inp.setAttribute('aria-activedescendant',op.id); });
+  return {abrir, foco:()=>{ inp.focus(); abrir(); }};
+}
+// quitação parcial com 2+ produtos: cada parcela da tabela pode ser de um produto (coluna "Produto")
+function produtosDaProposta(){ const pi=parseInt(document.getElementById('produto').value), arr=[]; if(pi>=0) arr.push(pi); produtosExtra.forEach(i=>{ if(i>=0 && arr.indexOf(i)<0) arr.push(i); }); return arr; }
+function multiProduto(){ return ehQuit() && !document.getElementById('quitTotal').checked && !ehApp() && produtosDaProposta().length>1; }
+function prodDaParcela(p){ const ps=produtosDaProposta(); return (multiProduto() && p && ps.indexOf(p.prod)>=0) ? p.prod : (ps[0]!=null?ps[0]:-1); }
+function nomeCurto(p){ return p ? (p.txt||p.n.replace(/^Formação de Terapeutas - /,'').replace(/^Formação Avançada em /,'Avançada em ').replace(/^Formação em /,'')) : ''; }
+function updProdParcela(i,v){ atrasos[i].prod=parseInt(v); render(); }
 function nomesProdutos(){
   const arr=[]; const pi=parseInt(document.getElementById('produto').value); if(pi>=0)arr.push(PRODUTOS[pi].n);
   if(ehQuit() && !document.getElementById('quitTotal').checked) produtosExtra.forEach(idx=>{if(idx>=0)arr.push(PRODUTOS[idx].n);});
@@ -1099,8 +1166,8 @@ function gerarParcelas(){
   const val=document.getElementById('genVal').value;
   if(raw===''||q<=0){atrasos=[];render();return;}
   if(!venc){render();return;}
-  atrasos=[];
-  for(let i=0;i<q;i++) atrasos.push({valor:val,venc:addMonths(venc,i),negativada:false});
+  const antes=atrasos; atrasos=[];
+  for(let i=0;i<q;i++){ const r={valor:val,venc:addMonths(venc,i),negativada:false}; if(antes[i] && antes[i].prod!=null) r.prod=antes[i].prod; atrasos.push(r); }
   render();
 }
 function addAtraso(){atrasos.push({valor:'',venc:'',negativada:false});render();}
@@ -1131,12 +1198,15 @@ function renderAtrasos(){
   const showNeg=ehQuit();
   document.getElementById('thNegat').style.display=showNeg?'':'none';
   if(!showNeg) atrasos.forEach(p=>p.negativada=false);
+  const multi=multiProduto(), ps=produtosDaProposta();
+  document.getElementById('thProd').style.display=multi?'':'none';
   const tb=document.getElementById('atrasoBody');tb.innerHTML='';
   atrasos.forEach((p,i)=>{
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td><input type="text" inputmode="decimal" value="${escAtr(p.valor)}" oninput="maskMoeda(this);updValor(${i},this.value)" aria-label="Valor original da parcela ${i+1}"></td>
       <td><input type="date" value="${escAtr(p.venc)}" onchange="updVenc(${i},this.value)" aria-label="Vencimento da parcela ${i+1}"></td>
+      <td style="${multi?'':'display:none'}"><select class="sel-prod" onchange="updProdParcela(${i},this.value)" aria-label="Produto da parcela ${i+1}">${ps.map(k=>`<option value="${k}" ${prodDaParcela(p)===k?'selected':''}>${escAtr(nomeCurto(PRODUTOS[k]))}</option>`).join('')}</select></td>
       <td class="check" style="${showNeg?'':'display:none'}"><input type="checkbox" ${p.negativada?'checked':''} onchange="updAtraso(${i},'negativada',this.checked)" aria-label="Parcela ${i+1} negativada"></td>
       <td class="val-atual" id="atual${i}">${atualCellHTML(p)}</td>
       <td><button type="button" class="btn-x" onclick="delAtraso(${i})" aria-label="Apagar parcela ${i+1}" title="Apagar parcela">${ICO.x}</button></td>`;
@@ -1410,10 +1480,35 @@ function gerarTexto(){
   const vencs=pAtraso().map(p=>p.venc).filter(Boolean).sort();
   const desde = !vencs.length ? '' : nA===1 ? ` (venceu em ${curta(vencs[0])})` : ` (desde ${curta(vencs[0])})`;
   t+= ref===hoje ? `📋 *Como está hoje*\n` : `📋 *Como fica em ${curta(ref)}*\n`;   // pagamento futuro: valores já projetados até a data
-  if(nN>0) t+=`• ${qtd(nN,'parcela negativada','parcelas negativadas')}: *${brl(negOriginal()+m.jurosNeg)}*\n`;
-  if(nA>0) t+=`• ${qtd(nA,'parcela em atraso','parcelas em atraso')}${desde}: *${brl(atrasoComEnc())}*, já com multa e juros até ${curta(ref)}\n`;
-  if(nV>0) t+=`• ${qtd(nV,'parcela a vencer','parcelas a vencer')}: *${brl(totalVinc())}*\n`;
-  const grupos=(nN>0?1:0)+(nA>0?1:0)+(nV>0?1:0);
+  // datas das parcelas: até 3 listadas ("02/09 e 02/10"); 4 ou mais, "desde"
+  const listaDatas=ds=>{ ds=ds.slice().sort().map(curta); return ds.length<=1 ? (ds[0]||'') : ds.slice(0,-1).join(', ')+' e '+ds[ds.length-1]; };
+  const valorCheio=p=>{ const o=parseV(p.valor); return (p.negativada||!p.venc) ? o : o+floor2(o*MULTA)+jurosParcelaBruto(p); };
+  let gruposProd=0;
+  if(multiProduto()){
+    // quitação parcial com 2+ produtos: separa por produto, com a data de cada parcela
+    const linhas=pAtraso().map(p=>({p,neg:false})).concat(pNeg().map(p=>({p,neg:true})));
+    produtosDaProposta().forEach(k=>{
+      const doProd=linhas.filter(x=>prodDaParcela(x.p)===k); if(!doProd.length) return;
+      gruposProd++;
+      t+=`${gruposProd>1?'\n':''}*${PRODUTOS[k].n}*\n`;
+      [false,true].forEach(neg=>{
+        const rs=doProd.filter(x=>x.neg===neg).map(x=>x.p); if(!rs.length) return;
+        const n=rs.length, tot=rs.reduce((a,p)=>a+valorCheio(p),0), ds=rs.map(p=>p.venc).filter(Boolean);
+        const rot = neg ? (n===1?'Parcela negativada':n+' parcelas negativadas') : (n===1?'Parcela':n+' parcelas');
+        const quando = !ds.length ? '' : n===1 ? ` de ${curta(ds[0])}` : n<=3 ? ` (${listaDatas(ds)})` : ` (desde ${curta(ds.slice().sort()[0])})`;
+        t+=`• ${rot}${quando}: *${brl(tot)}*\n`;
+      });
+    });
+    if(nV>0) t+=`\n• ${qtd(nV,'parcela a vencer','parcelas a vencer')}: *${brl(totalVinc())}*\n`;
+    if(nA>0) t+=`\nValores já com multa e juros até ${curta(ref)}.\n`;
+  }else{
+    // na quitação parcial (um produto), as datas das parcelas escolhidas ajudam mais que o "desde"
+    const desdeTxt = (parcial && nA>=2 && nA<=3) ? ` (${listaDatas(vencs)})` : desde;
+    if(nN>0) t+=`• ${qtd(nN,'parcela negativada','parcelas negativadas')}: *${brl(negOriginal()+m.jurosNeg)}*\n`;
+    if(nA>0) t+=`• ${qtd(nA,'parcela em atraso','parcelas em atraso')}${desdeTxt}: *${brl(atrasoComEnc())}*, já com multa e juros até ${curta(ref)}\n`;
+    if(nV>0) t+=`• ${qtd(nV,'parcela a vencer','parcelas a vencer')}: *${brl(totalVinc())}*\n`;
+  }
+  const grupos=Math.max((nN>0?1:0)+(nA>0?1:0)+(nV>0?1:0), gruposProd);
 
   // ----- descontos (reciprocidade: "que apliquei para você") -----
   const descs=[];
@@ -1431,7 +1526,7 @@ function gerarTexto(){
     descs.push(`• ${Math.round(jurosDescFrac()*100)}% de desconto nos juros das parcelas em atraso: − ${brl(descJurosTotal())}`);
   }
   if(descs.length){
-    if(grupos>1) t+=`💵 *Valor atual da dívida: ${brl(bruto)}*\n`;   // com um grupo só, o valor já está na linha acima
+    if(grupos>1) t+=`${gruposProd?'\n':''}💵 *Valor atual da dívida: ${brl(bruto)}*\n`;   // com um grupo só, o valor já está na linha acima
     t+=`\n🎁 *${descs.length>1?'Descontos que apliquei':'Desconto que apliquei'} para você:*\n`+descs.join('\n')+'\n';
   }
   t+='\n';
@@ -1594,6 +1689,12 @@ function renderCoerencia(){
   if(atrasos.some(p=>!p.negativada && p.venc && p.venc>hoje)) av.push('Há parcela em "em atraso" com vencimento futuro (ainda não venceu).');
   const ex=expBase(), dv=document.getElementById('dataVenc').value, parcialC=ehQuit()&&!document.getElementById('quitTotal').checked;
   if(document.getElementById('tipoAcesso').value==='12m' && !parcialC && ex && ex>=hoje && dv && ex<dv) av.push('O acesso expira em '+dataBR(ex)+', antes do vencimento escolhido. A proposta não promete a liberação automática, e a extensão (se houver) conta a partir do pagamento.');
+  // quitação parcial com 2+ produtos: todo produto citado precisa ter ao menos uma parcela
+  if(multiProduto()){
+    const usados=new Set(atrasos.filter(p=>parseV(p.valor)>0).map(prodDaParcela));
+    const sem=produtosDaProposta().filter(k=>!usados.has(k)).map(k=>PRODUTOS[k].n);
+    if(sem.length && atrasos.some(p=>parseV(p.valor)>0)) av.push((sem.length===1?'O produto ':'Os produtos ')+sem.join(' e ')+(sem.length===1?' está':' estão')+' na proposta, mas nenhuma parcela foi marcada para '+(sem.length===1?'ele':'eles')+'. Escolha o produto de cada parcela na coluna "Produto" da tabela (use "+ Adicionar parcela" para as parcelas do outro produto).');
+  }
   // vencimento em fim de semana ou feriado: o boleto não compensa nesse dia
   const mn=motivoNaoUtil(dv);
   if(mn){ const prox=proximoDiaUtil(dv);

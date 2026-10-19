@@ -46,6 +46,11 @@ const S={
  r1_venc_amanha(){ base('rep1',0,2,-40,'300,00'); set('dataVenc',d(1)); parcelasEscolhidas=3; set('dataLib',d(-100)); render(); },
  q_venc_amanha(){ base('quit',0,2,-40,'300,00'); set('dataVenc',d(1)); set('dataLib',d(-100)); render(); },
  r1_psicossomatica(){ base('rep1',21,3,-70,'250,00'); set('nomeAluno','Lúcia'); parcelasEscolhidas=5; set('dataLib',d(-150)); render(); },
+ q_parcial_2prod(){ base('quit',0,0); chk('quitTotal',false); render(); set('nomeAluno','Rosana'); set('genQtd','1');set('genVenc',d(-17));set('genVal','194,00');gerarParcelas(); addProdutoExtra(); updProdutoExtra(0,'21'); addAtraso(); atrasos[1]={valor:'195,00',venc:d(-9),negativada:false,prod:21}; render(); },
+ q_parcial_2prod_varias_juros(){ base('quit',0,0); chk('quitTotal',false); render(); set('genQtd','3');set('genVenc',d(-75));set('genVal','299,70');gerarParcelas(); addProdutoExtra(); updProdutoExtra(0,'21');
+   for(let k=0;k<4;k++){ addAtraso(); atrasos[3+k]={valor:'250,00',venc:addMonths(d(-110),k),negativada:false,prod:21}; } chk('retJuros',true); render(); },
+ q_parcial_2prod_sem_marcar(){ base('quit',0,0); chk('quitTotal',false); render(); set('genQtd','2');set('genVenc',d(-40));set('genVal','299,70');gerarParcelas(); addProdutoExtra(); updProdutoExtra(0,'21'); render(); },
+ q_parcial_um_prod_2datas(){ base('quit',0,0); chk('quitTotal',false); render(); set('genQtd','2');set('genVenc',d(-70));set('genVal','299,70');gerarParcelas(); atrasos[1].venc=d(-10); render(); },
  q_livro(){ base('quit',17,2,-30,'59,90'); render(); },
 };
 const out={};

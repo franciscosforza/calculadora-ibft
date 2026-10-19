@@ -4,6 +4,12 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v35 — out/2026
+- **Quitação parcial com mais de um produto:** a tabela de parcelas ganha a coluna "Produto" (aparece só quando a quitação parcial tem 2+ produtos). Cada parcela vem no produto principal e pode ser trocada para outro; ao mexer no gerador de parcelas, o produto escolhido em cada linha é mantido. A proposta separa "Como está hoje" por produto, com a data de cada parcela ("Parcela de 02/10", "3 parcelas (25/07, 25/08 e 25/09)", "4 parcelas (desde 20/06)"), e uma linha "Valores já com multa e juros até dd/mm". Aviso na tela se um produto da proposta ficar sem parcela.
+- **Seletor dos produtos adicionais** igual ao do produto principal (busca sem acento, "Mais negociados", chip do tipo de acesso, teclado e mouse); não oferece o principal, os já escolhidos nem o aplicativo ONION. Ao adicionar um produto, a busca já abre.
+- **Quitação parcial de um produto:** com 2 ou 3 parcelas, mostra as datas ("30/07 e 28/09") em vez de "desde".
+- **Teste automático:** 45 cenários (4 novos de quitação parcial). Nenhuma regra de cálculo mudou: os totais de todos os cenários são os mesmos da v34; só mudaram os textos de quitação parcial.
+
 ## v34 — out/2026
 - **Teclado e modo rápido:** Enter leva ao próximo campo essencial (nome → produto → tipo → parcelas em atraso → acesso → vencimento → copiar); Enter na busca de produto escolhe e segue para o tipo. Ctrl+Enter copia de qualquer campo, Alt+1/2/3 escolhe o tipo de proposta, Alt+P abre a busca de produto. Dica de atalhos embaixo do botão de copiar; atalhos atualizados no "Como usar". O "Limpar" das seções saiu do Tab.
 - **Números animados:** total, valor da parcela e total da barra de copiar "rolam" até o novo valor (420 ms); o total continua piscando de leve quando muda.
