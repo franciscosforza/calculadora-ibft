@@ -4,6 +4,10 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v33 — out/2026
+- **Novo produto:** Formação em Psicossomática (12 meses, mesmas regras dos cursos do IBFT), no fim da lista de produtos (o histórico guarda a posição, então nada antigo muda), com frase de objetivo "concluir sua formação em psicossomática". Entra sozinho no "Mais negociados" conforme o uso.
+- **Teste automático:** 41 cenários (novo cenário da Psicossomática). Nenhuma regra de cálculo ou de texto mudou.
+
 ## v32 — out/2026
 - **Aviso de vencimento em fim de semana ou feriado:** se a data de vencimento cair em sábado, domingo ou feriado bancário (nacionais, Carnaval, Sexta-feira Santa e Corpus Christi), aparece um aviso no resumo com o próximo dia útil e o botão "Usar dd/mm", que troca a data e recalcula os valores. É só um alerta: o texto da proposta não muda e nada bloqueia a cópia.
 - **Teste automático:** 3 cenários novos (sábado, feriado, dia útil) e o aviso da tela passou a ser conferido.

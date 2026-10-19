@@ -45,6 +45,7 @@ const S={
  r2_venc_manual_5dias(){ base('rep2',0,2,-40,'300,00'); set('dataVenc',d(5)); parcelasEscolhidas=3; set('dataLib',d(-100)); render(); },
  r1_venc_amanha(){ base('rep1',0,2,-40,'300,00'); set('dataVenc',d(1)); parcelasEscolhidas=3; set('dataLib',d(-100)); render(); },
  q_venc_amanha(){ base('quit',0,2,-40,'300,00'); set('dataVenc',d(1)); set('dataLib',d(-100)); render(); },
+ r1_psicossomatica(){ base('rep1',21,3,-70,'250,00'); set('nomeAluno','Lúcia'); parcelasEscolhidas=5; set('dataLib',d(-150)); render(); },
  q_livro(){ base('quit',17,2,-30,'59,90'); render(); },
 };
 const out={};
