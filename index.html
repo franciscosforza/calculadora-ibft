@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v33">
+<meta name="versao" content="v34">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -368,6 +368,55 @@
   .resumo .lin.parc{border-top:none;padding-top:2px;}
   .resumo .tot{align-items:baseline;margin:6px -16px 0 -19px;padding:12px 16px 6px 19px;border-top:1px solid var(--line-strong);font-family:var(--display);font-weight:600;font-size:28px;line-height:1.15;letter-spacing:-.02em;color:var(--heading);}
   .resumo .tot span:first-child{font-family:var(--font);font-size:12px;font-weight:600;letter-spacing:0;color:var(--text-muted);}
+  /* ---- v34: seção recolhida com resumo de uma linha ---- */
+  .sec-res{display:none;min-width:0;flex:1 1 auto;font-family:var(--font);font-size:12.5px;font-weight:500;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:0;}
+  .card.col.collapsed > h2 .sec-res{display:block;animation:fadeIn var(--d2) var(--ease-out);}
+  .card.col.collapsed > h2 .h-sp{display:none;}
+  .card.col.collapsed > h2 .info-i{display:none;}
+  .card.col.collapsed > h2 > span:nth-child(2){white-space:nowrap;}
+  /* ---- v34: campo com erro: treme de leve e diz o que fazer ---- */
+  @keyframes tremer{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(2px)}30%,50%,70%{transform:translateX(-4px)}40%,60%{transform:translateX(4px)}}
+  .tremer{animation:tremer 420ms var(--ease-io);}
+  .campo-erro{border-color:var(--neg) !important;box-shadow:0 0 0 3px var(--neg-bg) !important;}
+  .erro-msg{display:flex;align-items:center;gap:6px;margin-top:6px;font-size:12px;font-weight:500;color:var(--neg);animation:fadeIn var(--d2) var(--ease-out);}
+  .erro-msg .ic{width:14px;height:14px;flex:none;}
+  /* ---- v34: prévia viva: balão entra com animação e o trecho que mudou fica destacado ---- */
+  .wa-bubble.entra{animation:bubEntra 420ms var(--ease-out) both;transform-origin:top right;}
+  @keyframes bubEntra{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+  #preview .chg{border-radius:3px;animation:chgFade 1700ms var(--ease-out) forwards;}
+  @keyframes chgFade{0%,30%{background:rgba(236,147,16,.30);box-shadow:0 0 0 2px rgba(236,147,16,.30)}100%{background:transparent;box-shadow:0 0 0 2px transparent}}
+  :root.dark #preview .chg{animation-name:chgFadeD;}
+  @keyframes chgFadeD{0%,30%{background:rgba(242,163,58,.32);box-shadow:0 0 0 2px rgba(242,163,58,.32)}100%{background:transparent;box-shadow:0 0 0 2px transparent}}
+  /* ---- v34: estado vazio da coluna direita (3 passos) ---- */
+  .vazio{display:flex;flex-direction:column;align-items:center;text-align:center;gap:6px;padding:20px 14px 18px;margin-bottom:14px;border:1px dashed var(--line-strong);border-radius:var(--r-lg);background:var(--surface-2);animation:fadeIn var(--d3) var(--ease-out);}
+  .vazio[hidden]{display:none;}
+  .vz-ilu{width:92px;height:72px;margin-bottom:2px;}
+  .vz-tit{margin:0;font-family:var(--display);font-size:15px;font-weight:600;color:var(--heading);}
+  .vz-sub{margin:0 0 6px;font-size:12.5px;color:var(--text-muted);}
+  .vz-passos{list-style:none;margin:0;padding:0;display:grid;gap:6px;width:100%;max-width:360px;}
+  .vz-passos button{display:flex;align-items:center;gap:10px;width:100%;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--text);font:500 13px var(--font);text-align:left;cursor:pointer;transition:border-color var(--d1),background-color var(--d1),transform var(--d1);}
+  .vz-passos button:hover{border-color:var(--accent);background:var(--info-bg);}
+  .vz-passos button:active{transform:scale(.99);}
+  .vz-passos button:focus-visible{outline:none;box-shadow:var(--ring);}
+  .vz-n{flex:none;display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:11.5px;font-weight:700;background:var(--surface-3);color:var(--text-muted);border:1px solid var(--line-strong);}
+  .vz-passos .ok .vz-n{background:var(--pos);border-color:var(--pos);color:#fff;}
+  :root.dark .vz-passos .ok .vz-n{color:#0A1220;}
+  .vz-passos .ok span.vz-t{color:var(--text-muted);text-decoration:line-through;text-decoration-color:var(--line-strong);}
+  .vz-ir{margin-left:auto;font-size:11.5px;color:var(--accent);font-weight:600;}
+  .vz-passos .ok .vz-ir{display:none;}
+  /* ---- v34: atalhos visíveis ---- */
+  .atalhos{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 12px;margin:-2px 0 10px;font-size:11.5px;color:var(--text-faint);}
+  .atalhos span{white-space:nowrap;}
+  .atalhos kbd{display:inline-block;min-width:18px;padding:0 5px;margin:0 1px;border:1px solid var(--line-strong);border-bottom-width:2px;border-radius:5px;background:var(--surface);font:600 10.5px var(--font);color:var(--text-muted);text-align:center;line-height:16px;}
+  @media (hover:none){.atalhos{display:none;}}
+  /* ---- v34: confete discreto ao copiar e contador do dia ---- */
+  .brilho{position:fixed;z-index:300;width:0;height:0;pointer-events:none;}
+  .brilho i{position:absolute;left:-3px;top:-3px;width:6px;height:6px;border-radius:2px;opacity:0;animation:brilho 760ms cubic-bezier(.2,.7,.3,1) forwards;}
+  @keyframes brilho{0%{opacity:1;transform:translate(0,0) scale(.7) rotate(0)}70%{opacity:1}100%{opacity:0;transform:translate(var(--x),var(--y)) scale(.35) rotate(160deg)}}
+  .btn-primary.copied{animation:copiedPop 340ms var(--ease-out);}
+  @keyframes copiedPop{40%{transform:scale(1.035)}}
+  .hdr-cont.bump{animation:contBump 700ms var(--ease-out);}
+  @keyframes contBump{30%{transform:scale(1.12);background:rgba(246,195,90,.32);border-color:rgba(246,195,90,.65);color:#fff}}
   .resumo .tot.pulse{animation:totPulse 600ms var(--ease-out) both;}
   @keyframes totPulse{from{background-color:var(--info-bg)}to{background-color:transparent}}
   .compo-bar{display:flex;height:8px;border-radius:999px;overflow:hidden;margin-top:12px;background:var(--surface-3);}
@@ -542,7 +591,7 @@
   <div class="tb-in">
     <span class="tb-logo"><img id="tbLogo" alt=""></span>
     <span class="tb-txt" id="progTxt2"></span>
-    <button type="button" class="btn btn-primary btn-sm" id="btnCopiar2" onclick="copiar()" title="Copiar proposta (Ctrl+C)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="lbl">Copiar proposta</span></button>
+    <button type="button" class="btn btn-primary btn-sm" id="btnCopiar2" onclick="copiar()" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="lbl">Copiar proposta</span></button>
   </div>
   <div class="fio" aria-hidden="true"><div class="fio-fill" id="progBar2"></div></div>
 </div>
@@ -552,7 +601,7 @@
 <div class="wrap">
   <div class="pane" id="colEsq">
     <div class="card col" id="card1">
-      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">1</span><span>Aluno, tipo e produto</span><span class="info-i" title="Informe o primeiro nome do aluno (opcional), escolha o tipo de proposta e o produto. O tipo de acesso ajusta sozinho conforme o produto.">i</span><span class="h-sp"></span><span class="badge-sec" id="badge1"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCard1)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">1</span><span>Aluno, tipo e produto</span><span class="info-i" title="Informe o primeiro nome do aluno (opcional), escolha o tipo de proposta e o produto. O tipo de acesso ajusta sozinho conforme o produto.">i</span><span class="sec-res" aria-hidden="true"></span><span class="h-sp"></span><span class="badge-sec" id="badge1"></span><button type="button" class="limpar-sec" tabindex="-1" onclick="event.stopPropagation();limparSecao(limparCard1)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
       <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
         <div class="row">
           <div><label for="nomeAluno">Nome do aluno<span class="info-i" title="Opcional. A proposta começa com &quot;Maria, preparei…&quot;. Pode colar o nome completo: a calculadora usa só o primeiro nome.">i</span></label><input type="text" id="nomeAluno" autocomplete="off" spellcheck="false" placeholder="Ex.: Maria" oninput="render()" onpaste="colarNome(event)" onblur="ajustarNome()"></div>
@@ -607,7 +656,7 @@
     </div>
 
     <div class="card col" id="card2">
-      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">2</span><span id="lblSec2">Parcelas em atraso</span><span class="info-i" title="Lance as parcelas vencidas: quantidade, vencimento da mais antiga e valor original. A multa (2%) e os juros (2%/mês) são calculados automaticamente até a data de pagamento. Na quitação, marque as negativadas.">i</span><span class="h-sp"></span><span class="badge-sec" id="badge2"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCard2)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">2</span><span id="lblSec2">Parcelas em atraso</span><span class="info-i" title="Lance as parcelas vencidas: quantidade, vencimento da mais antiga e valor original. A multa (2%) e os juros (2%/mês) são calculados automaticamente até a data de pagamento. Na quitação, marque as negativadas.">i</span><span class="sec-res" aria-hidden="true"></span><span class="h-sp"></span><span class="badge-sec" id="badge2"></span><button type="button" class="limpar-sec" tabindex="-1" onclick="event.stopPropagation();limparSecao(limparCard2)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
       <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
         <div class="gen-box">
           <div class="row">
@@ -634,7 +683,7 @@
     </div>
 
     <div class="card col" id="card3">
-      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">3</span><span>Parcelas a vencer</span><span class="info-i" title="Parcelas que ainda não venceram (sem juros). É opcional: preencha só se houver parcelas a vencer no acordo.">i</span><span class="h-sp"></span><span class="badge-sec" id="badge3"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCard3)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">3</span><span>Parcelas a vencer</span><span class="info-i" title="Parcelas que ainda não venceram (sem juros). É opcional: preencha só se houver parcelas a vencer no acordo.">i</span><span class="sec-res" aria-hidden="true"></span><span class="h-sp"></span><span class="badge-sec" id="badge3"></span><button type="button" class="limpar-sec" tabindex="-1" onclick="event.stopPropagation();limparSecao(limparCard3)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
       <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
         <div class="row">
           <div><label for="vincQtd">Quantidade<span class="info-i" title="Quantas parcelas ainda não venceram. Entram no total sem juros nem multa.">i</span></label><input type="number" id="vincQtd" min="0" value="0" oninput="render()"></div>
@@ -647,7 +696,7 @@
     </div>
 
     <div class="card col" id="cardDesconto" style="display:none">
-      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">4</span><span>Descontos da quitação</span><span class="info-i" title="Aplique os descontos da quitação conforme a situação: isenção de juros/multa do atraso, % nas parcelas a vencer, % na dívida negativada e um desconto adicional sobre o total. Siga a orientação em azul.">i</span><span class="h-sp"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCardDesc)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">4</span><span>Descontos da quitação</span><span class="info-i" title="Aplique os descontos da quitação conforme a situação: isenção de juros/multa do atraso, % nas parcelas a vencer, % na dívida negativada e um desconto adicional sobre o total. Siga a orientação em azul.">i</span><span class="sec-res" aria-hidden="true"></span><span class="h-sp"></span><button type="button" class="limpar-sec" tabindex="-1" onclick="event.stopPropagation();limparSecao(limparCardDesc)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
       <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
         <div class="note-info" id="quitGuide"></div>
         <div id="ctlJurosMulta" style="display:none">
@@ -673,7 +722,7 @@
     </div>
 
     <div class="card col" id="cardAcesso">
-      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num" id="numAcesso">5</span><span>Acesso e extensão</span><span class="info-i" title="Informe a data de liberação do acesso para calcular a expiração dos 12 meses. Se for conceder extensão, informe os dias (acima de 90 → análise do Francisco).">i</span><span class="h-sp"></span><span class="badge-sec" id="badge5"></span><button type="button" class="limpar-sec" onclick="event.stopPropagation();limparSecao(limparCardAcesso)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num" id="numAcesso">5</span><span>Acesso e extensão</span><span class="info-i" title="Informe a data de liberação do acesso para calcular a expiração dos 12 meses. Se for conceder extensão, informe os dias (acima de 90 → análise do Francisco).">i</span><span class="sec-res" aria-hidden="true"></span><span class="h-sp"></span><span class="badge-sec" id="badge5"></span><button type="button" class="limpar-sec" tabindex="-1" onclick="event.stopPropagation();limparSecao(limparCardAcesso)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
       <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
         <div class="row">
           <div><label for="dataLib">Data de liberação do acesso<span class="info-i" title="Data em que o aluno recebeu o acesso. A expiração é calculada como liberação + 12 meses.">i</span></label><input type="date" id="dataLib" oninput="render()"></div>
@@ -690,6 +739,12 @@
     <div class="sticky pane" id="colDir">
       <div class="card" id="cardResumo">
         <h2>Resumo financeiro</h2>
+        <div class="vazio" id="vazioBox" hidden>
+          <svg class="vz-ilu" viewBox="0 0 92 72" aria-hidden="true"><rect x="22" y="8" width="62" height="40" rx="9" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="1.5"/><path d="M74 48l6 8-12-8z" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="1.5" stroke-linejoin="round"/><rect x="31" y="18" width="34" height="5" rx="2.5" fill="var(--accent)" opacity=".55"/><rect x="31" y="28" width="44" height="4" rx="2" fill="var(--line-strong)"/><rect x="31" y="36" width="26" height="4" rx="2" fill="var(--line-strong)"/><circle cx="20" cy="50" r="13" fill="var(--gold)"/><path d="m14 50 4 4 8-9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="84" cy="10" r="2.5" fill="var(--gold)"/><circle cx="12" cy="24" r="2" fill="var(--accent)" opacity=".6"/></svg>
+          <p class="vz-tit">A proposta aparece aqui</p>
+          <p class="vz-sub">Complete os 3 passos e o texto se monta sozinho.</p>
+          <ol class="vz-passos" id="vzPassos"></ol>
+        </div>
         <div class="note-warn" id="coerencia" style="display:none"></div>
         <div class="resumo" id="resumo"></div>
         <label for="dataVenc" id="lblVenc">Vencimento da 1ª parcela do acordo</label>
@@ -709,7 +764,8 @@
           </div>
         </div>
         <p class="revise"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><span>Antes de enviar, revise a proposta e confira se ela corresponde à situação real do aluno.</span></p>
-        <button type="button" class="btn btn-primary btn-copy" id="btnCopiar" onclick="copiar()" title="Copiar proposta (Ctrl+C)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="lbl">Copiar proposta</span></button>
+        <button type="button" class="btn btn-primary btn-copy" id="btnCopiar" onclick="copiar()" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="lbl">Copiar proposta</span></button>
+        <p class="atalhos" aria-hidden="true"><span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> copia</span><span><kbd>Enter</kbd> avança</span><span><kbd>Alt</kbd>+<kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> tipo</span><span><kbd>Alt</kbd>+<kbd>N</kbd> nova</span></p>
         <div class="wa" id="waWrap">
           <div class="wa-bubble" id="waBubble"><div id="preview"></div><div class="wa-meta">agora <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m1.5 12.5 4.5 4.5 9-10"/><path d="m11 16 1 1 9.5-10"/></svg></div></div>
           <textarea id="saida" oninput="onSaidaInput()" style="display:none" aria-label="Texto da proposta"></textarea>
@@ -731,8 +787,8 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v33</a> · out/2026</footer>
-      <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+C)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v34</a> · out/2026</footer>
+      <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
 </div>
@@ -766,7 +822,7 @@
       <h4>Tema e zoom</h4>
       <p>Na primeira vez, o tema (claro ou escuro) segue o do computador. Depois, vale o que você escolher no botão de lua e sol. O zoom (100% a 200%) também fica salvo. O botão <b>"Regras"</b> mostra a política de descontos e encargos.</p>
       <h4>Atalhos de teclado</h4>
-      <p><kbd>Ctrl</kbd> + <kbd>C</kbd> copia a proposta (quando nada está selecionado na tela).<br><kbd>Alt</kbd> + <kbd>N</kbd> começa uma nova proposta.<br><kbd>Alt</kbd> + <kbd>E</kbd> edita o texto ou volta para a prévia.<br><kbd>Esc</kbd> fecha esta janela e as de Regras e Novidades.</p>
+      <p><kbd>Ctrl</kbd> + <kbd>Enter</kbd> copia a proposta de qualquer lugar da tela (também vale <kbd>Ctrl</kbd> + <kbd>C</kbd> quando nada está selecionado).<br><kbd>Enter</kbd> avança para o próximo campo essencial: nome → produto → tipo de proposta → parcelas em atraso → acesso → vencimento → copiar.<br><kbd>Alt</kbd> + <kbd>1</kbd>, <kbd>2</kbd> ou <kbd>3</kbd> escolhe 1º reparcelamento, 2º reparcelamento ou quitação.<br><kbd>Alt</kbd> + <kbd>P</kbd> vai para a busca de produto.<br><kbd>Alt</kbd> + <kbd>N</kbd> começa uma nova proposta.<br><kbd>Alt</kbd> + <kbd>E</kbd> edita o texto ou volta para a prévia.<br><kbd>Esc</kbd> fecha esta janela e as de Regras e Novidades.</p>
     </div>
   </div>
 </div>
@@ -803,6 +859,9 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v34 · out/2026</h4>
+      <p><b>Mais rápido pelo teclado.</b> <kbd>Enter</kbd> leva ao próximo campo essencial (nome → produto → tipo → parcelas → acesso → vencimento → copiar), <kbd>Ctrl</kbd>+<kbd>Enter</kbd> copia de qualquer lugar, <kbd>Alt</kbd>+<kbd>1</kbd>/<kbd>2</kbd>/<kbd>3</kbd> escolhe o tipo de proposta e <kbd>Alt</kbd>+<kbd>P</kbd> abre a busca de produto. Os atalhos aparecem embaixo do botão de copiar. O "Limpar" das seções saiu do Tab (continua no mouse).</p>
+      <p><b>Tela mais viva.</b> O total e o valor da parcela "rolam" até o número novo. A prévia do WhatsApp destaca por um instante as linhas que mudaram e o balão entra com uma animação curta. Seção recolhida mostra um resumo de uma linha (ex.: "Maria · TRG · 1º Reparc."). Sem proposta, a coluna da direita mostra os 3 passos, e cada um leva ao campo. Campo que falta treme de leve e diz o que fazer. Ao copiar, um confete discreto e o contador do dia pulsa. Quem usa "reduzir movimento" no computador vê tudo sem animação. Nenhuma regra de cálculo nem de texto mudou.</p>
       <h4>v33 · out/2026</h4>
       <p><b>Novo produto:</b> Formação em Psicossomática (acesso de 12 meses, mesmas regras dos demais cursos do IBFT). Ele aparece na busca de produtos e entra sozinho no grupo "Mais negociados" conforme for usado.</p>
       <h4>v32 · out/2026</h4>
@@ -921,6 +980,7 @@ function renderContador(){
   el.textContent=n+(n===1?' proposta hoje':' propostas hoje');
 }
 function incrementaContador(){
+  const cd=document.getElementById('contDia'); if(cd && !semMovimento()){ cd.classList.remove('bump'); void cd.offsetWidth; cd.classList.add('bump'); setTimeout(()=>cd.classList.remove('bump'),800); }
   try{const o=JSON.parse(localStorage.getItem('ibft_diario')||'{}'); const n=(o.d===hojeISO()?(o.n||0):0)+1;
     localStorage.setItem('ibft_diario',JSON.stringify({d:hojeISO(),n}));}catch(e){}
   renderContador();
@@ -1086,7 +1146,7 @@ function renderAtrasos(){
 // atualização leve: recalcula tudo SEM recriar os inputs da tabela (mantém o foco no campo)
 function renderLeve(){
   atrasos.forEach((p,i)=>{const c=document.getElementById('atual'+i);if(c)c.innerHTML=atualCellHTML(p);});
-  renderResumo();renderParcGrid();atualizarSaida();
+  renderResumo();renderParcGrid();atualizarSaida();resumoSecoes();
 }
 
 function ehQuit(){return document.getElementById('tipoProposta').value==='quit';}
@@ -1227,6 +1287,21 @@ function ajustarNome(){
   if(v.split(/\s+/).length>=3){ el.value=primeiroNome(v); render(); }
 }
 
+// números que "rolam" até o novo valor (o elemento é buscado a cada quadro, porque o resumo é recriado a cada tecla)
+const numAnim={};
+function rolarNumero(sel,chave,para){
+  const el0=document.querySelector(sel); if(!el0) return;
+  const st=numAnim[chave]||(numAnim[chave]={val:para,raf:0});
+  cancelAnimationFrame(st.raf);
+  const de=st.val;
+  if(semMovimento()||!isFinite(de)||Math.abs(de-para)<0.005){ st.val=para; el0.textContent=brl(para); return; }
+  const t0=performance.now(), dur=420;
+  el0.textContent=brl(Math.round(de*100)/100);
+  const passo=t=>{ const k=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-k,3); st.val=de+(para-de)*e;
+    const el=document.querySelector(sel); if(el) el.textContent=brl(k<1?Math.round(st.val*100)/100:para);
+    if(k<1) st.raf=requestAnimationFrame(passo); else st.val=para; };
+  st.raf=requestAnimationFrame(passo);
+}
 let ultimoTotal=null, pulsoIni=0;   // pulso do total no resumo
 function renderResumo(){
   const lin=(l,v,c)=>`<div class="lin"${c?` style="color:${c}"`:''}><span>${l}</span><b>${brl(v)}</b></div>`;
@@ -1261,14 +1336,14 @@ function renderResumo(){
   if(ultimoTotal!==null && tg!==ultimoTotal) pulsoIni=Date.now();
   ultimoTotal=tg;
   const decorrido=Date.now()-pulsoIni, pulsando=decorrido<600;
-  h+=`<div class="lin tot${pulsando?' pulse':''}"${pulsando?` style="animation-delay:-${decorrido}ms"`:''}><span>Total</span><span>${brl(tg)}</span></div>`;
+  h+=`<div class="lin tot${pulsando?' pulse':''}"${pulsando?` style="animation-delay:-${decorrido}ms"`:''}><span>Total</span><span id="resTot">${brl(tg)}</span></div>`;
   const economia = ehQuit()? quitModel().descTotal : descJurosTotal();
   const baseEcon = ehQuit()? quitModel().bruto : (atrasoComEnc()+totalVinc());
   const econPct = baseEcon>0?Math.round(economia/baseEcon*100):0;
   if(economia>0) h+=`<div class="lin econ"><span>Economia (${econPct}%)</span><span>${brl(economia)}</span></div>`;
   if(!ehQuit() && parcelasEscolhidas>0 && totalGeral()>0)
     { const pp=planoParcelas(totalGeral(),parcelasEscolhidas);
-      h+=`<div class="lin parc"><span>${parcelasEscolhidas}x de</span><b>${brl(pp.base)}</b></div>`;
+      h+=`<div class="lin parc"><span>${parcelasEscolhidas}x de</span><b id="resParc">${brl(pp.base)}</b></div>`;
       if(Math.abs(pp.ultima-pp.base)>0.001) h+=sub('↳ última parcela (ajuste de centavos)',pp.ultima); }
   // mini-gráfico da composição (mostra que a maior parte é o valor original, não juros)
   const cOrig=atrasoOriginal()+negOriginal()+totalVinc(), cMulta=atrasoMultaV(), cJuros=atrasoJurosV();
@@ -1279,12 +1354,14 @@ function renderResumo(){
     h+=`<div class="compo-leg"><span><i style="background:#2b6cb0"></i>Original ${p(cOrig)}%</span><span><i style="background:#dd9b2e"></i>Multa ${p(cMulta)}%</span><span><i style="background:#c53030"></i>Juros ${p(cJuros)}%</span></div>`;
   }
   document.getElementById('resumo').innerHTML=h;
+  rolarNumero('#resTot','tot',tg);
+  if(!ehQuit() && parcelasEscolhidas>0 && tg>0) rolarNumero('#resParc','parc',planoParcelas(tg,parcelasEscolhidas).base); else if(numAnim.parc) numAnim.parc.val=NaN;
   atualizarDock(); if(typeof checarDock==='function') checarDock();
 }
 // barra de copiar no pé da coluna direita: total e forma de pagamento
 function atualizarDock(){
   const tot=document.getElementById('dockTot'); if(!tot) return;
-  const t=totalGeral(); tot.textContent=brl(t);
+  const t=totalGeral(); rolarNumero('#dockTot','dock',t);
   document.getElementById('dockSub').textContent = t<=0 ? '' : ehQuit() ? 'à vista' : parcelasEscolhidas+'x de '+brl(planoParcelas(t,parcelasEscolhidas).base);
 }
 
@@ -1623,6 +1700,7 @@ function fecharProdutos(){
 }
 function escolherProduto(i){
   document.getElementById('produto').value=String(i); fecharProdutos(); onProdutoChange();
+  const pb=document.getElementById('prodBusca'); if(pb && pb._limparErro) pb._limparErro();
 }
 // mostra no campo o produto escolhido (quando o atendente não está digitando nele)
 function syncProd(forcar){
@@ -1640,7 +1718,8 @@ function initProdBusca(){
     if(e.key==='ArrowDown'||e.key==='ArrowUp'){
       e.preventDefault(); if(!aberto){abrirProdutos();return;}
       cbAtivo = e.key==='ArrowDown' ? Math.min(cbAtivo+1,cbVis.length-1) : Math.max(cbAtivo-1,0); desenharProdutos();
-    }else if(e.key==='Enter' && aberto){ e.preventDefault(); if(cbVis.length) escolherProduto(cbVis[cbAtivo]); }
+    }else if(e.key==='Enter' && aberto){ e.preventDefault(); e.stopPropagation(); if(cbVis.length){ escolherProduto(cbVis[cbAtivo]); const b=proximoCampo('prodBusca'); if(b) b.focus(); } }
+    else if(e.key==='Enter' && !aberto && prodSel()){ e.preventDefault(); e.stopPropagation(); const b=proximoCampo('prodBusca'); if(b) b.focus(); }
     else if(e.key==='Escape' && aberto){ e.preventDefault(); e.stopPropagation(); fecharProdutos(); inp.select(); }
     else if(e.key==='Tab' && aberto){ fecharProdutos(); }
   });
@@ -1677,6 +1756,24 @@ function initAcesso(){
   });
 }
 
+// resumo de uma linha mostrado no título quando a seção está recolhida
+function resumoSecoes(){
+  const pr=(id,t)=>{ const el=document.querySelector('#'+id+' > h2 .sec-res'); if(el){ el.textContent=t?'· '+t:''; el.title=t||''; } };
+  const tipo=document.getElementById('tipoProposta').value, p=prodSel(), nome=nomeAlunoTexto();
+  const tipoTxt=tipo==='rep1'?'1º Reparc.':tipo==='rep2'?'2º Reparc.':(document.getElementById('quitTotal').checked?'Quitação':'Quitação parcial');
+  const curto=p?(p.txt||p.n.replace(/^Formação de Terapeutas - /,'').replace(/^Formação Avançada em /,'Avançada em ').replace(/^Formação em /,'')):'';
+  pr('card1',[nome,curto,tipoTxt].filter(Boolean).join(' · '));
+  const nA=pAtrasoTable().length, nN=pNeg().length, orig=sumOrig(atrasos.filter(x=>x.negativada||x.venc));
+  const vs=atrasos.map(x=>x.venc).filter(Boolean).sort();
+  pr('card2', (nA+nN)===0 ? 'nenhuma parcela' : [nA?nA+' em atraso':'', nN?nN+(nN===1?' negativada':' negativadas'):'', vs.length?'desde '+dataBR(vs[0]).slice(0,5):'', brl(orig)+' original'].filter(Boolean).join(' · '));
+  const q=vincQtdRaw(); pr('card3', q>0 ? q+' a vencer · '+brl(totalVinc()) : 'nenhuma');
+  if(ehQuit()){ const m=quitModel(), d=[];
+    if(m.jurosRem>0) d.push('sem juros'); if(m.multaRem>0) d.push('sem multa'); if(m.vincDesc>0) d.push(m.dv+'% a vencer');
+    if(m.negDesc>0) d.push(m.negPct+'% negativada'); if(m.jurosNeg>0) d.push('juros da negativada isentos'); if(m.geralDesc>0) d.push('+'+m.dg+'% adicional');
+    pr('cardDesconto', d.length ? d.join(' · ')+' · economia de '+brl(m.descTotal) : 'sem desconto'); }
+  const ex=expBase(), ext=parseInt(document.getElementById('extDias').value)||0;
+  pr('cardAcesso', !ex ? 'data de liberação não informada' : (ex<hojeISO()?'expirou em ':'expira em ')+dataBR(ex)+(ext>0?' · +'+ext+' dias':''));
+}
 function render(){
   renderAtrasos();
   syncSeg();
@@ -1755,7 +1852,7 @@ function render(){
   const semData = temVinc && !document.getElementById('vincVenc').value;
   document.getElementById('warnCross').classList.toggle('show', futuro && semData);
 
-  renderResumo();renderParcGrid();aplicarStatus();atualizarProgresso();renderCoerencia();
+  renderResumo();renderParcGrid();aplicarStatus();atualizarProgresso();renderCoerencia();resumoSecoes();limparErrosResolvidos();
   document.getElementById('parcWrap').style.display=quit?'none':'block';
   atualizarSaida();
 }
@@ -1771,7 +1868,32 @@ function atualizarSaida(){
     : gerarTexto();
   const saidaEl=document.getElementById('saida');
   if(!editadoManual) saidaEl.value=txt;   // preserva edição manual do atendente
-  document.getElementById('preview').innerHTML=renderPreview(saidaEl.value);
+  const pv=document.getElementById('preview'), novo=saidaEl.value;
+  const vazio=falta.length>0 && !editadoManual;
+  // destaca as linhas que mudaram desde a última versão do texto (some em ~1,5 s)
+  pv.innerHTML = (!vazio && textoAnterior!==null && textoAnterior!==novo && !semMovimento()) ? renderPreviewDiff(novo,textoAnterior) : renderPreview(novo);
+  mostrarVazio(vazio);
+  textoAnterior = vazio ? null : novo;
+}
+let textoAnterior=null, estavaVazio=null;
+function renderPreviewDiff(t,antes){
+  const velhas=new Set(antes.split('\n'));
+  return t.split('\n').map(l=>(l.trim() && !velhas.has(l)) ? '<span class="chg">'+renderPreview(l)+'</span>' : renderPreview(l)).join('\n');
+}
+// coluna direita sem proposta: ilustração + os 3 passos (cada passo leva ao campo)
+function mostrarVazio(vazio){
+  const box=document.getElementById('vazioBox'), wa=document.getElementById('waWrap'); if(!box||!wa) return;
+  if(vazio){
+    const passos=[
+      {ok:parseInt(document.getElementById('produto').value)>=0, t:'Escolha o produto', ir:['card1','prodBusca']},
+      {ok:totalGeral()>0, t:ehQuit()?'Informe as parcelas (em atraso, negativadas ou a vencer)':'Informe as parcelas em atraso', ir:['card2','genQtd']},
+      {ok:!!document.getElementById('dataVenc').value, t:'Confira o '+nomeVenc(), ir:['cardResumo','dataVenc']}];
+    document.getElementById('vzPassos').innerHTML=passos.map((p,i)=>'<li'+(p.ok?' class="ok"':'')+'><button type="button" onclick="irPara(\''+p.ir[0]+'\',\''+p.ir[1]+'\')"><span class="vz-n">'+(p.ok?'✓':(i+1))+'</span><span class="vz-t">'+p.t+'</span><span class="vz-ir">Ir</span></button></li>').join('');
+  }
+  box.hidden=!vazio; wa.style.display=vazio?'none':'';
+  const res=document.getElementById('resumo'); if(res) res.style.display=(vazio && totalGeral()<=0)?'none':'';   // sem valores, o resumo zerado só ocupa espaço
+  if(estavaVazio===true && !vazio && !semMovimento()){ const b=document.getElementById('waBubble'); b.classList.remove('entra'); void b.offsetWidth; b.classList.add('entra'); setTimeout(()=>b.classList.remove('entra'),500); }
+  estavaVazio=vazio;
 }
 
 function onSaidaInput(){ editadoManual=true; document.getElementById('editNotice').style.display='block'; document.getElementById('preview').innerHTML=renderPreview(document.getElementById('saida').value); }
@@ -1822,12 +1944,53 @@ function copiarTexto(t){
   if(navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(t).then(()=>true,()=>planoB());
   return Promise.resolve(planoB());
 }
+// confete discreto saindo do botão de copiar que está à vista
+function brilhoCopiar(){
+  if(semMovimento()) return;
+  const ids=[document.activeElement&&document.activeElement.id,'btnCopiar','btnCopiar3','btnCopiar2'];
+  let alvo=null;
+  for(const id of ids){ const b=id&&document.getElementById(id); if(!b||!/^btnCopiar/.test(id)) continue;
+    const r=b.getBoundingClientRect(), cs=getComputedStyle(b);
+    const dock=b.closest('.dock'), topo=b.closest('.topbar');
+    if(dock && !dock.classList.contains('on')) continue; if(topo && !document.body.classList.contains('bar-on')) continue;
+    if(r.width>0 && r.bottom>0 && r.top<innerHeight && cs.visibility!=='hidden'){ alvo=r; break; } }
+  if(!alvo) return;
+  const box=document.createElement('div'); box.className='brilho'; box.style.left=(alvo.left+alvo.width/2)+'px'; box.style.top=(alvo.top+alvo.height/2)+'px';
+  const cores=['#EC9310','#F6C35A','#2F6FE0','#25D366','#5B9BFF'];
+  for(let i=0;i<14;i++){ const p=document.createElement('i'), a=(i/14)*Math.PI*2+Math.random()*.35, d=26+Math.random()*30;
+    p.style.setProperty('--x',(Math.cos(a)*d*1.8).toFixed(1)+'px'); p.style.setProperty('--y',(Math.sin(a)*d).toFixed(1)+'px');
+    p.style.background=cores[i%cores.length]; p.style.animationDelay=Math.round(Math.random()*70)+'ms'; if(i%3===0) p.style.borderRadius='50%'; box.appendChild(p); }
+  document.body.appendChild(box); setTimeout(()=>box.remove(),1000);
+}
 function feedbackCopiado(){
+  brilhoCopiar();
   ['btnCopiar','btnCopiar2','btnCopiar3'].forEach(id=>{ const b=document.getElementById(id); if(!b)return; const l=b.querySelector('.lbl');
     b.classList.add('copied'); if(l) l.textContent='Copiado ✓'; clearTimeout(b._t);
     b._t=setTimeout(()=>{ b.classList.remove('copied'); if(l) l.textContent='Copiar proposta'; },1600); });
   const bb=document.getElementById('waBubble'); if(bb){ bb.classList.remove('flash'); void bb.offsetWidth; bb.classList.add('flash'); }
   showToast('Proposta copiada',{tipo:'ok'});
+}
+// campo com problema: treme de leve, fica com borda vermelha e ganha uma frase dizendo o que fazer
+const MSG_CAMPO={prodBusca:'Escolha o produto na lista para continuar.',genQtd:'Informe quantas parcelas estão em atraso.',genVenc:'Informe o vencimento da parcela em atraso mais antiga.',genVal:'Informe o valor original de cada parcela.',dataVenc:'Escolha a data de vencimento.'};
+function avisarCampo(id){
+  const c=document.getElementById(id); if(!c) return;
+  if(c._limparErro) c._limparErro();   // troca um aviso antigo pelo novo
+  const ancora=c.closest('.combo, .affix')||c;
+  ancora.parentNode.querySelectorAll(':scope > .erro-msg').forEach(x=>x.remove());
+  const m=document.createElement('div'); m.className='erro-msg'; m.setAttribute('role','alert');
+  m.innerHTML='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span>';
+  m.querySelector('span').textContent=MSG_CAMPO[id]||'Preencha este campo.';
+  ancora.insertAdjacentElement('afterend',m);
+  c.classList.add('campo-erro'); c.setAttribute('aria-invalid','true');
+  if(!semMovimento()){ ancora.classList.remove('tremer'); void ancora.offsetWidth; ancora.classList.add('tremer'); setTimeout(()=>ancora.classList.remove('tremer'),500); }
+  const limpar=()=>{ c._limparErro=null; m.remove(); c.classList.remove('campo-erro'); c.removeAttribute('aria-invalid'); c.removeEventListener('input',limpar); c.removeEventListener('change',limpar); };
+  c._limparErro=limpar; c.addEventListener('input',limpar); c.addEventListener('change',limpar);
+  if(id==='prodBusca') document.getElementById('produto').addEventListener('change',limpar,{once:true});
+}
+// some com o aviso do campo quando o problema deixa de existir por qualquer caminho (histórico, desfazer, nova proposta)
+function limparErrosResolvidos(){
+  const ok={prodBusca:()=>!!prodSel(),genQtd:()=>totalGeral()>0||(parseInt(document.getElementById('genQtd').value)||0)>0,genVenc:()=>totalGeral()>0||!!document.getElementById('genVenc').value,genVal:()=>totalGeral()>0,dataVenc:()=>!!document.getElementById('dataVenc').value};
+  document.querySelectorAll('.campo-erro').forEach(c=>{ if(ok[c.id]&&ok[c.id]()&&c._limparErro) c._limparErro(); });
 }
 function copiar(){
   // guarda-corpos: confere o essencial antes de copiar
@@ -1837,7 +2000,7 @@ function copiar(){
     const q=document.getElementById('genQtd').value.trim(), v=document.getElementById('genVenc').value;
     alvos.push(['card2', !q||q==='0' ? 'genQtd' : (!v ? 'genVenc' : 'genVal')]); }
   if(!document.getElementById('dataVenc').value){ probs.push(nomeVenc()); alvos.push(['cardResumo','dataVenc']); }
-  if(probs.length){ showToast('Falta: '+probs.join(', '),{tipo:'aviso'}); irPara(alvos[0][0],alvos[0][1]); return; }
+  if(probs.length){ showToast('Falta: '+probs.join(', '),{tipo:'aviso'}); irPara(alvos[0][0],alvos[0][1]); alvos.forEach(a=>avisarCampo(a[1])); return; }
   salvarHist();   // guarda no histórico a proposta copiada
   incrementaContador();   // 50 · soma no contador do dia
   copiarTexto(document.getElementById('saida').value).then(ok=>{
@@ -2071,7 +2234,28 @@ try{ const ro=new ResizeObserver(()=>{ ajustarPaineis(); }); ro.observe(document
 
 ajustarPaineis(); atualizarDock();
 window.addEventListener('resize',fadeHist);
-// atalhos: Ctrl+C copia (quando nada está selecionado), Alt+N nova proposta, Alt+E editar/ver, Esc fecha diálogos
+// atalhos: Ctrl+Enter copia (Ctrl+C também, quando nada está selecionado), Enter avança, Alt+1/2/3 tipo, Alt+P produto, Alt+N nova proposta, Alt+E editar/ver, Esc fecha diálogos
+// "modo rápido": Enter leva ao próximo campo essencial (nome → produto → tipo → parcelas → acesso → vencimento → copiar)
+function visivel(el){ return !!(el && el.offsetParent!==null && !el.disabled); }
+function proximoCampo(id){
+  const ord=['nomeAluno','prodBusca','segTipo','genQtd','genVenc','genVal','dataLib','extDias','dataVenc','btnCopiar'];
+  for(let i=ord.indexOf(id)+1;i<ord.length;i++){
+    if(ord[i]==='segTipo'){ const b=document.querySelector('#segTipo button[aria-checked="true"]'); if(visivel(b)) return b; continue; }
+    const el=document.getElementById(ord[i]); if(visivel(el)) return el; }
+  return null;
+}
+function avancarCampo(e){
+  const a=document.activeElement; if(!a) return false;
+  let id=a.id; if(a.closest && a.closest('#segTipo')) id='segTipo';
+  if(['nomeAluno','segTipo','genQtd','genVenc','genVal','dataLib','extDias','dataVenc'].indexOf(id)<0) return false;
+  const prox=proximoCampo(id); if(!prox) return false;
+  e.preventDefault();
+  if(id==='nomeAluno') ajustarNome();
+  const card=prox.closest('.card.col'); if(card && card.classList.contains('collapsed')){ const h=card.querySelector(':scope > h2'); if(h) toggleCard(h); }
+  prox.focus(); if(prox.select && prox.type!=='date') try{prox.select();}catch(_){}
+  if(prox.id==='prodBusca') abrirProdutos();
+  return true;
+}
 document.addEventListener('keydown',function(e){
   const dlg=dlgAbertos[dlgAbertos.length-1];
   if(e.key==='Escape' && dlg){ e.preventDefault(); fecharDlg(dlg.id); return; }
@@ -2088,6 +2272,10 @@ document.addEventListener('keydown',function(e){
      && document.activeElement && ['INPUT','TEXTAREA','SELECT'].indexOf(document.activeElement.tagName)<0){
     copiar();
   }
+  if((e.ctrlKey||e.metaKey) && e.key==='Enter'){ e.preventDefault(); copiar(); return; }   // Ctrl+Enter: copia de qualquer campo
+  if(e.altKey && !e.ctrlKey && ['1','2','3'].indexOf(e.key)>=0){ e.preventDefault(); setTipo({'1':'rep1','2':'rep2','3':'quit'}[e.key]); const b=document.querySelector('#segTipo button[aria-checked="true"]'); if(b) b.focus(); return; }
+  if(e.altKey && (e.key==='p'||e.key==='P')){ e.preventDefault(); irPara('card1','prodBusca'); setTimeout(abrirProdutos,semMovimento()?0:360); return; }
+  if(e.key==='Enter' && !e.altKey && !e.ctrlKey && !e.metaKey && !e.shiftKey && avancarCampo(e)) return;
   if(e.altKey && (e.key==='n'||e.key==='N')){ e.preventDefault(); novaProposta(); }   // Alt+N: nova proposta
   if(e.altKey && (e.key==='e'||e.key==='E')){ e.preventDefault(); toggleEdit(); }      // Alt+E: editar/ver
 });

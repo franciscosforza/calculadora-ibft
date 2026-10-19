@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v34** | out/2026 | Modo rápido pelo teclado (Enter avança, Ctrl+Enter copia, Alt+1/2/3), números animados, prévia que destaca o que mudou, resumo nas seções recolhidas, estado vazio com 3 passos, campos com erro que tremem e explicam, confete ao copiar. Cálculos e textos inalterados. |
 | **v33** | out/2026 | Novo produto: Formação em Psicossomática (12 meses). Cálculos e textos inalterados. |
 | **v32** | out/2026 | Aviso de vencimento em fim de semana ou feriado (com botão para o próximo dia útil); 2º reparcelamento vence amanhã e a proposta acompanha a data; aviso quando a importação do histórico não cabe no navegador. Cálculos inalterados. |
 | **v31** | out/2026 | Vencimento com o nome certo na quitação, botão Nova proposta em azul IBFT, rolagem por coluna no desktop com barra de copiar fixa e histórico com 5 propostas e rolagem. Cálculos inalterados. |

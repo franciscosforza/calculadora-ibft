@@ -49,7 +49,7 @@ const S={
  q_livro(){ base('quit',17,2,-30,'59,90'); render(); },
 };
 const out={};
-for(const k in S){ novaProposta(); S[k](); out[k]={total:brl(totalGeral()),resumo:document.getElementById('resumo').innerText,txt:$('saida').value,coer:$('coerencia').textContent}; }
+for(const k in S){ novaProposta(); S[k](); out[k]={total:brl(totalGeral()),resumo:document.getElementById('resumo').textContent,txt:$('saida').value,coer:$('coerencia').textContent}; }
 novaProposta();
 return out;
 })()

@@ -4,6 +4,15 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v34 — out/2026
+- **Teclado e modo rápido:** Enter leva ao próximo campo essencial (nome → produto → tipo → parcelas em atraso → acesso → vencimento → copiar); Enter na busca de produto escolhe e segue para o tipo. Ctrl+Enter copia de qualquer campo, Alt+1/2/3 escolhe o tipo de proposta, Alt+P abre a busca de produto. Dica de atalhos embaixo do botão de copiar; atalhos atualizados no "Como usar". O "Limpar" das seções saiu do Tab.
+- **Números animados:** total, valor da parcela e total da barra de copiar "rolam" até o novo valor (420 ms); o total continua piscando de leve quando muda.
+- **Prévia viva:** linhas que mudaram ficam destacadas em dourado por ~1,5 s; o balão entra com animação curta quando a proposta aparece.
+- **Seção recolhida com resumo de uma linha** (ex.: "Maria · TRG · 1º Reparc.", "3 em atraso · desde 05/07 · R$ 1.350,00 original", "expira em 22/03/2027 · +30 dias").
+- **Estado vazio e erros:** sem proposta, o topo da coluna direita mostra uma ilustração e os 3 passos (cada um leva ao campo; o resumo zerado fica escondido). Ao tentar copiar com algo faltando, o campo treme, fica com borda vermelha e ganha uma frase dizendo o que fazer; o aviso some quando o problema é resolvido.
+- **Ao copiar:** confete discreto saindo do botão e o contador do dia pulsa.
+- Tudo respeita "reduzir movimento" do sistema. **Nenhuma regra de cálculo nem de texto mudou:** os 41 cenários do teste automático dão os mesmos totais, resumos, textos e avisos da v33 (o teste passou a conferir o resumo financeiro).
+
 ## v33 — out/2026
 - **Novo produto:** Formação em Psicossomática (12 meses, mesmas regras dos cursos do IBFT), no fim da lista de produtos (o histórico guarda a posição, então nada antigo muda), com frase de objetivo "concluir sua formação em psicossomática". Entra sozinho no "Mais negociados" conforme o uso.
 - **Teste automático:** 41 cenários (novo cenário da Psicossomática). Nenhuma regra de cálculo ou de texto mudou.

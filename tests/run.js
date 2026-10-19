@@ -24,7 +24,8 @@ const dom = new JSDOM(html, {
   beforeParse(w) {
     const Real = w.Date;
     w.Date = class extends Real { constructor(...a) { if (a.length === 0) super(HOJE); else super(...a); } static now() { return HOJE; } };
-    w.matchMedia = q => ({ matches: false, media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} });
+    w.matchMedia = q => ({ matches: /reduced-motion/.test(q),   // sem animação nos testes (valores finais na hora)
+      media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} });
     w.scrollTo = () => {}; w.HTMLElement.prototype.scrollIntoView = () => {};
   }
 });
