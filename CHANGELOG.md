@@ -4,6 +4,15 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v39 — out/2026
+- **Busca rápida (Ctrl+K):** caixa central que acha ações (nova proposta, tipo, copiar, tema, regras, exportar…), produtos e propostas do histórico (nome, produto, valor), com as letras que batem destacadas, setas e Enter. Novos atalhos: Ctrl+P (produto), Ctrl+E (editar texto), Ctrl+H (propostas de hoje); os de Alt continuam.
+- **Campo ligado ao texto:** a prévia passa a ser desenhada linha a linha; o campo em uso acende a linha que ele muda (`linhasDoGrupo`) e a coluna da direita rola até ela. Teste automático confere que cada campo acha a sua linha.
+- **Cor por tipo:** `<html data-tipo>` troca `--tipo` (azul 1º reparc., âmbar 2º, verde quitação) com transição; vale para o fio do topo, a barra do resumo e a etiqueta no botão de copiar.
+- **Dicas próprias** nos "i" e nos botões do topo (balão no visual da calculadora, também por teclado).
+- **Movimento:** destaque deslizante na grade de parcelas; linhas do resumo entram e saem deslizando; avisos com linha de tempo (pausa com o mouse) e arrastar para dispensar; topo que encolhe ao rolar (desktop); seção com foco em destaque; troca de tema em círculo a partir do botão (View Transitions).
+- **Parcelas:** botões − e + nas quantidades (segurar repete, número rola); tabela com títulos fixos, linha nova em destaque com foco no valor, apagar com Desfazer.
+- Respeita "reduzir movimento". Nenhuma regra de cálculo nem de texto mudou (73 cenários idênticos).
+
 ## v38 — out/2026
 - **Propostas de hoje:** o contador do topo virou botão e abre um painel lateral com as propostas copiadas hoje (hora, aluno, tipo, produto, valor e forma), total negociado, quantidade por tipo e gráfico dos últimos 7 dias. "Abrir" recupera a proposta e "Copiar texto" copia de novo o texto exatamente como foi enviado (o histórico passa a guardar o texto copiado, o total e a forma).
 - **Contador corrigido:** passa a contar propostas diferentes copiadas hoje, tiradas do histórico (`_cts`), só depois que a cópia deu certo; "Nova proposta" não apaga a marca de copiada; vira o dia sozinho à meia-noite. Itens de versões antigas contam pela data em que foram salvos.

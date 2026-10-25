@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v39** | out/2026 | Busca rápida (Ctrl+K) e atalhos Ctrl+P/E/H, campo ligado à linha da prévia, cor por tipo de proposta, dicas próprias, grade de parcelas com destaque deslizante, resumo que anima, avisos com linha de tempo e arrastar para dispensar, topo que encolhe, botões − e + nas quantidades, tabela com títulos fixos e Desfazer ao apagar parcela, troca de tema em círculo. Cálculos inalterados. |
 | **v38** | out/2026 | Painel "Propostas de hoje" no contador (lista, total do dia, gráfico de 7 dias, abrir e copiar de novo), contador corrigido, "Usar hoje" em proposta antiga (parcelas a vencer que venceram passam para atraso), Desfazer ao recuperar do histórico, blocos que deslizam, ícones animados, atalhos de data e extensão. Cálculos inalterados. |
 | **v37** | out/2026 | Logo interativa (brilho dourado ao passar o mouse; clicar recarrega mantendo a proposta) e Nova proposta volta ao topo com o cursor no nome do aluno. Cálculos inalterados. |
 | **v36** | out/2026 | Proposta com duas opções no 1º e 2º reparcelamento (quitar à vista com desconto ou parcelar, "responda 1 ou 2"), botões "Aluno escolheu 1/2", aviso de negativação (retirada em até 5 dias úteis). Cálculos inalterados. |

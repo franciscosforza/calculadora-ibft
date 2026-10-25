@@ -156,6 +156,24 @@ if (w.eval(`typeof propostasDoDia==='function'`)) {
   cont.forEach(r => falha('contador do dia', r));
 }
 
+// ---------- campo ligado ao texto: cada campo acha a sua linha na prévia ----------
+if (w.eval(`typeof linhasDoGrupo==='function'`)) {
+  const lig = w.eval(`(()=>{
+    const $=id=>document.getElementById(id), set=(id,v)=>{$(id).value=v;}, ruins=[];
+    const confere=(nome,grupos)=>{ const L=$('saida').value.split('\\n');
+      grupos.forEach(g=>{ const r=linhasDoGrupo(g,L); if(!r.length) ruins.push(nome+': "'+g+'" não acende nenhuma linha'); }); };
+    novaProposta(); set('nomeAluno','Maria'); set('produto','0'); onProdutoChange(); set('genQtd','3'); set('genVenc','2026-07-05'); set('genVal','300,00'); gerarParcelas();
+    set('vincQtd','2'); set('dataLib','2026-01-10'); set('extDias','30'); render();
+    confere('1º reparc.',['nome','prod','tipo','atraso','vinc','venc','parc','acesso']);
+    $('duasOpcoes').checked=true; onDuasOpcoes(); confere('duas opções',['opc','desc','parc','venc']);
+    novaProposta(); set('tipoProposta','quit'); onTipoChange(); set('produto','0'); onProdutoChange(); set('genQtd','2'); set('genVenc','2026-08-05'); set('genVal','300,00'); gerarParcelas();
+    set('dataLib','2026-01-10'); $('retJuros').checked=true; $('temNegativada').checked=true; render();
+    confere('quitação',['prod','atraso','desc','venc','acesso','neg','quitTotal']);
+    novaProposta(); return ruins;
+  })()`);
+  lig.forEach(r => falha('campo ligado ao texto', r));
+}
+
 // ---------- confere com o resultado aprovado ----------
 if (atualizar) {
   fs.writeFileSync(ESPERADO, JSON.stringify(atual, null, 1) + '\n');
