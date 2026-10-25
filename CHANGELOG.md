@@ -4,6 +4,11 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v37 — out/2026
+- **Logo interativa:** a logo do cabeçalho virou um botão. Ao passar o mouse, um brilho dourado atravessa só o desenho da logo (a própria imagem é a máscara) e ela sobe de leve. Clicar recarrega a calculadora mantendo a proposta da tela (mesmo mecanismo do "Atualizar"), com o aviso "Calculadora recarregada. Sua proposta foi mantida.". A logo entra com animação suave ao abrir e brilha ao copiar uma proposta.
+- **"Nova proposta" volta ao topo:** as duas colunas (ou a página, no celular) sobem na hora, a seção 1 abre se estiver recolhida e o cursor vai para o nome do aluno. Vale também para Alt+N.
+- Tudo respeita "reduzir movimento". Nenhuma regra de cálculo nem de texto mudou (73 cenários idênticos).
+
 ## v36 — out/2026
 - **Proposta com duas opções (1º e 2º reparcelamento):** interruptor "Oferecer também a quitação à vista com desconto" no resumo financeiro. A mensagem traz "Como está hoje" (com o total), "Escolha a melhor opção pra você", 1️⃣ quitar à vista (pagamento único na mesma data, descontos item a item e economia) e 2️⃣ parcelar (datas, total e, no 2º reparcelamento, o formulário e o contrato), formas de pagamento, acesso, regras ("se escolher parcelar"), validade das duas opções e "É só responder 1 ou 2".
 - **Desconto da opção 1:** a seção 4 vira "Desconto da opção 1 (quitação à vista)", com o padrão sem os juros do atraso e 10% nas parcelas a vencer (aplicado quando a seção está zerada). A conta reaproveita a da quitação total (`quitModel(true)`); a opção 2 é o parcelamento, com o desconto nos juros do reparcelamento, se houver.

@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v37** | out/2026 | Logo interativa (brilho dourado ao passar o mouse; clicar recarrega mantendo a proposta) e Nova proposta volta ao topo com o cursor no nome do aluno. Cálculos inalterados. |
 | **v36** | out/2026 | Proposta com duas opções no 1º e 2º reparcelamento (quitar à vista com desconto ou parcelar, "responda 1 ou 2"), botões "Aluno escolheu 1/2", aviso de negativação (retirada em até 5 dias úteis). Cálculos inalterados. |
 | **v35** | out/2026 | Quitação parcial com mais de um produto: coluna Produto na tabela, valores e datas por produto na proposta, seletor dos produtos adicionais igual ao principal; datas das parcelas na quitação parcial de um produto. Cálculos inalterados. |
 | **v34** | out/2026 | Modo rápido pelo teclado (Enter avança, Ctrl+Enter copia, Alt+1/2/3), números animados, prévia que destaca o que mudou, resumo nas seções recolhidas, estado vazio com 3 passos, campos com erro que tremem e explicam, confete ao copiar. Cálculos e textos inalterados. |
