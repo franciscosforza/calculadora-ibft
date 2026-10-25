@@ -50,7 +50,14 @@ for (const [k, v] of Object.entries(atual)) {
   if (/\n\n\n/.test(t)) falha(k, 'linhas em branco em excesso');
   if (/[ \t]+\n/.test(t)) falha(k, 'espaço sobrando no fim de linha');
   if ((t.match(/\*/g) || []).length % 2) falha(k, 'asterisco sem par (negrito quebrado)');
-  if (!/É só responder \*SIM\*/.test(t)) falha(k, 'falta a pergunta final com "SIM"');
+  if (!/É só responder \*SIM\*|É só responder \*1\* ou \*2\*/.test(t)) falha(k, 'falta a pergunta final ("SIM" ou "1 ou 2")');
+  // proposta com duas opções: as duas aparecem, a opção 1 vem antes, e nada do texto de uma opção só
+  if (/^o_/.test(k) && /É só responder \*1\* ou \*2\*/.test(t)) {
+    const i1 = t.indexOf('1️⃣ *Quitar à vista'), i2 = t.indexOf('2️⃣ *');
+    if (i1 < 0 || i2 < 0 || i1 > i2) falha(k, 'as duas opções não aparecem na ordem 1 → 2');
+    if (/Posso te mandar o \*boleto\*|Posso já gerar o seu \*PIX\*|Se a parcela não couber/.test(t)) falha(k, 'texto de opção única misturado na proposta com duas opções');
+    if ((t.match(/1️⃣/g) || []).length !== 1 || (t.match(/2️⃣/g) || []).length !== 1) falha(k, 'opção repetida');
+  }
   if (/^(Oi|Olá|Bom dia|Boa tarde|Boa noite)\b/i.test(t)) falha(k, 'a proposta começa com saudação (vai no meio da conversa)');
   if (/R\$ NaN|R\$ -/.test(t.replace(/− R\$/g, ''))) falha(k, 'valor negativo ou inválido');
 }
@@ -64,6 +71,36 @@ const somaOk = w.eval(`(()=>{
   return ruins.slice(0,3);
 })()`);
 if (somaOk.length) falha('parcelas', 'a soma não fecha com o total: ' + somaOk.join(', '));
+
+// ---------- proposta com duas opções: "Aluno escolheu 1/2" gera exatamente o que foi oferecido ----------
+if (w.eval(`typeof duasOpcoes==='function'`)) {
+  const opc = w.eval(`(()=>{
+    const $=id=>document.getElementById(id), set=(id,v)=>{$(id).value=v;}, H=hojeISO(), d=n=>addDays(H,n), ruins=[];
+    const casos=[['rep1',0,3,-95,'450,00',2,6,null],['rep2',1,2,-40,'612,35',3,4,null],['rep1',10,5,-300,'199,00',2,10,'40'],['rep1',0,2,-60,'299,70',0,4,null],
+                 ['rep1',20,2,-33,'97,00',3,3,null],['rep2',0,4,-130,'180,00',5,12,'25'],['rep1',0,1,-20,'350,00',4,5,null]];
+    casos.forEach((c,ix)=>{
+      novaProposta(); set('tipoProposta',c[0]); onTipoChange(); set('produto',String(c[1])); onProdutoChange();
+      set('genQtd',String(c[2])); set('genVenc',d(c[3])); set('genVal',c[4]); gerarParcelas(); set('vincQtd',String(c[5])); render();
+      parcelasEscolhidas=c[6]; if(c[7]) set('descJurosPerc',c[7]); set('dataLib',d(-100)); render();
+      const txtSem=$('saida').value, totSem=totalGeral();
+      $('duasOpcoes').checked=true; onDuasOpcoes();
+      const q1=opcaoQuitacao().total, tot2=totalGeral(), dv=$('dataVenc').value, txtOpc=$('saida').value;
+      if(Math.abs(tot2-totSem)>0.001) ruins.push('caso '+ix+': ligar as 2 opções mudou o parcelamento');
+      if(!(q1<tot2)) ruins.push('caso '+ix+': opção 1 não ficou mais barata ('+q1+' x '+tot2+')');
+      if(txtOpc.indexOf(brl(q1))<0 || txtOpc.indexOf(brl(tot2))<0) ruins.push('caso '+ix+': valores das opções não aparecem no texto');
+      const snap=capturar();
+      escolherOpcao(1);
+      if(!ehQuit() || Math.abs(totalGeral()-q1)>0.001) ruins.push('caso '+ix+': escolheu 1 deu '+totalGeral()+' em vez de '+q1);
+      if($('dataVenc').value!==dv) ruins.push('caso '+ix+': escolheu 1 mudou a data');
+      voltar(snap); render();
+      escolherOpcao(2);
+      if(ehQuit() || Math.abs(totalGeral()-tot2)>0.001) ruins.push('caso '+ix+': escolheu 2 mudou o total');
+      if($('saida').value!==txtSem) ruins.push('caso '+ix+': escolheu 2 não gerou o mesmo texto do parcelamento sem as opções');
+    });
+    novaProposta(); return ruins;
+  })()`);
+  opc.forEach(r => falha('duas opções', r));
+}
 
 // ---------- confere com o resultado aprovado ----------
 if (atualizar) {

@@ -4,6 +4,14 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v36 — out/2026
+- **Proposta com duas opções (1º e 2º reparcelamento):** interruptor "Oferecer também a quitação à vista com desconto" no resumo financeiro. A mensagem traz "Como está hoje" (com o total), "Escolha a melhor opção pra você", 1️⃣ quitar à vista (pagamento único na mesma data, descontos item a item e economia) e 2️⃣ parcelar (datas, total e, no 2º reparcelamento, o formulário e o contrato), formas de pagamento, acesso, regras ("se escolher parcelar"), validade das duas opções e "É só responder 1 ou 2".
+- **Desconto da opção 1:** a seção 4 vira "Desconto da opção 1 (quitação à vista)", com o padrão sem os juros do atraso e 10% nas parcelas a vencer (aplicado quando a seção está zerada). A conta reaproveita a da quitação total (`quitModel(true)`); a opção 2 é o parcelamento, com o desconto nos juros do reparcelamento, se houver.
+- **Depois da resposta:** botões "Aluno escolheu 1 · gerar quitação" (mesma data e mesmo desconto, sem voltar a data ao padrão) e "Aluno escolheu 2 · gerar parcelamento", com Desfazer.
+- **Avisos na tela:** opção 1 que não fica mais barata e diferença pequena entre as opções (menos de 3%). Resumo financeiro mostra a opção 1; histórico guarda o interruptor.
+- **Aviso de negativação:** interruptor "Há parcela negativada nesta dívida" (reparcelamento e quitação). Só muda o texto: no reparcelamento, "assim que o pagamento da 1ª parcela for identificado, pedimos a retirada da restrição… até 5 dias úteis"; com duas opções, vale para as duas; na quitação, o mesmo aviso de sempre. Nenhum valor muda (as negativadas seguem como parcelas em atraso, com multa e juros). Regras atualizadas.
+- **Teste automático:** 73 cenários (23 de duas opções e 5 do aviso de negativação) e conferência de que "escolheu 1/2" gera exatamente o valor e a data oferecidos. Os 45 cenários anteriores continuam idênticos.
+
 ## v35 — out/2026
 - **Quitação parcial com mais de um produto:** a tabela de parcelas ganha a coluna "Produto" (aparece só quando a quitação parcial tem 2+ produtos). Cada parcela vem no produto principal e pode ser trocada para outro; ao mexer no gerador de parcelas, o produto escolhido em cada linha é mantido. A proposta separa "Como está hoje" por produto, com a data de cada parcela ("Parcela de 02/10", "3 parcelas (25/07, 25/08 e 25/09)", "4 parcelas (desde 20/06)"), e uma linha "Valores já com multa e juros até dd/mm". Aviso na tela se um produto da proposta ficar sem parcela.
 - **Seletor dos produtos adicionais** igual ao do produto principal (busca sem acento, "Mais negociados", chip do tipo de acesso, teclado e mouse); não oferece o principal, os já escolhidos nem o aplicativo ONION. Ao adicionar um produto, a busca já abre.

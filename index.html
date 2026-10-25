@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v35">
+<meta name="versao" content="v36">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -315,6 +315,14 @@
   .prod-extra{display:flex;gap:8px;align-items:center;margin-top:8px;}
   .prod-extra select{flex:1;}
   .prod-extra-cb{flex:1;min-width:0;}
+  .opc-wrap{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);}
+  .opc-acoes{margin-top:8px;}
+  .opc-acoes[hidden]{display:none;}
+  .opc-acoes .hint{margin:0 0 8px;}
+  .opc-bts{display:flex;flex-wrap:wrap;gap:8px;}
+  .opc-bts .btn{flex:1 1 200px;}
+  .resumo .lin.opc1{margin-top:6px;padding-top:8px;border-top:1px dashed var(--line-strong);}
+  .resumo .lin.opc1 span{font-weight:600;color:var(--heading);}
 
   /* ===== botões (primário, secundário, terciário, destrutivo) ===== */
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;height:38px;padding:0 16px;border:1px solid transparent;border-radius:var(--r);font:600 13px var(--font);cursor:pointer;white-space:nowrap;text-decoration:none;transition:background-color var(--d1),border-color var(--d1),color var(--d1),box-shadow var(--d1),transform var(--d1);}
@@ -676,6 +684,10 @@
           <button type="button" class="btn btn-text" onclick="addAtraso()">+ Adicionar parcela</button>
           <button type="button" class="btn btn-text" id="btnTodasNeg" onclick="toggleTodasNeg()" style="display:none">Marcar todas como negativadas</button>
         </div>
+        <div id="negInfoWrap" style="display:none">
+          <label class="chk-line"><input type="checkbox" id="temNegativada" onchange="render()"> Há parcela negativada nesta dívida</label>
+          <p class="hint" id="negInfoHint"></p>
+        </div>
         <div id="descJurosWrap" style="display:none">
           <label for="descJurosPerc">Desconto nos juros das parcelas em atraso (opcional)</label>
           <div class="affix suf w220"><input type="number" id="descJurosPerc" min="0" max="100" step="1" value="0" oninput="render()"><span class="ax">%</span></div>
@@ -698,7 +710,7 @@
     </div>
 
     <div class="card col" id="cardDesconto" style="display:none">
-      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">4</span><span>Descontos da quitação</span><span class="info-i" title="Aplique os descontos da quitação conforme a situação: isenção de juros/multa do atraso, % nas parcelas a vencer, % na dívida negativada e um desconto adicional sobre o total. Siga a orientação em azul.">i</span><span class="sec-res" aria-hidden="true"></span><span class="h-sp"></span><button type="button" class="limpar-sec" tabindex="-1" onclick="event.stopPropagation();limparSecao(limparCardDesc)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num">4</span><span id="lblDesc">Descontos da quitação</span><span class="info-i" title="Aplique os descontos da quitação conforme a situação: isenção de juros/multa do atraso, % nas parcelas a vencer, % na dívida negativada e um desconto adicional sobre o total. Siga a orientação em azul.">i</span><span class="sec-res" aria-hidden="true"></span><span class="h-sp"></span><button type="button" class="limpar-sec" tabindex="-1" onclick="event.stopPropagation();limparSecao(limparCardDesc)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
       <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
         <div class="note-info" id="quitGuide"></div>
         <div id="ctlJurosMulta" style="display:none">
@@ -756,6 +768,16 @@
           <label>Parcelamento</label>
           <div class="parc-grid" id="parcGrid" role="radiogroup" aria-label="Número de parcelas"></div>
         </div>
+        <div id="opcWrap" class="opc-wrap">
+          <label class="chk-line"><input type="checkbox" id="duasOpcoes" onchange="onDuasOpcoes()"> Oferecer também a quitação à vista com desconto (proposta com 2 opções)</label>
+          <div id="opcAcoes" class="opc-acoes" hidden>
+            <p class="hint">A <b>opção 1</b> usa o desconto da seção <b>"Desconto da opção 1"</b>, à esquerda (padrão: sem os juros do atraso e 10% nas parcelas a vencer). A data de pagamento é a mesma do campo acima. Quando o aluno responder, gere a proposta completa da opção escolhida:</p>
+            <div class="opc-bts">
+              <button type="button" class="btn btn-secondary btn-sm" onclick="escolherOpcao(1)">Aluno escolheu <b>1</b> · gerar quitação</button>
+              <button type="button" class="btn btn-secondary btn-sm" onclick="escolherOpcao(2)">Aluno escolheu <b>2</b> · gerar parcelamento</button>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="card" id="cardProposta">
         <div class="out-head">
@@ -789,7 +811,7 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v35</a> · out/2026</footer>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v36</a> · out/2026</footer>
       <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
@@ -845,7 +867,7 @@
       <h4>Quitação parcial</h4>
       <p>Valores cheios por padrão. Opcionalmente, é possível retirar os juros das parcelas em atraso (a multa e os demais descontos são só da quitação total). Para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link.</p>
       <h4>Reparcelamento</h4>
-      <p>De 2x a 12x. Negativadas são quitadas <b>antes</b> (não entram no reparcelamento). Dívidas antigas podem receber % de desconto <b>só sobre os juros</b> do atraso, caso a caso. Vencimento padrão da 1ª parcela: hoje no 1º reparcelamento e amanhã no 2º. Normalmente oferecido a partir de 2 parcelas em atraso. <b>Limite de 2 reparcelamentos por dívida de cada produto</b>. O limite não é comentado com o aluno no 1º; no 2º, a proposta avisa que é o último e que, se uma parcela atrasar, não haverá novo parcelamento. Parcela do acordo paga com atraso tem multa e juros pelo Asaas.</p>
+      <p>De 2x a 12x. Parcelas negativadas entram no reparcelamento como parcelas em atraso, com multa e juros normais (lance-as junto com as demais). Marque <b>"Há parcela negativada nesta dívida"</b> para a proposta avisar que a restrição é retirada em até 5 dias úteis depois do pagamento da 1ª parcela. Dívidas antigas podem receber % de desconto <b>só sobre os juros</b> do atraso, caso a caso. Vencimento padrão da 1ª parcela: hoje no 1º reparcelamento e amanhã no 2º. Normalmente oferecido a partir de 2 parcelas em atraso. <b>Limite de 2 reparcelamentos por dívida de cada produto</b>. O limite não é comentado com o aluno no 1º; no 2º, a proposta avisa que é o último e que, se uma parcela atrasar, não haverá novo parcelamento. Parcela do acordo paga com atraso tem multa e juros pelo Asaas.</p>
       <h4>2º reparcelamento: formalização</h4>
       <p>Após o aceite: enviar <b>formulário</b> de dados → montar <b>contrato de confissão de dívida e parcelamento</b> → enviar para <b>assinatura</b> → liberar o boleto da 1ª parcela.</p>
       <h4>Acesso e extensão</h4>
@@ -861,6 +883,9 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v36 · out/2026</h4>
+      <p><b>Aviso de negativação no reparcelamento.</b> Ao lado das parcelas em atraso há o interruptor <b>"Há parcela negativada nesta dívida"</b>. Ligado, a proposta acrescenta que a restrição do nome é retirada em até 5 dias úteis depois do pagamento da 1ª parcela (ou do pagamento à vista, na proposta com duas opções). Ele só muda o texto: os valores continuam com multa e juros normais.</p>
+      <p><b>Proposta com duas opções.</b> No 1º e no 2º reparcelamento, ligue <b>"Oferecer também a quitação à vista com desconto"</b> no resumo financeiro. A mensagem traz a <b>opção 1</b> (quitar à vista, com o desconto da seção "Desconto da opção 1": por padrão, sem os juros do atraso e 10% nas parcelas a vencer) e a <b>opção 2</b> (o parcelamento escolhido), com a mesma data de pagamento, e termina com "É só responder 1 ou 2". Quando o aluno responder, use <b>"Aluno escolheu 1 · gerar quitação"</b> ou <b>"Aluno escolheu 2 · gerar parcelamento"</b>: a proposta completa da opção escolhida sai com a mesma data e o mesmo desconto. Se a opção 1 não ficar mais barata, aparece um aviso. Nenhuma regra de cálculo mudou.</p>
       <h4>v35 · out/2026</h4>
       <p><b>Quitação parcial com mais de um produto.</b> A tabela de parcelas ganha a coluna <b>"Produto"</b>: cada parcela vem no produto principal e você troca para o outro na lista (as parcelas do segundo produto entram por "+ Adicionar parcela", com valor e vencimento próprios). A proposta separa por produto e mostra a data de cada parcela, por exemplo "Formação de Terapeutas - TRG · Parcela de 02/10: R$ 199,10". Se um produto da proposta ficar sem parcela, aparece um aviso. O seletor dos produtos adicionais agora é igual ao do produto principal: busca, "Mais negociados" e o tipo de acesso de cada produto; ele não oferece o produto principal nem os já escolhidos. Na quitação parcial de um produto só, 2 ou 3 parcelas aparecem com as datas ("02/08 e 02/10") em vez de "desde". Nenhuma regra de cálculo mudou.</p>
       <h4>v34 · out/2026</h4>
@@ -1154,6 +1179,23 @@ function fraseProdutos(){
   return `referente aos seus cursos de ${nomes.map(n=>'*'+n+'*').join(', ').replace(/, ([^,]*)$/,' e $1')}`;
 }
 
+function onDuasOpcoes(){
+  if(document.getElementById('duasOpcoes').checked){
+    const el=id=>document.getElementById(id);
+    const zerado=!el('retJuros').checked && !el('retMulta').checked && !(parseFloat(el('descVincPerc').value)>0) && !(parseFloat(el('descGeralPerc').value)>0);
+    if(zerado){ el('retJuros').checked=true; el('descVincPerc').value='10'; }   // padrão: sem os juros do atraso e 10% nas a vencer (só vale se houver)
+  }
+  render();
+}
+// o aluno respondeu: gera a proposta completa da opção escolhida, mantendo data, valores e desconto
+function escolherOpcao(n){
+  const antes=capturar();
+  document.getElementById('duasOpcoes').checked=false;
+  if(n===1){ document.getElementById('tipoProposta').value='quit'; document.getElementById('quitTotal').checked=true; }   // sem onTipoChange: a data não volta ao padrão
+  editadoManual=false; document.getElementById('editNotice').style.display='none';
+  render(); modoVer();
+  showToast(n===1?'Proposta de quitação (opção 1) gerada, com a mesma data e o mesmo desconto':'Proposta de parcelamento (opção 2) gerada',{tipo:'ok',acao:{rotulo:'Desfazer',fn:()=>voltar(antes)}});
+}
 function onTipoChange(){setVencDefault();render();}
 function setVencDefault(){const t=document.getElementById('tipoProposta').value;document.getElementById('dataVenc').value=(t==='rep2')?addDays(hojeISO(),1):hojeISO();}
 
@@ -1257,11 +1299,11 @@ const qtdVinc=()=>aVencer().length;
 const totalVinc=()=>aVencer().reduce((s,p)=>s+parseV(p.valor),0);
 
 let negClamped=false;
-function quitModel(){
+function quitModel(forcarTotal){   // forcarTotal: calcula como quitação total (opção 1 da proposta com duas opções), sem mudar a tela
   const N=pNeg().length,A=pAtraso().length,V=qtdVinc();
   const soNeg=N>0&&A===0&&V===0;
-  const comDesconto=ehQuitTotal();   // descontos gerais só na quitação TOTAL
-  const parcialQ=ehQuit()&&!document.getElementById('quitTotal').checked;
+  const comDesconto=!!forcarTotal||ehQuitTotal();   // descontos gerais só na quitação TOTAL
+  const parcialQ=!forcarTotal&&ehQuit()&&!document.getElementById('quitTotal').checked;
   const el=id=>document.getElementById(id);
   // isenção de juros do atraso: permitida na quitação TOTAL e na PARCIAL; multa e demais descontos só na TOTAL
   const retJ=(comDesconto||parcialQ)&&el('retJuros')?.checked,retM=comDesconto&&el('retMulta')?.checked;
@@ -1293,6 +1335,9 @@ function quitModel(){
   const descTotal=jurosRem+multaRem+vincDesc+negDesc+geralDesc+jurosNeg;
   return {N,A,V,soNeg,jurosRem,multaRem,jurosNeg,vincDesc,dv,negDesc,negPct,dg,geralDesc,total,bruto,descTotal};
 }
+// proposta com duas opções (1º e 2º reparcelamento): 1 = quitação à vista com desconto, 2 = o parcelamento
+function duasOpcoes(){ const c=document.getElementById('duasOpcoes'); return !!(c && c.checked) && !ehQuit(); }
+function opcaoQuitacao(){ return quitModel(true); }
 function totalGeral(){return ehQuit()?quitModel().total:(totalAtraso()+totalVinc());}
 
 function expBase(){const l=document.getElementById('dataLib').value;return l?addMonths(l,12):null;}
@@ -1415,6 +1460,9 @@ function renderResumo(){
     { const pp=planoParcelas(totalGeral(),parcelasEscolhidas);
       h+=`<div class="lin parc"><span>${parcelasEscolhidas}x de</span><b id="resParc">${brl(pp.base)}</b></div>`;
       if(Math.abs(pp.ultima-pp.base)>0.001) h+=sub('↳ última parcela (ajuste de centavos)',pp.ultima); }
+  if(duasOpcoes() && totalGeral()>0){ const q1=opcaoQuitacao();
+    h+=`<div class="lin opc1"><span>Opção 1 · à vista</span><b>${brl(q1.total)}</b></div>`;
+    if(q1.descTotal>0) h+=sub('↳ desconto da opção 1',-q1.descTotal,GREEN); }
   // mini-gráfico da composição (mostra que a maior parte é o valor original, não juros)
   const cOrig=atrasoOriginal()+negOriginal()+totalVinc(), cMulta=atrasoMultaV(), cJuros=atrasoJurosV();
   const cTot=cOrig+cMulta+cJuros;
@@ -1453,6 +1501,7 @@ function gerarTexto(){
   const vaiEstudar = (tipoAc==='vital') || (tipoAc==='12m' && !parcial && (!expirou || ext>0));
   // qualquer quitação (total ou parcial) SEM desconto/isenção não é "condição especial" → abertura neutra
   const quitSemBeneficio = quit && !(m && m.descTotal>0);
+  const opc = !quit && duasOpcoes(), q1 = opc ? opcaoQuitacao() : null;   // proposta com duas opções
   const app = ehApp(), nomeApp = app ? (prodSel().txt||prodSel().n) : '';
   // personalização: a proposta vai no meio de uma conversa, então sem saudação nem apresentação;
   // o nome do aluno abre a primeira frase ("Maria, preparei…") e a frase de objetivo vem do produto
@@ -1464,7 +1513,15 @@ function gerarTexto(){
   const ref=refCalc(), refTxt = ref===hoje ? `hoje, *${curta(ref)}*` : ref===somaDiasUTC(hoje,1) ? `amanhã, *${curta(ref)}*` : `*${curta(ref)}*`;
 
   let t='';
-  if(!quitSemBeneficio){
+  if(opc){
+    t += abre((vaiEstudar && app)
+      ? `Preparei duas opções pra você regularizar e ${obj||`continuar aproveitando o seu aplicativo *${nomeApp}*`}. 😊\n\n`
+      : (vaiEstudar && obj)
+      ? `Preparei duas opções pra você regularizar e voltar a focar no que importa: ${obj}. 😊\n\n`
+      : vaiEstudar
+      ? `Preparei duas opções pra você regularizar e voltar a focar nos seus estudos com tranquilidade. 😊\n\n`
+      : `Preparei duas opções pra você regularizar sua situação da melhor forma. 😊\n\n`);
+  }else if(!quitSemBeneficio){
     t += abre((vaiEstudar && app)
       ? `Preparei uma condição especial pra você regularizar e ${obj||`continuar aproveitando o seu aplicativo *${nomeApp}*`}. 😊\n\n`
       : (vaiEstudar && obj)
@@ -1473,7 +1530,8 @@ function gerarTexto(){
       ? `Preparei uma condição especial pra você regularizar e voltar a focar nos seus estudos com tranquilidade. 😊\n\n`
       : `Preparei uma condição especial pra você regularizar sua situação da melhor forma. 😊\n\n`);
   }
-  t+=(quitSemBeneficio ? abre('Segue') : 'Segue')+` a sua *simulação de ${titulo}* ${fraseProdutos()}:\n\n`;
+  t+= opc ? `Segue a sua *simulação* ${fraseProdutos()}:\n\n`
+     : (quitSemBeneficio ? abre('Segue') : 'Segue')+` a sua *simulação de ${titulo}* ${fraseProdutos()}:\n\n`;
 
   // ----- Como está hoje -----
   const nN = quit ? m.N : 0, nA = quit ? m.A : qtdAtraso(), nV = quit ? m.V : qtdVinc();
@@ -1525,7 +1583,9 @@ function gerarTexto(){
     bruto=atrasoComEnc()+totalVinc(); descTot=descJurosTotal();
     descs.push(`• ${Math.round(jurosDescFrac()*100)}% de desconto nos juros das parcelas em atraso: − ${brl(descJurosTotal())}`);
   }
-  if(descs.length){
+  if(opc){
+    if(grupos>1) t+=`💵 *${ref===hoje?'Total hoje':'Total em '+curta(ref)}: ${brl(atrasoComEnc()+totalVinc())}*\n`;
+  }else if(descs.length){
     if(grupos>1) t+=`${gruposProd?'\n':''}💵 *Valor atual da dívida: ${brl(bruto)}*\n`;   // com um grupo só, o valor já está na linha acima
     t+=`\n🎁 *${descs.length>1?'Descontos que apliquei':'Desconto que apliquei'} para você:*\n`+descs.join('\n')+'\n';
   }
@@ -1544,7 +1604,25 @@ function gerarTexto(){
     if(descs.length) t+=`\n💚 *Você economiza ${economiaTexto(descTot,pctEcon)} quitando nessa condição!*\n`;
     t+='\n';
     // negativadas: prazo de retirada da restrição depois do pagamento
-    if(m.N>0) t+=`🔓 Assim que o pagamento for identificado, pedimos a retirada da restrição do seu nome, que sai em até *5 dias úteis*.\n\n`;
+    if(m.N>0 || document.getElementById('temNegativada').checked) t+=`🔓 Assim que o pagamento for identificado, pedimos a retirada da restrição do seu nome, que sai em até *5 dias úteis*.\n\n`;
+  }else if(opc){
+    const total=totalGeral(), parc=parcelasEscolhidas, pp=planoParcelas(total,parc);
+    const quando = !vencISO ? 'em *(DATA DE VENCIMENTO)*' : vencISO===hoje ? `hoje, *${curta(vencISO)}*` : vencISO===somaDiasUTC(hoje,1) ? `amanhã, *${curta(vencISO)}*` : `em *${dataBR(vencISO)}*`;
+    t+=`✨ *Escolha a melhor opção pra você:*\n\n`;
+    // opção 1: quitação à vista, com o desconto da seção "Desconto da opção 1"
+    t+=`1️⃣ *Quitar à vista: ${brl(q1.total)}*\n`;
+    t+=`• Pagamento único, com vencimento ${quando}\n`;
+    if(q1.jurosRem>0) t+=`• Sem os juros das parcelas em atraso: − ${brl(q1.jurosRem)}\n`;
+    if(q1.multaRem>0) t+=`• Sem a multa das parcelas em atraso: − ${brl(q1.multaRem)}\n`;
+    if(q1.vincDesc>0) t+=`• ${q1.dv}% de desconto nas parcelas a vencer: − ${brl(q1.vincDesc)}\n`;
+    if(q1.geralDesc>0) t+=`• ${q1.dg}% de desconto adicional: − ${brl(q1.geralDesc)}\n`;
+    if(q1.descTotal>0) t+=`• 💚 *Você economiza ${economiaTexto(q1.descTotal, q1.bruto>0?Math.round(q1.descTotal/q1.bruto*100):0)}*\n`;
+    // opção 2: o parcelamento (com o desconto nos juros, se houver)
+    t+= parc>1 ? `\n2️⃣ *Parcelar em ${parc}x de ${brl(pp.base)}*\n` : `\n2️⃣ *Pagar ${brl(total)}*\n`;
+    t+=textoCronograma(parc,vencISO,tipoProp==='rep2');
+    t+=`• Total do acordo: *${brl(total)}*${descJurosTotal()>0?`, já com ${Math.round(jurosDescFrac()*100)}% de desconto nos juros do atraso (− ${brl(descJurosTotal())})`:''}.${parc>1?' Dividir em mais vezes *não aumenta* esse valor.':''}\n`;
+    if(tipoProp==='rep2') t+=`• Antes do 1º boleto, você preenche um *formulário rápido* e assina o *contrato de confissão de dívida e parcelamento*.\n`;
+    t+=`\nNas duas opções, você pode pagar no boleto bancário, PIX ou cartão de crédito.\n\n`;
   }else{
     const total=totalGeral(), parc=parcelasEscolhidas, pp=planoParcelas(total,parc);
     t+= parc>1 ? `✅ *Sua proposta: ${parc}x de ${brl(pp.base)}*\n` : `✅ *Sua proposta: ${brl(total)} à vista*\n`;
@@ -1555,8 +1633,14 @@ function gerarTexto(){
     t+='\n';
   }
 
+  // reparcelamento com negativada: a restrição é retirada quando a 1ª parcela do acordo é paga (ou na quitação)
+  const negInfo = !quit && document.getElementById('temNegativada').checked;
+  if(negInfo) t+= opc
+    ? `🔓 *Nome negativado:* em qualquer das duas opções, assim que o pagamento (à vista ou da 1ª parcela) for identificado, pedimos a retirada da restrição do seu nome, que sai em até *5 dias úteis*.\n\n`
+    : `🔓 Assim que o pagamento da 1ª parcela for identificado, pedimos a retirada da restrição do seu nome, que sai em até *5 dias úteis*.\n\n`;
+
   // ----- acesso -----
-  const refPag = quit ? 'o pagamento' : 'o pagamento da 1ª parcela';
+  const refPag = quit ? 'o pagamento' : opc ? 'o pagamento à vista ou o da 1ª parcela' : 'o pagamento da 1ª parcela';
   // acesso pausado hoje? (há parcela vencida de fato; a vencer que só cruza a data de pagamento ainda não bloqueia)
   const pausado = pAtrasoTable().length>0 || (quit && m.N>0);
   if(parcial){
@@ -1593,19 +1677,23 @@ function gerarTexto(){
   // livro: sem bloco de acesso
 
   // ----- regras do reparcelamento (só produtos do IBFT; quitação e aplicativo, outra empresa, não entram) -----
-  if(!quit && !app) t+=`📌 Enquanto o reparcelamento estiver ativo, os produtos do IBFT só podem ser comprados à vista (o parcelamento volta depois que o acordo for quitado). A filiação ao CITRG continua podendo ser parcelada normalmente.\n\n`;
+  if(opc && !app) t+=`📌 *Se escolher parcelar:* enquanto o reparcelamento estiver ativo, os produtos do IBFT só podem ser comprados à vista (o parcelamento volta depois que o acordo for quitado). A filiação ao CITRG continua podendo ser parcelada normalmente.\n\n`;
+  else if(!quit && !app) t+=`📌 Enquanto o reparcelamento estiver ativo, os produtos do IBFT só podem ser comprados à vista (o parcelamento volta depois que o acordo for quitado). A filiação ao CITRG continua podendo ser parcelada normalmente.\n\n`;
 
   // ----- validade: a data até a qual multa e juros foram calculados (urgência real, não inventada) -----
-  if(descs.length)  t+=`⏳ Esta condição vale para pagamento até ${refTxt}.\n\n`;
+  if(opc)           t+= nA>0 ? `⏳ Os juros das parcelas em atraso correm por dia, então os valores das duas opções valem para pagamento até ${refTxt}.\n\n` : `⏳ As duas opções valem para pagamento até ${refTxt}.\n\n`;
+  else if(descs.length)  t+=`⏳ Esta condição vale para pagamento até ${refTxt}.\n\n`;
   else if(nA>0)     t+=`⏳ Os juros das parcelas em atraso correm por dia, então estes valores valem para pagamento até ${refTxt}.\n\n`;
 
   // 2º reparcelamento: é o último possível para essa dívida (limite de 2 por dívida de cada produto)
-  if(tipoProp==='rep2') t+=`⚠️ *Atenção:* este é o último reparcelamento possível para essa dívida. Se alguma parcela deste acordo atrasar, não conseguiremos fazer um novo parcelamento.\n\n`;
+  if(tipoProp==='rep2' && opc) t+=`⚠️ *Atenção:* se escolher parcelar, este é o último reparcelamento possível para essa dívida. Se alguma parcela deste acordo atrasar, não conseguiremos fazer um novo parcelamento.\n\n`;
+  else if(tipoProp==='rep2') t+=`⚠️ *Atenção:* este é o último reparcelamento possível para essa dívida. Se alguma parcela deste acordo atrasar, não conseguiremos fazer um novo parcelamento.\n\n`;
   // 1º reparcelamento: porta aberta se a parcela não couber (guia do público: parcela que cabe no mês pesa mais que desconto)
-  if(tipoProp==='rep1' && parcelasEscolhidas<12) t+=`Se a parcela não couber no seu mês, me fala que eu vejo outra opção com você.\n\n`;
+  if(tipoProp==='rep1' && parcelasEscolhidas<12 && !opc) t+=`Se a parcela não couber no seu mês, me fala que eu vejo outra opção com você.\n\n`;
 
   // pergunta final, com resposta de uma palavra (compromisso): PIX na quitação; boleto no 1º reparc.; formulário/contrato no 2º reparc.
-  if(quit)                  t+= quitSemBeneficio
+  if(opc)                   t+=`Qual fica melhor para você? É só responder *1* ou *2*. ✅`;
+  else if(quit)             t+= quitSemBeneficio
                               ? `Posso já gerar o seu *PIX*? É só responder *SIM*. A confirmação é na hora. ✅`
                               : `Posso já gerar o seu *PIX* pra você garantir essa condição? É só responder *SIM*. A confirmação é na hora. ✅`;
   else if(tipoProp==='rep2')t+=`Se estiver tudo certo pra você, o próximo passo é preencher um *formulário rápido* com seus dados pessoais. Com ele eu preparo o *contrato de confissão de dívida e parcelamento* e te envio para assinatura — e logo em seguida liberamos o *boleto* da 1ª parcela. Posso te enviar o formulário? É só responder *SIM*. ✅`;
@@ -1695,6 +1783,9 @@ function renderCoerencia(){
     const sem=produtosDaProposta().filter(k=>!usados.has(k)).map(k=>PRODUTOS[k].n);
     if(sem.length && atrasos.some(p=>parseV(p.valor)>0)) av.push((sem.length===1?'O produto ':'Os produtos ')+sem.join(' e ')+(sem.length===1?' está':' estão')+' na proposta, mas nenhuma parcela foi marcada para '+(sem.length===1?'ele':'eles')+'. Escolha o produto de cada parcela na coluna "Produto" da tabela (use "+ Adicionar parcela" para as parcelas do outro produto).');
   }
+  if(duasOpcoes() && totalGeral()>0){ const q=opcaoQuitacao(), dif=totalGeral()-q.total, pct=dif/totalGeral()*100;
+    if(dif>0.005 && pct<3) av.push('A diferença entre as opções é pequena: a opção 1 sai só '+brl(dif)+' mais barata (cerca de '+Math.max(1,Math.round(pct))+'%). Talvez valha aumentar o desconto da opção 1 ou enviar só o parcelamento.'); }
+  if(duasOpcoes() && totalGeral()>0 && opcaoQuitacao().total>=totalGeral()-0.005) av.push('A opção 1 (à vista) não está mais barata que o parcelamento. Aplique um desconto em "Desconto da opção 1", à esquerda, ou desligue a proposta com 2 opções.');
   // vencimento em fim de semana ou feriado: o boleto não compensa nesse dia
   const mn=motivoNaoUtil(dv);
   if(mn){ const prox=proximoDiaUtil(dv);
@@ -1883,8 +1974,16 @@ function render(){
   const quit=ehQuit();
   if(!quit && parcelasEscolhidas<2) parcelasEscolhidas=2;   // reparcelamento começa em 2x
   document.getElementById('quitTotalWrap').style.display = quit ? 'block' : 'none';
-  document.getElementById('cardDesconto').style.display=quit?'block':'none';
-  document.getElementById('numAcesso').textContent = quit ? '5' : '4';
+  const opc=duasOpcoes();
+  document.getElementById('cardDesconto').style.display=(quit||opc)?'block':'none';
+  document.getElementById('numAcesso').textContent = (quit||opc) ? '5' : '4';
+  document.getElementById('lblDesc').textContent = opc ? 'Desconto da opção 1 (quitação à vista)' : 'Descontos da quitação';
+  document.getElementById('opcWrap').style.display = quit ? 'none' : 'block';
+  document.getElementById('negInfoWrap').style.display = 'block';
+  document.getElementById('negInfoHint').innerHTML = quit
+    ? 'Na quitação, as parcelas marcadas em <b>Negat.</b> na tabela já avisam sozinhas. Use este interruptor se a dívida tem negativação mas as parcelas estão lançadas como em atraso (os valores não mudam).'
+    : 'Só serve para a proposta avisar que a negativação é retirada após o pagamento. <b>Não muda nenhum valor</b>: as parcelas continuam com multa e juros normais, como parcelas em atraso.';
+  document.getElementById('opcAcoes').hidden = !opc;
   document.getElementById('appHint').style.display = ehApp() ? 'block' : 'none';
   // desconto nos juros: só no reparcelamento
   document.getElementById('descJurosWrap').style.display = quit ? 'none' : 'block';
@@ -1920,6 +2019,15 @@ function render(){
     else if(N&&A&&!V) g='Negativadas + atraso. Estratégia: retirar os juros do atraso (as negativadas permanecem no valor original).';
     else g='Combinação: negativadas no valor original, retire os juros do atraso e até 10% nas parcelas a vencer.';
     document.getElementById('quitGuide').innerHTML=g;
+  }else if(opc){
+    const A=pAtraso().length,V=qtdVinc();
+    document.getElementById('ctlJurosMulta').style.display=(A>0)?'block':'none';
+    document.getElementById('lblRetMulta').style.display='flex';
+    document.getElementById('ctlVinc').style.display=(V>0)?'block':'none';
+    document.getElementById('ctlNeg').style.display='none';
+    document.getElementById('ctlGeral').style.display='block';
+    document.getElementById('alertaNeg').classList.remove('show');
+    document.getElementById('quitGuide').innerHTML='<b>Opção 1 da proposta (quitação à vista).</b> Padrão: retirar os juros do atraso'+(V>0?' e 10% de desconto nas parcelas a vencer':'')+'. A opção 2 é o parcelamento, sem estes descontos.';
   }
 
   document.getElementById('lblSec2').textContent = quit ? 'Parcelas em atraso / Parcelas negativadas' : 'Parcelas em atraso';
@@ -2118,7 +2226,7 @@ function snapshot(){
     retJuros:document.getElementById('retJuros').checked,retMulta:document.getElementById('retMulta').checked,
     descVincPerc:g('descVincPerc'),descNegPerc:g('descNegPerc'),descJurosPerc:g('descJurosPerc'),descGeralPerc:g('descGeralPerc'),quitTotal:document.getElementById('quitTotal').checked,isentarJurosNeg:document.getElementById('isentarJurosNeg').checked,
     dataLib:g('dataLib'),extDias:g('extDias'),dataVenc:g('dataVenc'),
-    atrasos:JSON.parse(JSON.stringify(atrasos)),parcelasEscolhidas,produtosExtra:[...produtosExtra],nomeAluno:g('nomeAluno')};
+    atrasos:JSON.parse(JSON.stringify(atrasos)),parcelasEscolhidas,produtosExtra:[...produtosExtra],nomeAluno:g('nomeAluno'),duasOpcoes:document.getElementById('duasOpcoes').checked,temNegativada:document.getElementById('temNegativada').checked};
 }
 function restore(s){
   const set=(id,v)=>document.getElementById(id).value=v;
@@ -2130,6 +2238,8 @@ function restore(s){
   if(s.descGeralPerc!==undefined)set('descGeralPerc',s.descGeralPerc);
   if(s.quitTotal!==undefined)document.getElementById('quitTotal').checked=s.quitTotal;
   if(s.isentarJurosNeg!==undefined)document.getElementById('isentarJurosNeg').checked=s.isentarJurosNeg;
+  document.getElementById('duasOpcoes').checked=!!s.duasOpcoes;
+  document.getElementById('temNegativada').checked=!!s.temNegativada;
   set('nomeAluno',s.nomeAluno||'');
   produtosExtra=s.produtosExtra||[];
   atrasos=s.atrasos||[];parcelasEscolhidas=s.parcelasEscolhidas||2;editadoManual=false;document.getElementById('editNotice').style.display='none';render();
@@ -2140,7 +2250,7 @@ function resumoSnap(){
   const pi=parseInt(document.getElementById('produto').value);
   let prod=pi>=0?PRODUTOS[pi].n:'(sem produto)';
   if(prod.length>30) prod=prod.slice(0,29)+'…';
-  const extra=ehQuit()?'':' · '+parcelasEscolhidas+'x';
+  const extra=ehQuit()?'':' · '+parcelasEscolhidas+'x'+(duasOpcoes()?' ou à vista '+brl(opcaoQuitacao().total):'');
   const venc=document.getElementById('dataVenc').value;
   return `${tipoMap[document.getElementById('tipoProposta').value]||''} · ${prod} · ${brl(totalGeral())}${extra} · venc ${venc?dataBR(venc).slice(0,5):'—'}`;
 }
@@ -2227,6 +2337,8 @@ function restaurarHist(i){ if(i==null)return; restore(historico[parseInt(i)]); m
 function novaProposta(){
   const antes=capturar();   // para o Desfazer
   salvarHist();   // guarda a proposta atual no histórico antes de limpar
+  document.getElementById('duasOpcoes').checked=false;
+  document.getElementById('temNegativada').checked=false;
   document.getElementById('tipoProposta').value='rep1';
   document.getElementById('nomeAluno').value='';
   document.getElementById('produto').value='-1';

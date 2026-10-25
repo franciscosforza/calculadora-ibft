@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v36** | out/2026 | Proposta com duas opções no 1º e 2º reparcelamento (quitar à vista com desconto ou parcelar, "responda 1 ou 2"), botões "Aluno escolheu 1/2", aviso de negativação (retirada em até 5 dias úteis). Cálculos inalterados. |
 | **v35** | out/2026 | Quitação parcial com mais de um produto: coluna Produto na tabela, valores e datas por produto na proposta, seletor dos produtos adicionais igual ao principal; datas das parcelas na quitação parcial de um produto. Cálculos inalterados. |
 | **v34** | out/2026 | Modo rápido pelo teclado (Enter avança, Ctrl+Enter copia, Alt+1/2/3), números animados, prévia que destaca o que mudou, resumo nas seções recolhidas, estado vazio com 3 passos, campos com erro que tremem e explicam, confete ao copiar. Cálculos e textos inalterados. |
 | **v33** | out/2026 | Novo produto: Formação em Psicossomática (12 meses). Cálculos e textos inalterados. |
@@ -89,7 +90,7 @@ _Uso interno — Financeiro IBFT._
 
 ## Teste automático
 
-Antes de cada publicação, o teste abre a própria `index.html` numa página simulada (data fixa em 08/10/2026), roda 45 cenários e compara com o resultado aprovado em `tests/esperado.json`. Também confere regras de texto (sem CNPJ, sem saudação, sem palavras que o guia manda evitar, negrito fechado, pergunta final com "SIM") e se a soma das parcelas fecha com o total em milhares de valores.
+Antes de cada publicação, o teste abre a própria `index.html` numa página simulada (data fixa em 08/10/2026), roda 73 cenários e compara com o resultado aprovado em `tests/esperado.json`. Também confere regras de texto (sem CNPJ, sem saudação, sem palavras que o guia manda evitar, negrito fechado, pergunta final com "SIM") e se a soma das parcelas fecha com o total em milhares de valores.
 
 ```
 npm install            # uma vez por computador
