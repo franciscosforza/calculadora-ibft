@@ -4,6 +4,16 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v38 — out/2026
+- **Propostas de hoje:** o contador do topo virou botão e abre um painel lateral com as propostas copiadas hoje (hora, aluno, tipo, produto, valor e forma), total negociado, quantidade por tipo e gráfico dos últimos 7 dias. "Abrir" recupera a proposta e "Copiar texto" copia de novo o texto exatamente como foi enviado (o histórico passa a guardar o texto copiado, o total e a forma).
+- **Contador corrigido:** passa a contar propostas diferentes copiadas hoje, tiradas do histórico (`_cts`), só depois que a cópia deu certo; "Nova proposta" não apaga a marca de copiada; vira o dia sozinho à meia-noite. Itens de versões antigas contam pela data em que foram salvos.
+- **Proposta com vencimento vencido:** aviso no resumo com "Usar hoje" (no 2º reparcelamento, "Usar amanhã"), que atualiza a data e recalcula. Parcelas a vencer que venceram antes da nova data passam para "em atraso" (mensais depois da última em atraso, ou a partir do "Venc. da 1ª a vencer"), a quantidade a vencer diminui e a próxima data avança. Com Desfazer.
+- **Histórico:** recuperar uma proposta tem Desfazer; o filtro acha valores sem formatação ("1234" → R$ 1.234,00); o espelhamento do valor a vencer volta certo depois de recuperar.
+- **Visual:** blocos condicionais deslizam (altura e opacidade) ao aparecer e sumir; número da seção vira ✓ quando ela fica pronta; ✓ do "Copiado" e dos avisos se desenha; lua/sol giram; resumo e proposta com mais elevação e total com fundo dourado leve; composição com paleta validada para daltonismo nos dois temas; hora real na prévia; "digitando…" no estado vazio; saudação no topo; aviso "Novidades" uma vez por versão.
+- **Agilidade:** atalhos Hoje · Amanhã · +7 dias no vencimento e +30 · +60 · +90 dias na extensão; setas na grade de parcelas.
+- **Código:** um só seletor de produto (principal e adicionais), código morto removido.
+- **Teste automático:** novos testes do "Usar hoje" (1º e 2º reparcelamento, sem a vencer) e do contador do dia. Os 73 cenários continuam idênticos.
+
 ## v37 — out/2026
 - **Logo interativa:** a logo do cabeçalho virou um botão. Ao passar o mouse, um brilho dourado atravessa só o desenho da logo (a própria imagem é a máscara) e ela sobe de leve. Clicar recarrega a calculadora mantendo a proposta da tela (mesmo mecanismo do "Atualizar"), com o aviso "Calculadora recarregada. Sua proposta foi mantida.". A logo entra com animação suave ao abrir e brilha ao copiar uma proposta.
 - **"Nova proposta" volta ao topo:** as duas colunas (ou a página, no celular) sobem na hora, a seção 1 abre se estiver recolhida e o cursor vai para o nome do aluno. Vale também para Alt+N.

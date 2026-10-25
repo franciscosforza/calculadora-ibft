@@ -102,6 +102,60 @@ if (w.eval(`typeof duasOpcoes==='function'`)) {
   opc.forEach(r => falha('duas opções', r));
 }
 
+// ---------- proposta antiga: "Usar hoje" atualiza a data e passa para atraso as parcelas a vencer que venceram ----------
+if (w.eval(`typeof atualizarParaHoje==='function'`)) {
+  const ant = w.eval(`(()=>{
+    const $=id=>document.getElementById(id), set=(id,v)=>{$(id).value=v;}, ruins=[];
+    // hoje = 08/10/2026. 5 em atraso todo dia 05 (05/04 a 05/08) + 4 a vencer; proposta feita para 20/08
+    novaProposta(); set('produto','0'); onProdutoChange(); set('genQtd','5'); set('genVenc','2026-04-05'); set('genVal','300,00'); gerarParcelas();
+    set('vincQtd','4'); set('dataLib','2026-01-10'); set('dataVenc','2026-08-20'); render();
+    if($('coerencia').textContent.indexOf('já passou')<0) ruins.push('1º reparc.: sem aviso de vencimento passado');
+    atualizarParaHoje();   // vencem no meio-tempo 05/09 e 05/10 → 7 em atraso, 2 a vencer (próxima 05/11)
+    if(atrasos.length!==7) ruins.push('1º reparc.: esperava 7 em atraso, veio '+atrasos.length);
+    if($('vincQtd').value!=='2') ruins.push('1º reparc.: esperava 2 a vencer, veio '+$('vincQtd').value);
+    if($('vincVenc').value!=='2026-11-05') ruins.push('1º reparc.: próxima a vencer '+$('vincVenc').value);
+    if($('genQtd').value!=='7') ruins.push('1º reparc.: quantidade não acompanhou ('+$('genQtd').value+')');
+    if($('dataVenc').value!==hojeISO()) ruins.push('1º reparc.: a data não foi para hoje');
+    if(!atrasos[6] || atrasos[6].venc!=='2026-10-05' || atrasos[6].valor!=='300,00') ruins.push('1º reparc.: parcela nova errada');
+    if($('coerencia').textContent.indexOf('já passou')>=0) ruins.push('1º reparc.: o aviso continuou depois de atualizar');
+    // 2º reparcelamento: vai para amanhã; parcela a vencer de 15/09 passa para atraso, a de 15/10 não
+    novaProposta(); set('tipoProposta','rep2'); onTipoChange(); set('produto','0'); onProdutoChange();
+    set('genQtd','2'); set('genVenc','2026-07-15'); set('genVal','250,00'); gerarParcelas();
+    set('vincQtd','3'); set('dataLib','2026-01-10'); set('dataVenc','2026-09-01'); render(); set('vincVenc','2026-09-15'); render();
+    atualizarParaHoje();
+    if($('dataVenc').value!=='2026-10-09') ruins.push('2º reparc.: esperava amanhã, veio '+$('dataVenc').value);
+    if(atrasos.length!==3 || $('vincQtd').value!=='2' || $('vincVenc').value!=='2026-10-15') ruins.push('2º reparc.: parcelas erradas ('+atrasos.length+' em atraso, '+$('vincQtd').value+' a vencer, próxima '+$('vincVenc').value+')');
+    // sem parcelas a vencer: só a data muda
+    novaProposta(); set('produto','0'); onProdutoChange(); set('genQtd','2'); set('genVenc','2026-08-05'); set('genVal','100,00'); gerarParcelas();
+    set('dataLib','2026-01-10'); set('dataVenc','2026-09-01'); render(); atualizarParaHoje();
+    if(atrasos.length!==2 || $('dataVenc').value!==hojeISO()) ruins.push('sem a vencer: mudou o que não devia');
+    novaProposta(); return ruins;
+  })()`);
+  ant.forEach(r => falha('vencimento passado', r));
+}
+
+// ---------- contador do dia = propostas diferentes copiadas hoje (do histórico) ----------
+if (w.eval(`typeof propostasDoDia==='function'`)) {
+  const cont = w.eval(`(()=>{
+    const $=id=>document.getElementById(id), set=(id,v)=>{$(id).value=v;}, ruins=[];
+    historico=[];
+    novaProposta(); set('produto','0'); onProdutoChange(); set('genQtd','2'); set('genVenc','2026-08-05'); set('genVal','100,00'); gerarParcelas(); set('dataLib','2026-01-10'); render();
+    salvarHist(true,'TEXTO 1'); salvarHist(true,'TEXTO 1');   // copiou a mesma proposta duas vezes
+    if(propostasDoDia(hojeISO()).length!==1) ruins.push('a mesma proposta copiada 2x contou '+propostasDoDia(hojeISO()).length);
+    salvarHist(false);   // "Nova proposta" com a mesma proposta na tela: continua copiada, com o texto
+    const it=propostasDoDia(hojeISO());
+    if(it.length!==1 || it[0].x._txt!=='TEXTO 1') ruins.push('Nova proposta apagou a marca de copiada ou o texto');
+    set('genVal','120,00'); gerarParcelas(); salvarHist(false);   // outra proposta, não copiada
+    if(propostasDoDia(hojeISO()).length!==1) ruins.push('proposta não copiada entrou no contador');
+    if($('contTxt').textContent!=='1 proposta hoje') ruins.push('contador mostra "'+$('contTxt').textContent+'"');
+    historico.push({_resumo:'antiga',tipoProposta:'rep1',atrasos:[],_ts:Date.now()});   // item de versão antiga (sem _c): conta pela data
+    if(propostasDoDia(hojeISO()).length!==2) ruins.push('item antigo do histórico não contou');
+    renderHoje(); if($('hojeCorpo').querySelectorAll('.hj-item').length!==2) ruins.push('painel Hoje não lista as propostas');
+    historico=[]; novaProposta(); return ruins;
+  })()`);
+  cont.forEach(r => falha('contador do dia', r));
+}
+
 // ---------- confere com o resultado aprovado ----------
 if (atualizar) {
   fs.writeFileSync(ESPERADO, JSON.stringify(atual, null, 1) + '\n');

@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v38** | out/2026 | Painel "Propostas de hoje" no contador (lista, total do dia, gráfico de 7 dias, abrir e copiar de novo), contador corrigido, "Usar hoje" em proposta antiga (parcelas a vencer que venceram passam para atraso), Desfazer ao recuperar do histórico, blocos que deslizam, ícones animados, atalhos de data e extensão. Cálculos inalterados. |
 | **v37** | out/2026 | Logo interativa (brilho dourado ao passar o mouse; clicar recarrega mantendo a proposta) e Nova proposta volta ao topo com o cursor no nome do aluno. Cálculos inalterados. |
 | **v36** | out/2026 | Proposta com duas opções no 1º e 2º reparcelamento (quitar à vista com desconto ou parcelar, "responda 1 ou 2"), botões "Aluno escolheu 1/2", aviso de negativação (retirada em até 5 dias úteis). Cálculos inalterados. |
 | **v35** | out/2026 | Quitação parcial com mais de um produto: coluna Produto na tabela, valores e datas por produto na proposta, seletor dos produtos adicionais igual ao principal; datas das parcelas na quitação parcial de um produto. Cálculos inalterados. |
@@ -91,7 +92,7 @@ _Uso interno — Financeiro IBFT._
 
 ## Teste automático
 
-Antes de cada publicação, o teste abre a própria `index.html` numa página simulada (data fixa em 08/10/2026), roda 73 cenários e compara com o resultado aprovado em `tests/esperado.json`. Também confere regras de texto (sem CNPJ, sem saudação, sem palavras que o guia manda evitar, negrito fechado, pergunta final com "SIM") e se a soma das parcelas fecha com o total em milhares de valores.
+Antes de cada publicação, o teste abre a própria `index.html` numa página simulada (data fixa em 08/10/2026), roda 73 cenários e compara com o resultado aprovado em `tests/esperado.json`. Também confere regras de texto (sem CNPJ, sem saudação, sem palavras que o guia manda evitar, negrito fechado, pergunta final com "SIM") e se a soma das parcelas fecha com o total em milhares de valores. Confere ainda o "Usar hoje" de propostas antigas (parcelas a vencer que venceram passam para atraso) e o contador do dia.
 
 ```
 npm install            # uma vez por computador

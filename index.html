@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v37">
+<meta name="versao" content="v38">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -51,6 +51,8 @@
     --borda:var(--line); --suave:var(--text-muted); --texto:var(--text); --cinza:var(--surface-3);
     --verde:var(--pos); --vermelho:var(--neg); --alerta:var(--warn); --alerta-bg:var(--warn-bg);
     --card-bg:var(--surface); --accent2:var(--accent-2); --gold2:var(--gold-2);
+    /* composição da dívida (validada para daltonismo; a legenda com % é a codificação secundária) */
+    --c-orig:#2F6FE0; --c-multa:#E08A0B; --c-juros:#C83A3A;
   }
   /* o tema escuro fica no <html> (e espelhado no <body>), para que os apelidos acima resolvam com os valores escuros */
   :root.dark{
@@ -68,6 +70,7 @@
     --e2:0 1px 0 rgba(255,255,255,.04) inset,0 12px 30px -10px rgba(0,0,0,.6);
     --e3:0 1px 0 rgba(255,255,255,.05) inset,0 30px 60px -16px rgba(0,0,0,.7);
     --ring:0 0 0 3px rgba(110,162,255,.28);
+    --c-orig:#4F86E8; --c-multa:#B8790F; --c-juros:#E0576E;
   }
 
   /* ===== base ===== */
@@ -346,7 +349,7 @@
   .btn-primary{background:linear-gradient(180deg,var(--gold-2),var(--gold));color:#1A1203;border-color:rgba(160,95,0,.35);box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 6px 16px -6px rgba(236,147,16,.6);}
   .btn-primary:hover{filter:brightness(1.04);box-shadow:0 1px 0 rgba(255,255,255,.35) inset,0 10px 22px -8px rgba(236,147,16,.7);}
   .btn-primary:focus-visible{box-shadow:var(--ring),0 6px 16px -6px rgba(236,147,16,.6);}
-  .btn-primary.copied{background:#17804F;border-color:#17804F;color:#fff;box-shadow:0 6px 16px -6px rgba(23,128,79,.6);}
+  .btn-primary.copied{background:var(--pos);border-color:var(--pos);color:#fff;box-shadow:0 6px 16px -6px rgba(21,115,71,.6);}
   :root.dark .btn-primary.copied{background:var(--pos);border-color:var(--pos);color:#0A1220;}
   .btn-primary .i-ok{display:none;}
   .btn-primary.copied .i-ok{display:block;}
@@ -442,7 +445,7 @@
   @keyframes contBump{30%{transform:scale(1.12);background:rgba(246,195,90,.32);border-color:rgba(246,195,90,.65);color:#fff}}
   .resumo .tot.pulse{animation:totPulse 600ms var(--ease-out) both;}
   @keyframes totPulse{from{background-color:var(--info-bg)}to{background-color:transparent}}
-  .compo-bar{display:flex;height:8px;border-radius:999px;overflow:hidden;margin-top:12px;background:var(--surface-3);}
+  .compo-bar{display:flex;gap:2px;height:8px;border-radius:999px;overflow:hidden;margin-top:12px;background:var(--surface-3);}
   .compo-bar span{display:block;height:100%;}
   .compo-leg{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--text-muted);margin-top:6px;}
   .compo-leg i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:0;}
@@ -540,12 +543,94 @@
   .toast .t-act:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(246,184,88,.5);}
 
   /* ===== rodapé ===== */
-  .hist-mais{display:block;width:100%;padding:9px 12px;border:none;background:transparent;color:var(--accent);font:600 12.5px var(--font);cursor:pointer;}
-  .hist-mais:hover{background:var(--info-bg);}
-  .hist-mais:focus-visible{outline:none;box-shadow:var(--ring);}
   .rodape{text-align:center;color:var(--text-muted);font-size:11px;padding:6px 16px 22px;}
   .rodape a{color:inherit;text-decoration:underline dotted;text-underline-offset:2px;cursor:pointer;}
   .rodape a:hover{color:var(--text-muted);}
+
+  /* ===== v38 ===== */
+  .hint-inline{display:block;margin-top:3px;opacity:.88;}
+  /* contador do dia = botão que abre o painel "Hoje" */
+  button.hdr-cont{gap:7px;font-family:var(--font);cursor:pointer;transition:background-color var(--d1),border-color var(--d1),color var(--d1);}
+  button.hdr-cont:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.3);color:#fff;}
+  button.hdr-cont:focus-visible{outline:none;box-shadow:0 0 0 3px rgba(246,167,43,.55);}
+  button.hdr-cont .ic{width:14px;height:14px;opacity:.85;}
+  header p .saud{font-weight:600;color:#fff;}
+  /* número da seção vira ✓ quando ela fica pronta */
+  .card h2 .num{position:relative;transition:background var(--d2) var(--ease-out),color var(--d1);}
+  .card h2 .num::after{content:"";position:absolute;inset:0;margin:auto;width:14px;height:14px;background:#fff;opacity:0;transform:scale(0);
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>") center/contain no-repeat;
+            mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'><path d='M20 6 9 17l-5-5'/></svg>") center/contain no-repeat;}
+  .card.ok > h2 .num{background:linear-gradient(135deg,#2FBF7A,var(--pos));color:transparent;box-shadow:0 2px 6px -1px rgba(21,115,71,.4);animation:numPop 420ms var(--ease-out);}
+  .card.ok > h2 .num::after{opacity:1;transform:none;animation:numOk 460ms var(--ease-out) both;}
+  :root.dark .card.ok > h2 .num{background:var(--pos);}
+  :root.dark .card.ok > h2 .num::after{background:#0A1220;}
+  @keyframes numPop{50%{transform:scale(1.14)}}
+  @keyframes numOk{0%{opacity:0;transform:scale(0) rotate(-35deg)}60%{opacity:1;transform:scale(1.25)}100%{opacity:1;transform:none}}
+  /* ícones que se desenham, giram ou reagem */
+  .btn-primary.copied .i-ok path{stroke-dasharray:26;stroke-dashoffset:26;animation:tracar 380ms var(--ease-out) 60ms forwards;}
+  .toast.t-ok .t-ic circle{stroke-dasharray:57;stroke-dashoffset:57;animation:tracar 520ms var(--ease-out) forwards;}
+  .toast.t-ok .t-ic path{stroke-dasharray:14;stroke-dashoffset:14;animation:tracar 360ms var(--ease-out) 260ms forwards;}
+  @keyframes tracar{to{stroke-dashoffset:0}}
+  #btnDark .ic{animation:temaGira 520ms var(--ease-out);}
+  @keyframes temaGira{from{opacity:0;transform:rotate(-100deg) scale(.5)}to{opacity:1;transform:none}}
+  .limpar-sec .ic{transition:transform 520ms var(--ease-out);}
+  .limpar-sec:hover .ic{transform:rotate(-320deg);}
+  .btn-nova .ic{transition:transform var(--d2) var(--ease-out);}
+  .btn-nova:hover .ic{transform:translateY(-1px) rotate(-6deg);}
+  /* a coluna da direita (o resultado) fica um degrau acima dos campos */
+  #cardResumo,#cardProposta{box-shadow:var(--e2);}
+  .resumo .tot{background-image:linear-gradient(180deg,rgba(236,147,16,0),rgba(236,147,16,.08));}
+  :root.dark .resumo .tot{background-image:linear-gradient(180deg,rgba(242,163,58,0),rgba(242,163,58,.09));}
+  /* estado vazio: "digitando…" */
+  .vz-dig circle{transform-box:fill-box;transform-origin:center;animation:digita 1.3s ease-in-out infinite;}
+  .vz-dig circle:nth-child(2){animation-delay:.16s;}
+  .vz-dig circle:nth-child(3){animation-delay:.32s;}
+  @keyframes digita{0%,60%,100%{transform:none;opacity:.4}30%{transform:translateY(-3px);opacity:1}}
+  /* atalhos de data e de extensão */
+  .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .chip-q{display:inline-flex;align-items:center;gap:5px;height:28px;padding:0 11px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--text-muted);font:600 12px var(--font);cursor:pointer;transition:border-color var(--d1),background-color var(--d1),color var(--d1),transform var(--d1);}
+  .chip-q small{font-weight:500;color:var(--text-faint);font-size:11px;}
+  .chip-q:hover{border-color:var(--accent);background:var(--info-bg);color:var(--heading);}
+  .chip-q:active{transform:scale(.97);}
+  .chip-q:focus-visible{outline:none;box-shadow:var(--ring);}
+  .chip-q[aria-pressed="true"]{background:var(--sel-bg);border-color:var(--sel-bg);color:var(--on-sel);}
+  .chip-q[aria-pressed="true"] small{color:var(--on-sel);opacity:.8;}
+  /* painel "Propostas de hoje" (desliza da direita) */
+  .overlay.lado{justify-content:flex-end;align-items:stretch;padding:12px;}
+  .overlay.lado .ajuda-box{max-width:480px;max-height:none;height:100%;transform:translateX(32px);}
+  .overlay.lado.in .ajuda-box{transform:none;}
+  .hj-tit{flex:1;min-width:0;}
+  .hj-sub{margin:2px 0 0;font-size:12.5px;font-weight:500;color:var(--text-muted);}
+  .hj-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0 10px;}
+  .hj-tile{padding:12px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface-2);}
+  .hj-tile small{display:block;font-size:11.5px;font-weight:600;color:var(--text-muted);}
+  .hj-tile b{display:block;margin-top:2px;font-family:var(--display);font-size:22px;font-weight:600;letter-spacing:-.01em;color:var(--heading);white-space:nowrap;}
+  .hj-tipos{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 6px;}
+  .hj-graf{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;margin-top:6px;}
+  .hj-col{display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .hj-area{position:relative;display:flex;align-items:flex-end;justify-content:center;width:100%;height:56px;border-bottom:1px solid var(--line);}
+  .hj-bar{display:block;width:62%;max-width:26px;min-height:2px;border-radius:4px 4px 0 0;background:var(--accent-2);opacity:.55;transform-origin:bottom;animation:barSobe 520ms var(--ease-out) both;}
+  .hj-col.zero .hj-bar{background:var(--line-strong);opacity:1;}
+  .hj-col.hoje .hj-bar{background:linear-gradient(180deg,var(--gold-2),var(--gold));opacity:1;}
+  .hj-n{position:absolute;top:-2px;font-size:11px;font-weight:700;color:var(--heading);}
+  .hj-d{font-size:11px;font-weight:600;color:var(--text-faint);}
+  .hj-col.hoje .hj-d{color:var(--heading);}
+  @keyframes barSobe{from{transform:scaleY(0)}to{transform:none}}
+  .hj-sec{margin:20px 0 8px;font-size:12px;font-weight:700;color:var(--text-muted);}
+  .hj-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:2px 12px;align-items:center;padding:10px 12px;margin-bottom:8px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);transition:border-color var(--d1),box-shadow var(--d1);animation:hjIn 360ms var(--ease-out) both;}
+  .hj-item:hover{border-color:var(--line-strong);box-shadow:var(--e1);}
+  @keyframes hjIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  .hj-hora{font-family:var(--display);font-size:13px;font-weight:600;color:var(--heading);}
+  .hj-info{min-width:0;}
+  .hj-l1{display:flex;align-items:center;gap:8px;min-width:0;}
+  .hj-l1 b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .hj-l1 .hj-semnome{color:var(--text-faint);font-style:italic;}
+  .hj-l2{font-size:12px;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .hj-val{text-align:right;font-weight:700;white-space:nowrap;}
+  .hj-val small{display:block;font-size:11.5px;font-weight:500;color:var(--text-muted);}
+  .hj-acts{grid-column:1/-1;display:flex;justify-content:flex-end;gap:6px;margin-top:6px;}
+  .hj-vazio{padding:28px 16px;text-align:center;color:var(--text-muted);border:1px dashed var(--line-strong);border-radius:var(--r);}
+  .hj-nota{margin-top:14px;font-size:12px;color:var(--text-muted);}
 
   /* ===== responsivo ===== */
   @media(max-width:940px){
@@ -581,6 +666,7 @@
     *,*::before,*::after{animation:none !important;transition-duration:0s !important;}
     .overlay,.ajuda-box,.toast,.topbar{transition:opacity 120ms linear !important;transform:none !important;}
     .fade-in{animation:fadeIn 120ms linear !important;}
+    .btn-primary.copied .i-ok path,.toast.t-ok .t-ic path,.toast.t-ok .t-ic circle{stroke-dashoffset:0 !important;}
   }
 </style>
 </head>
@@ -590,10 +676,10 @@
     <button type="button" class="logo-btn" id="logoBtn" onclick="recarregarMantendo()" title="Recarregar a calculadora (a proposta na tela é mantida)" aria-label="Recarregar a calculadora mantendo a proposta na tela"><img class="logo-ibft" src="data:image/webp;base64,UklGRqobAABXRUJQVlA4WAoAAAAQAAAAOQIArQAAQUxQSLYTAAABHAVt20hJ+LPe7oEQERPAVIogaKpAnFXZGioBXTL7wJ2s2pryyCoJSEBCJCAhEnAwOJg46DhgHNx2gIRIKAcXB/U9zF/DQFF5i4gJoFXb1rC2ioRfAhIiAQmVEAfUARJyHURCrwMkRAIO+jtY8+H7/j8hBZ4jYgJs1doettH1QhCED4IhCIIZ/GIwZlAxqBkoDFIGHwRDEARBeC4kOU7Snpmeq4iYAFpm93DU/sb1rnmsr3+430tO0fSyiYe5ar7zgH2Z3v5fNAreuPnnai9xYJjpRMSA6yKFIpIVMDw2+01xDwEQtQB4+jWJ/wEBvCKgpl+RrUAEAJMqoKZfj+UMgQBA1gYU+934dfWlAFEf1OUX43DJzk0h8N9vxXL+S0QgAJhUwn+/E8crlAg+P5XCf78Qh4vIKJ+iVtpyNyznNTYEnzetUN29cLwKks1KauFxJxz+SA1BvngqBuE+OK/Il5Nmyl1wvBrrS5tmEG6B5UNI9YVKqil3wGlFCrXvqRu4GXjbOH5KYfhqUs4xA7oMY3kPhb4jKKdMIdrFaUWkSdKOStPiTuBmQMUojhea7N9ThuRRL7rE7M8LU3CXRSzvklCKVPamIYHH1+jt9qz4spL/ejxFdLA5nFaZhqGgPWFQUNOrSEt9zvkyvNNgt/Dinx2x31V9rxfzIgrJfhoW1NSLrD4lvw7sx/Lyn+GdFnl5RwiRUL5YRgYcO1F8SmkApOmA/RL9WoXMUxvtO8YGcOxD/i4ofjbA+/ocLvZHkLFdYXQAxy7i24DjdMB+bZZzaShEtst+Gh/AsYPQ3gbIfjaoaWWOV4oKshlRu8oUAI7NdLwROM4GKH5VDhcF2ZtQKbuPSQDPZv6E3A7IfjbguCTL+a8oREmmKV8O0/A3OnsAh9kA2a/H8Wo78sV8o1NQ6gJ4TAccF+NwKZKM+4r0lUJquBqETsB+NkBcivOKCjVpEpl/6VSDQ0PXC5CmcyzE8SqbJSGlEsqXgxpig4v6KWZz+MOQaiAZc0OnhqvBaV+n1WZRsr+ib7hIC29oGKzr+GlsUHY3ZNrXTi1saMhkW8tHvjey/xt2JbyhZbSt00qIUjQJmpR8q9OASwUt2VnW8SIkY2hIgsz7jk+ayGFXxjU+SkXbSHa1vPtiAylFuenHTN6Vya5OK+2bloHs7jt+6ceb1fHCjmZFlEJIw7ce1HOQUS3vEARFQ7YjY/Qdny/aOcmo3lbThEyToi9998ez80G91dxtWrvXS0IyLZKxhmJH3/PryTmpu47Lyi3vCjIJmYdKac83H56bRCb16wqRfLkt0Y2uL88MB7KowwVRGWsWQsYo6AYfz0x2ZFDLebU9U7OCUATpFm/PDEqwp+OVhCpNfDk7M/RNh6cG+Odt6XBBiOwshDbSEOX7ry9PDvBuSMt5lWiQUJnXDtPc+P/nB+yt6HgtqElQNotsRopu8vYEgTcTOvxJJAU10CTzpITc+vUZQt0M6LwWDSmKgoYx0yiibnJ9eYpQN+s5Xu0tCRmjrQbK3r7t/ycJ1ZvO8iFNIkIaMk/2Rlvf//tZwuUM57RmZ8NmimQamtFQN3l9mnCYzfGTaiOoREGQ7K4gusH68jxhs5nlPSW0Q5FpdrYDSbnl/89UGc9zhU5riGwHRSMktNFQprVI03Fd7XxIH9wIYThpfY4XmW8FhSTTbFaQH7mp4evw0aYMx6/O8g6F7GxHqmQMyXZ0o0rKIIrcAmEwmRbn9Nf+hJTNCUS2mjSpWxR9kOcWx1iqX5vXS2iSks2kAWkoCdp166QQCi14LDutzPJubBKqCEGlTMtmyEzqNkEjdDaAHwgHWpm3VcN2kWkTmVaimYxJyW0rqWRrkYbBh6OFOVyykQaTBkSKUkE0yTRy46ITuhrkPlzfs56Ws4yVacjOULaHIGOTn3gq5WxwGcjxikhRdqYJRZHK1k8PSkkNqnkcLjQr2RtbyR10SokN4GxjOa/mKTuLKnurf6yQvrxpHK/QDFEkUTQ0/PunVlKLzTAOF9VWMs8YSe7mrpWzRbCL81plYzPRYLirTivFYI5XyTA2KQkh9/UipXiYy+EPZB6iksk9PrWSm2wmcfrrq5GS+7UrxaOpN4jjJ7SPbOZOO514bkPmsHxkWqKQacO9vkglG6PpZQ6nv5B5QtCdyxrxGY2LMRwvIZpUw0PcteH394Lmhyks78jOMOkB+DldzhV9Bks4rYgiJOQhXqSKbp0dHC/GimznQWaNPckKlneJJEKSR7lrLFrB20qm2c4D9QpjsoHXS6YpbT1SJoUlE1jeg3yxx5IVxt4Cfl1JVAjl0UaFRVq/w4UEGZQH7PVVaPmW82oYM+0hMamL/fIdr5DQOJhx1teiv7zDxTwpjzyqK+nvbjmvxiCIHtWmraS/u+PV/sjjZhrc8t20VX91hz/GEkEe+XN09s1U05Xbj9N+rvMamYY8+Dg6tW9lD7o0/jjHT3W8BkWew214t2/Eo65uP83+My0fUZ5JpuHFb8Ojrs8/TfyRTqvNnofn+HT7Fto96pmh/jDyn+f4GQkR3a/aU5pAON6u+Rb05KX9MFZ/mOVdBlHuN+e00dHRNgGF2zs1zzHoBZf6s8jqj3Ja7Y3uUvN9dfRl6abSDKR4b69W6+FlT6vpZe1WfxRpqz/G8VJDSLnDx55MZx338vxb/2sGu/Ibk4JdGb6f5Z3KzntTyxaDHt5qJ2kl/kpPKxKp4Y4231fTxbGT7dZ4vUCmuae1bIueenZR6cZc3hF0V9p9i0HPLz2UG+NttTV2D9qxJ9OLeu4g3RaHizvLOYWgV946CDfFchZFk/6tWs7dUf+pWaV78tdVknn+4euMnv7q2arcEodLNmv4V+u/FBz9ZXc1SjfEcl5NIvRP1HJGT3/f1zbhfjhe7R1+Pue00ShDG7obDxfz6B+o/47gaKipRbkZlvOqfT/687+3Aw34o8ExNIsxfDMhphS/BYvx2wgxpfiNHK8Zg/zg68fv4/Jypx2/Lvy5TO0S+OhGHv1pAMW6G2eLZBClxNkqqZJHVqukG2fL4KMB1PWBG33zFEaVvh3FzhTIZz4aQLGBgUkyOGXMvaukrtK3o9iJjwZQ1wecvh2fNjLm9UaHP7bzc9fLf7+Wl7vu68toIMQHPqAdDjW8A1zzCe1w4L8rgBpO9R8nKviJT2h+QA1v0n9MPqEdDvx3BVCX1zqtilToJ1w/3l5fHuD+qjKQxn5ugT1IVtk1vVE1Hg0TmMYPDTNV0wR7kOxOCw+4FJYb5MkWY4xbhThZ8EqYJMiSrJKfo9Mnthhj3CrEQYI9SHbQwgNJ0pIqNUxMzz9+Kj94/fP7uLw8yuNF50BKa+HUTlUfad+G4+pDY3tM0s4xieqtsU828o00uePqN443iOqtsg8cVx8a2wWSNfLLLB+I6Hbr5b+3w8tjLa8JI8lsp5wyEHwbkAa68XXJSn1AO18TJyb2yUEeGO1ttOMDSAPd+LpEO/VVTn8zD3WD68fv15cH7PglbiQBvyal72KBZbRRL4mPJXwCMtqkTkJK75NGCyyjjXrNCvYSoeBLEYhA8OpaHrujWS/tgkIjkRPP3PDR2XdbQeMVLtnwRzL7KOJSxUZ3fDB9j8xXt4LGK1xjsL6Ae+CHIhC89Dqjp7mnC86xRO5nInx8M4k2WcAuCJX0SCWNdrJ0Yxtt8PF2ldQl6mQBuyRAet5bxWcRCCB4IecUHClwf2wfi1oLJ+RQN/tOMnViD9Wcc2lknVsc1/ggSgkf6YCa7HllHK5Y7hzq8wm7SpBH9zK034UCASACEQh+W8u5e1KjP+QGk8lSnihX4L7+BGNPs8P9qLSssYEko4VRuAGU+KypPXC4H5WWw+tN42/cA4CIAIDgl5zTRrq0+sBFgwm0U1K6A9W+i9sTSkopH/AxGR/FRgmXpEocSZYccHtOGocHxrXY4PZKf9LQfhH/42sBBJBv6r8UHCl0eeAcjZx4TrIMNXx7Sf0Oy2iLMcZbo4bBndzd2GeS7Ab+HJ0+scUY461Sw+ukkenCrQgAgXzxdb3O6Emt27l9OBF/RFpg+ybyieWiANsoqo8QB41Wa62N45QUIb5eVB8hdflEvCrAepl7CH4sAOcUHOl2P+WGo0aYbHmkg/J6yzUJJhF0hSrlnBp7FzkZupxHquR3UWXvEpzRJQssV+2MH9dy7o4UHI4TFw3Fu0yeOJM7/nqRdsUCNto4XsMpXabYsJE6mPgb3SldBBttHNesNF3jiwgAASDXI3pSs7Xv8oACbXLHRv5CThmtHFeERhoVvq5p5AdueOdEDW+UrmGj9kY3vAuNNCp8XVMol7h3wWfhnIIjXcfv9gHJ8dFOHhjsL3OnhUHBr5Djo0q6JEF86JAUIIwSrXPyIMH6Npmjk+OjSrrEIF4RWERqeeyeNJ6+8SOKMIqwSbIK9jIJPrv/IF0S4aP7pOqBHGNcP+DQA5kqacU1DhAlZdoqKVaqHkjTURrHazbaIMJH90nVBbZWiiZ/0nAlX8A5baT3jy8uGpHaRDdofgBZLyOHei8H7LpEGeq9NNryyNTtkQRBKuwTHWRJoUL1CqRH5qOpX5PAOmWo99JoyyPTw2bTusXgSPeOP+UxJC/d6p+jzT0Nwo2+bZpnLzP3ZbK6h5n2CtCyTiYvJ5QqgC86n8pwjxqfCO6rdPNltnknq/Rt1cA9dH5SUijzj+7u8YHgvg6UKoAvuqJ61jiU+SctoK8A4hiealvOKei1Q0wpBp03k9ZtIC1xCfoG45ZzDPoml7gE/V3vAPzwvskPOErdJ7+DB5hUbPTVfhWoZB3FI4Q1m34X3a6jX+0lnRzEz7v7ZxxtebitNoi5D13MvQ1izjmvs+QNjmKTmHPO6yx8HLUeZTm3luFnXkcfZb5O1nJ201JOSqGMPzeblT4MYhnndbCXeZT2UspgyzkplrOfkv6UUso6W4v7Pdm/hszJrjD+HFTmxSRl+tTt9HFwBzgmH4yrjQpAnSyN8cepzLxa58zzJHPWFTkpGSc/Rwt9GiTmdZFUmSepAoMKrsTZKukA+BqZM6zLP40P5uUR/MTeHadqRxgkgNoAHx0dYRAq8+0a6nuRB2lQHqKF1wr0bXQwbcEwQoO2WaxAHNWcdwcIo8rRQZsZwzhwIEkOWBcYpkEC7kFrg/bIn5RuDUgTH6ZJcvcDqO7+Oag+HJWUcgWOQRnUE3uMWwXSoPkwPra6uwPV3YsUByxdBNyWO5DtIWq6ApukBdhHLkk7sI5utCBFuM9WaA32QYNDUgRSF4EK+8ABk5SB5QGTlIGvUdWFEUjqu6RplyTpAAYHHECYJUkR2Aeu+SO9AVnDDAewdRtgUmjwZRgZWCSpwtepFUijDRZpgzzbwR28M+BLUgByl8HvcAwqHJK0AOmCANQ32icBSMB6zoDyWg57hdJlIEhyqIZxA0LncJyKwDpaYJPuEGcO+w6ti0CRpJzz2jnsGxA64KszYLtAFfgGIhAa7OfC6zVIN6jdBnxK2t2LYTig/gb11AosowBFqvgJYE1AnORu3mBbgSgpAKUTkK843usO3mU4dICfi8D+UguwbIBJMoBi+vfYbbFfHmknQqzgGumgKsA+i8BiwCYpPbQA0YAsyc6VKxwIg+b9/RmH9+voj1n8AFLn8KUbEM4sFUiD5v3n0xKgFUiStAPU+G9iXAZtxmjqNtshrLDONkBq8HVJAoIa+EvcABuM6zPGaTQ+NvUNsjYgTlqtAFWDsT/tDocCsHfK9B//POpVn5olWDMsszu4dEC75A6H5NBeRm/ER7cAUQuwTcbVXuuAIlU4BkoN4LB/EHW4X1TdD4A8MYPsNM0a7NIO2BUHfEk7sLyCn2ipX59RUm+jeykOECVtgCkAPqnu97IFjY7Ur88KwCbdgTCQOUAN9hA1dWDWRlmSNWhhosZXw2cLcJRyAOmCABylOLC9VtWFjyRNO5MUgS9Jd8DdgTZJOlnBNX/KChzuDYgjaWtANoz7qXpGN2CZOUCeJU4WKQKlc/csrZwsUjiXrzigvY8aVEkHJ5c32jmZJXf3RVoaVMO4AaFzOE5lIM72LiqNypkqLTNgl/YzTRLw1RmwXQEcb1QHgbPbG/kZlxoQJe2AYeyAdQf4dWsXZgfUGGM8gCADviQtQJYcaowxOmBShdpFYL1gAb7eC2kFkpmtQHmF0AFfjwBfZmYNmlSBVVL+t5GATZIB+0NpFoBDkwAUSdqBVWrQgpSAVQK+JGkHknQHTNInYBfcgTSxYXjCHxtesAMmKQD1msOGQXIgSorA/kAENkm6A4sOYJNUoBpGAFpUOIB4nSp8zSKwdQnYpR2o20cDTBHYugTs0gbUaB/AoQfcvQHVRtPyhKmdOYAgh6a+AnbJNEsZaFvcKhAf2IDY7cCmHWhp/QCKYWhnXnUqAfuJG2yzDCzdArhkjWmRNiB2BhxSqMzTI9OsN7oDUYAPbkB6UmjMDz1wB0K3AkXWmJtlBJ9UOxeBGmYbxJkDGjZoQUoTD9IdCJ0aECSrk02X1E3vtAMlAnmwAfuTtNbJHh6pcKg3oEmpTZJscS2lLCek5Eet9y2ojzFaJzOzIIsxSrIYJVmMMSjGuIxijFGSbHfafZWkJcZFwxhjDJKUinvZgk4HG2sabB5OyczCQHZSkpnpZDCzMAhmZnrYTgZJsrS7ly1qbmZBkpnZQGZmkmz3Wo/d9A+c+6r/1wS2/9dYbrT/y1jWaHfq/2Uk+vx/Gbbmskf9rQJWUDggzgcAALBDAJ0BKjoCrgA+kUacSqWjoqGkMUswsBIJZW7hb74U/oGUByA/QCBAfgB+gH9ARx3R/7PuHOJ+V5AvkbxT/V+beSx2+fzPuj7Qf6F9gj9N+lt5hv3C9cH0Yf4/1CP6J1BvoAfrl6bf7nfBl+7H7t+1R//+sA6lfqx/XPwd/XX+Qfiz0SoyiMcd1CyKV6AOpsMsbgXmYjbNpjUFWa5bj/fPtyvTjuoWRSvTjs7gI8cKvOPSgI9S4w3q5BAjaJlUzSr1R7AqHX7mNVgbeyPWwgcI3kXxtOJ2KBAEbUaDvrRCj5PVWY0iQOfppdrtfzi6kOF6D/rUXJwJrB2VDpa8b9zz7a7E7N7kpZTSLqQNyHpx2ahtUZzQ2/679ZK1V5USaoPxeho0u012W5qcP4WXM/yryqHKVFN0el3o4zfS1Ii1nmotkethAbL1dVf/0cPz7dW/1hL+kHFZlsww/ltL25iIERStzjxqDQQS5xCDjSgdS2vhI0fnj3LNQKj3WCuaiJ8AqR3+2bTGoJl2Jb1Ej/Yv4QxG+HVk7vQohHKoxPkkXmQ33mvmRXIb/4vNOQpJrHTA9AiJzavg3SL5CEkiIKx9qH+tVXaB2FNTRNh//wqu09LVnbrUren2YLoyR2Mh6cd1CyJeYdLRenGwjoY1d6amwR26x+TM46kNHX7mM1t89jULIpXpx3ULIpXpx2iYzOr+YO+QhIPEdpGPaVEQ9y9V5kujYAAA/rpoQ2b///y/7//lznTmdaBL5+ibbPrHJ9btFcTdGPfyJZpdODSENEySUcDCqJrN/vtxKGSrhusDzx0Gqif0gAZ+AsMYBZsEM7/9iE4B33/uDe+PczgDET33/+R6gRN1ZsNKGYaCSWlkuCZ8+NXAtI3M+FM2smUyUQh/u2CQETam/Jf1oE2TqBKi/o3XkUNx22CZ28CnOpxMQNsiuPz+CfXHG0tlNx4v0p5rx7420tKK9fbzDKNsLHgF/+IiBFS5/EOgE+JnMoLVKQpRvz3R2H6nQ+s8wJ2frjN6O1DJrMoCF+NhLEBKQSVH8qWQzG8zL+2B5HU1Q4FGzrd9d/ssmstV8x6Y0nI1x71Xb+CTZxtNCnM953o4cShl6uy9+k9Ok0cS2OAkI8Fj4mWUG+zyGLSydoRB3hLMzQSTfEsrvbxT54oVWFA6Ex9cvNTbvpUUfaJERByy/9cl2hmhwyiNaKwOrEsl/+ESCX17MjGG+TVibUQILuDQC7pL70G6VjRdxe5yBh9QdHpyGZ+GK7gYgtrrBLe2a5XYzSvOLk1aJpcivxDoBczwvL5wxPp0JzmRt1NR3vZ7Wlg0VYbdpEeY3PT091VVHP1J03UGSLDEqdyH1ysj4+tGQM/lhKiBOYJsXO8+/qlC4hi/c6eJZ1Ji5sP56JepqubAe7/gOG30YzLThJk5Dv1C1a4NWcxhF1aQOwpQWov+Ea8sqCCJY4DVVV6YrmeXGc5x6delj1kVM2Ad1Xlbh6ruh+JnmD79vV9zDg5Dt3WWu/7i4HhvbqByUJqhdkK8may5/EOgdtrDan438tI+BvRrjDpPqp6J12KOj67f5cqQxIAd3EeMTK12UaYBu0kuw5ahLzc2r/3Fh5FM63sRNOGhkbGfdPJoqYqtCvOSuv1t69zotrccHTJ3YClVIBrm9cW6pDXrQq/GFblvf3ZRAM4SSokL+UPyYZL1EZkfH/5D70Qt2m0NNTMkpllEn+z4Dbf6C3iwSx9X2KkcpQ1KbjjJuSJtukuXiZZq9GQDn/EOigSEkzZSSVamlcmv21xH8NazFNk9osXPvPvwIBTNKeSbcBAYDBotPXiFPkrPxOImifvlfHbclcJ5lROoo+D7NysC8yg6Kf7NTmoAf02n6iCla+q41Vt+PCeyL4nvv/6TPGCktKnue2pbdVd+S5BdsztWrE6u99oLazu/BG8hvo5bJEheEct5Ba8AOeFQdiPKpQ8AvQ0t2Zxy9eToc6hAAHoj+r9alfc7eesTvrq5YW+uRkS7/EOkcs2H//1hrFMMUPg6+c5Wac/xlmLzG8+lRtLC7ReemhGkK5gZfs6stpt3usJf8hre7zgxAFgJLmaVOqgIPC8md6z66bu9wDcaE58SQtqeTZf35+DL6kjaQK9KG5BL3pJnEuQe1fuejIEdwcJfbsgTHJ+9vEZ4cMREmE7s/BQDTipfQbS/qlVPGryNlGj57LM3W7iQmaffN5L4C4VNGidN+DMTfys3O+bGY/1vp+24mObmoQZXFXCIqoywtoqz6nN+plbD+luqeu3jFJVn/gzZhczmNUXfBK41LtOzsuPLTFKllt0NboinwVcuMDJqoVQIQH4dIET+HTabTJWrP41+ODJ4/S1Cf4y5n+/1f+ITWIXNUDUPwN3gkKnlPnyWZMSBk+kIRPxGugkMVDwmUu+TvOctjFHnJhcPTS31dXsoKwrZ/T1Rzg7ej7e3BblOXmSbW0SbG3SUxZHMxUH/hFMRzHG4yH4goOOmkugyilUJmJjNRb9d0oMEcEqOkGSaaz/pbDr9gOmLJGWACVPPqiTRb4+nEktlif+bhDZBwWiO5hHMQtRVQmkyWixpi/PuljkH+mRVv8hQwAOikKABFYOA4ycEaJgAA3FM/3Q/9KGrquRKWSm+Y7R3xgbn4h0h2AAEB+IdxPxDoAAAAA==" alt="IBFT"></button>
     <div class="ttl">
       <h1>Financeiro IBFT</h1>
-      <p>Calculadora de propostas de reparcelamento e quitação</p>
+      <p><span class="saud" id="saud"></span>Calculadora de propostas de reparcelamento e quitação</p>
     </div>
     <div class="hdr-acoes">
-      <span class="hdr-cont" id="contDia" title="Propostas que você copiou hoje (zera todo dia, só neste navegador)">0 propostas hoje</span>
+      <button type="button" class="hdr-cont" id="contDia" onclick="toggleHoje()" title="Ver as propostas que você copiou hoje"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span id="contTxt">0 propostas hoje</span></button>
       <span class="hdr-zoom"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><select class="hdr-sel" id="zoomSel" onchange="aplicarZoom(this.value)" title="Tamanho da tela (zoom)" aria-label="Zoom da tela">
         <option value="1">100%</option>
         <option value="1.1">110%</option>
@@ -649,12 +735,7 @@
         </div>
         <label for="prodBusca">Produto / curso<span class="info-i" title="Digite parte do nome para buscar. Os produtos que você mais negociou nos últimos 90 dias aparecem primeiro. Ao escolher, o tipo de acesso ajusta sozinho.">i</span></label>
         <select id="produto" class="sr-only" tabindex="-1" aria-hidden="true" onchange="onProdutoChange()"></select>
-        <div class="combo" id="prodCombo">
-          <svg class="ic combo-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg>
-          <input type="text" id="prodBusca" role="combobox" aria-expanded="false" aria-controls="prodLista" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Buscar produto">
-          <svg class="ic combo-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
-          <div class="combo-pop" id="prodLista" role="listbox" aria-label="Produtos" hidden></div>
-        </div>
+        <div id="prodComboHost"></div>
         <p class="hint" id="appHint" style="display:none"><b>Aplicativo ONION</b> (ONION - O Novo Inconsciente LTDA): multa de 2% e juros de 2%/mês sobre o atraso, como os demais produtos. Acesso de 12 meses. A proposta usa texto próprio de aplicativo. Faça proposta separada dos cursos do IBFT.</p>
         <div id="produtosExtraWrap" style="display:none">
           <div id="produtosExtra"></div>
@@ -755,6 +836,7 @@
           <div><label for="dataLib">Data de liberação do acesso<span class="info-i" title="Data em que o aluno recebeu o acesso. A expiração é calculada como liberação + 12 meses.">i</span></label><input type="date" id="dataLib" oninput="render()"></div>
           <div><label for="extDias">Extensão<span class="info-i" title="Dias extras de acesso concedidos no pagamento. Acima de 90 dias → análise do Francisco. Deixe 0 se não houver extensão.">i</span></label><div class="affix suf dias"><input type="number" id="extDias" min="0" value="0" oninput="render()"><span class="ax">dias</span></div></div>
         </div>
+        <div class="chips" id="extChips" role="group" aria-label="Extensão rápida"><button type="button" class="chip-q" data-d="30" aria-pressed="false" onclick="setExt(30)">+30 dias</button><button type="button" class="chip-q" data-d="60" aria-pressed="false" onclick="setExt(60)">+60 dias</button><button type="button" class="chip-q" data-d="90" aria-pressed="false" onclick="setExt(90)">+90 dias</button></div>
         <div class="alerta" id="alertaExt">Extensão acima de 90 dias: leve para análise do Francisco antes de conceder.</div>
         <div id="acessoInfo" class="hint"></div>
         <p class="hint" id="notaConclusao"></p>
@@ -767,7 +849,7 @@
       <div class="card" id="cardResumo">
         <h2>Resumo financeiro</h2>
         <div class="vazio" id="vazioBox" hidden>
-          <svg class="vz-ilu" viewBox="0 0 92 72" aria-hidden="true"><rect x="22" y="8" width="62" height="40" rx="9" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="1.5"/><path d="M74 48l6 8-12-8z" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="1.5" stroke-linejoin="round"/><rect x="31" y="18" width="34" height="5" rx="2.5" fill="var(--accent)" opacity=".55"/><rect x="31" y="28" width="44" height="4" rx="2" fill="var(--line-strong)"/><rect x="31" y="36" width="26" height="4" rx="2" fill="var(--line-strong)"/><circle cx="20" cy="50" r="13" fill="var(--gold)"/><path d="m14 50 4 4 8-9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="84" cy="10" r="2.5" fill="var(--gold)"/><circle cx="12" cy="24" r="2" fill="var(--accent)" opacity=".6"/></svg>
+          <svg class="vz-ilu" viewBox="0 0 92 72" aria-hidden="true"><rect x="22" y="8" width="62" height="40" rx="9" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="1.5"/><path d="M74 48l6 8-12-8z" fill="var(--surface)" stroke="var(--line-strong)" stroke-width="1.5" stroke-linejoin="round"/><rect x="31" y="18" width="34" height="5" rx="2.5" fill="var(--accent)" opacity=".55"/><rect x="31" y="28" width="44" height="4" rx="2" fill="var(--line-strong)"/><g class="vz-dig"><circle cx="34" cy="38.5" r="2.3" fill="var(--text-faint)"/><circle cx="41.5" cy="38.5" r="2.3" fill="var(--text-faint)"/><circle cx="49" cy="38.5" r="2.3" fill="var(--text-faint)"/></g><circle cx="20" cy="50" r="13" fill="var(--gold)"/><path d="m14 50 4 4 8-9" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="84" cy="10" r="2.5" fill="var(--gold)"/><circle cx="12" cy="24" r="2" fill="var(--accent)" opacity=".6"/></svg>
           <p class="vz-tit">A proposta aparece aqui</p>
           <p class="vz-sub">Complete os 3 passos e o texto se monta sozinho.</p>
           <ol class="vz-passos" id="vzPassos"></ol>
@@ -776,6 +858,7 @@
         <div class="resumo" id="resumo"></div>
         <label for="dataVenc" id="lblVenc">Vencimento da 1ª parcela do acordo</label>
         <input type="date" id="dataVenc" oninput="render()">
+        <div class="chips" id="vencChips" role="group" aria-label="Vencimento rápido"></div>
         <div id="vencHint" class="hint"></div>
         <div id="parcWrap">
           <label>Parcelamento</label>
@@ -783,7 +866,7 @@
         </div>
         <div id="opcWrap" class="opc-wrap">
           <label class="chk-line"><input type="checkbox" id="duasOpcoes" onchange="onDuasOpcoes()"> Oferecer também a quitação à vista com desconto (proposta com 2 opções)</label>
-          <div id="opcAcoes" class="opc-acoes" hidden>
+          <div id="opcAcoes" class="opc-acoes" style="display:none">
             <p class="hint">A <b>opção 1</b> usa o desconto da seção <b>"Desconto da opção 1"</b>, à esquerda (padrão: sem os juros do atraso e 10% nas parcelas a vencer). A data de pagamento é a mesma do campo acima. Quando o aluno responder, gere a proposta completa da opção escolhida:</p>
             <div class="opc-bts">
               <button type="button" class="btn btn-secondary btn-sm" onclick="escolherOpcao(1)">Aluno escolheu <b>1</b> · gerar quitação</button>
@@ -804,7 +887,7 @@
         <button type="button" class="btn btn-primary btn-copy" id="btnCopiar" onclick="copiar()" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="lbl">Copiar proposta</span></button>
         <p class="atalhos" aria-hidden="true"><span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> copia</span><span><kbd>Enter</kbd> avança</span><span><kbd>Alt</kbd>+<kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> tipo</span><span><kbd>Alt</kbd>+<kbd>N</kbd> nova</span></p>
         <div class="wa" id="waWrap">
-          <div class="wa-bubble" id="waBubble"><div id="preview"></div><div class="wa-meta">agora <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m1.5 12.5 4.5 4.5 9-10"/><path d="m11 16 1 1 9.5-10"/></svg></div></div>
+          <div class="wa-bubble" id="waBubble"><div id="preview"></div><div class="wa-meta"><span id="waHora">agora</span> <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m1.5 12.5 4.5 4.5 9-10"/><path d="m11 16 1 1 9.5-10"/></svg></div></div>
           <textarea id="saida" oninput="onSaidaInput()" style="display:none" aria-label="Texto da proposta"></textarea>
         </div>
         <div class="note-info" id="editNotice" style="display:none">Você está editando o texto à mão. Mudanças nos campos não vão sobrescrever sua edição. <button type="button" class="link-btn" onclick="regerar()">Regerar do zero</button></div>
@@ -824,7 +907,7 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v37</a> · out/2026</footer>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v38</a> · out/2026</footer>
       <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
@@ -854,12 +937,18 @@
       <h4>Nova proposta e histórico</h4>
       <p><b>"Nova proposta"</b> limpa tudo na hora, sem caixa de confirmação. Se foi sem querer, clique em <b>Desfazer</b> no aviso. Toda proposta copiada fica no histórico, com <b>data e hora</b>. Filtre por nome, produto, tipo, valor ou data e clique para recuperar.</p>
       <p>O histórico fica só neste navegador. Para não perder nada ao trocar de computador, use <b>Exportar</b> (baixa um arquivo com todas as propostas) e, no outro computador, <b>Importar</b>. Propostas repetidas não são duplicadas.</p>
+      <h4>Propostas de hoje</h4>
+      <p>Clique no contador <b>"N propostas hoje"</b>, no topo, para ver as propostas que você copiou hoje: hora, aluno, tipo, produto e valor, com o total negociado no dia e um gráfico dos últimos 7 dias. <b>Abrir</b> traz a proposta de volta para a tela e <b>Copiar texto</b> copia de novo exatamente o texto que foi enviado. O contador soma propostas diferentes: copiar a mesma proposta de novo não conta duas vezes.</p>
+      <h4>Proposta antiga</h4>
+      <p>Se você recuperar uma proposta cujo vencimento já passou, aparece um aviso no resumo com o botão <b>Usar hoje</b> (no 2º reparcelamento, <b>Usar amanhã</b>). Ele atualiza a data e recalcula multa e juros. Se alguma parcela a vencer venceu nesse meio-tempo, ela passa sozinha para "em atraso".</p>
       <h4>Atualizações</h4>
       <p>Quando sair uma versão nova, aparece um aviso embaixo da tela. Clique em <b>Atualizar</b>: a calculadora recarrega e mantém a proposta que estava na tela.</p>
       <h4>Tema e zoom</h4>
       <p>Na primeira vez, o tema (claro ou escuro) segue o do computador. Depois, vale o que você escolher no botão de lua e sol. O zoom (100% a 200%) também fica salvo. O botão <b>"Regras"</b> mostra a política de descontos e encargos.</p>
       <h4>Atalhos de teclado</h4>
-      <p><kbd>Ctrl</kbd> + <kbd>Enter</kbd> copia a proposta de qualquer lugar da tela (também vale <kbd>Ctrl</kbd> + <kbd>C</kbd> quando nada está selecionado).<br><kbd>Enter</kbd> avança para o próximo campo essencial: nome → produto → tipo de proposta → parcelas em atraso → acesso → vencimento → copiar.<br><kbd>Alt</kbd> + <kbd>1</kbd>, <kbd>2</kbd> ou <kbd>3</kbd> escolhe 1º reparcelamento, 2º reparcelamento ou quitação.<br><kbd>Alt</kbd> + <kbd>P</kbd> vai para a busca de produto.<br><kbd>Alt</kbd> + <kbd>N</kbd> começa uma nova proposta.<br><kbd>Alt</kbd> + <kbd>E</kbd> edita o texto ou volta para a prévia.<br><kbd>Esc</kbd> fecha esta janela e as de Regras e Novidades.</p>
+      <p><kbd>Ctrl</kbd> + <kbd>Enter</kbd> copia a proposta de qualquer lugar da tela (também vale <kbd>Ctrl</kbd> + <kbd>C</kbd> quando nada está selecionado).<br><kbd>Enter</kbd> avança para o próximo campo essencial: nome → produto → tipo de proposta → parcelas em atraso → acesso → vencimento → copiar.<br><kbd>Alt</kbd> + <kbd>1</kbd>, <kbd>2</kbd> ou <kbd>3</kbd> escolhe 1º reparcelamento, 2º reparcelamento ou quitação.<br><kbd>Alt</kbd> + <kbd>P</kbd> vai para a busca de produto.<br><kbd>Alt</kbd> + <kbd>N</kbd> começa uma nova proposta.<br><kbd>Alt</kbd> + <kbd>E</kbd> edita o texto ou volta para a prévia.<br><kbd>Esc</kbd> fecha esta janela e as de Regras, Novidades e Propostas de hoje.<br>Na grade de parcelas, as <kbd>setas</kbd> trocam o número de parcelas.</p>
+      <h4>Atalhos de data</h4>
+      <p>Abaixo do vencimento há os botões <b>Hoje</b>, <b>Amanhã</b> e <b>+7 dias</b>. Na extensão de acesso, <b>+30</b>, <b>+60</b> e <b>+90 dias</b> (clique de novo para zerar).</p>
     </div>
   </div>
 </div>
@@ -896,6 +985,11 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v38 · out/2026</h4>
+      <p><b>Propostas de hoje.</b> O contador no topo virou um botão. Ele abre um painel com as propostas que você copiou hoje (hora, aluno, tipo, produto, valor e forma de pagamento), o total negociado no dia, a quantidade por tipo e um gráfico dos últimos 7 dias. Dá para <b>abrir</b> qualquer uma ou <b>copiar de novo</b> o texto exatamente como foi enviado, inclusive com edições feitas à mão. O contador agora conta propostas diferentes, só depois que a cópia deu certo, e vira o dia sozinho à meia-noite.</p>
+      <p><b>Proposta com vencimento vencido.</b> Ao recuperar uma proposta antiga, o resumo avisa que o vencimento já passou. O botão <b>Usar hoje</b> (no 2º reparcelamento, <b>Usar amanhã</b>) atualiza a data e recalcula multa e juros. As parcelas a vencer que venceram nesse meio-tempo passam para "em atraso" (por exemplo, a parcela de 05/02 entra na tabela e sai das a vencer). Recuperar uma proposta do histórico agora tem <b>Desfazer</b>.</p>
+      <p><b>Visual.</b> Seções e opções que aparecem ou somem (ao trocar o tipo, por exemplo) deslizam em vez de pular. O número da seção vira um ✓ quando ela fica pronta. O ✓ do "Copiado" e dos avisos se desenha, a lua e o sol giram ao trocar o tema. O resumo e a proposta ganharam mais destaque, a barra de composição usa as cores da marca (também no modo escuro), a prévia do WhatsApp mostra a hora real e a tela vazia mostra um "digitando…". Uma saudação (bom dia, boa tarde, boa noite) aparece no topo.</p>
+      <p><b>Mais rápido.</b> Atalhos <b>Hoje · Amanhã · +7 dias</b> abaixo do vencimento e <b>+30 · +60 · +90 dias</b> na extensão. As setas do teclado trocam o número de parcelas. O filtro do histórico acha valores digitados sem formatação ("1234" encontra R$ 1.234,00). Nenhuma regra de cálculo mudou.</p>
       <h4>v37 · out/2026</h4>
       <p><b>Logo interativa.</b> Ao passar o mouse, um brilho dourado atravessa a logo do IBFT e ela sobe de leve. Clicar nela <b>recarrega a calculadora mantendo a proposta da tela</b> (útil se algo travar ou para pegar uma versão nova na hora). A logo também entra com uma animação suave ao abrir e brilha quando você copia uma proposta.</p>
       <p><b>"Nova proposta" volta ao topo.</b> As duas colunas sobem sozinhas e o cursor já fica no nome do aluno, pronto para começar. Nenhuma regra de cálculo mudou.</p>
@@ -964,6 +1058,13 @@
   </div>
 </div>
 
+<div class="overlay lado" id="hojeOverlay" onclick="if(event.target===this)toggleHoje()">
+  <div class="ajuda-box" role="dialog" aria-modal="true" aria-labelledby="hojeTit" tabindex="-1">
+    <div class="dlg-head"><div class="hj-tit"><h3 id="hojeTit">Propostas de hoje</h3><p class="hj-sub" id="hojeSub"></p></div><button type="button" class="dlg-x" onclick="toggleHoje()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <div class="dlg-body" id="hojeCorpo"></div>
+  </div>
+</div>
+
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
 <script>
@@ -1017,18 +1118,46 @@ function toggleCard(h2){
   h2.setAttribute('aria-expanded',fechado?'false':'true');
   card._anim=setTimeout(()=>card.classList.remove('anim'),340);
 }
-// 50 · contador de propostas copiadas hoje (zera por dia, por navegador)
+// 50 · contador do dia: propostas diferentes copiadas hoje, tiradas do histórico (o mesmo que o painel "Hoje" mostra)
+// _cts = quando a proposta foi copiada; itens de versões antigas (sem _c) contam pela data em que foram salvos
+function ctsDe(x){ return x._cts || (x._c===undefined ? (x._ts||0) : 0); }
+function diaDe(ts){ const d=new Date(ts); return new Date(d.getTime()-d.getTimezoneOffset()*60000).toISOString().slice(0,10); }
+function propostasDoDia(iso){ return historico.map((x,i)=>({x,i})).filter(o=>{ const c=ctsDe(o.x); return c && diaDe(c)===iso; }).sort((a,b)=>ctsDe(b.x)-ctsDe(a.x)); }
 function renderContador(){
-  const el=document.getElementById('contDia'); if(!el)return;
-  let n=0;
-  try{const o=JSON.parse(localStorage.getItem('ibft_diario')||'{}'); if(o.d===hojeISO()) n=o.n||0;}catch(e){}
+  const el=document.getElementById('contTxt'); if(!el)return;
+  const n=propostasDoDia(hojeISO()).length;
   el.textContent=n+(n===1?' proposta hoje':' propostas hoje');
+  const b=document.getElementById('contDia'); if(b) b.setAttribute('aria-label',(n===1?'1 proposta copiada hoje':n+' propostas copiadas hoje')+'. Ver a lista');
 }
-function incrementaContador(){
+function bumpContador(){
   const cd=document.getElementById('contDia'); if(cd && !semMovimento()){ cd.classList.remove('bump'); void cd.offsetWidth; cd.classList.add('bump'); setTimeout(()=>cd.classList.remove('bump'),800); }
-  try{const o=JSON.parse(localStorage.getItem('ibft_diario')||'{}'); const n=(o.d===hojeISO()?(o.n||0):0)+1;
-    localStorage.setItem('ibft_diario',JSON.stringify({d:hojeISO(),n}));}catch(e){}
-  renderContador();
+}
+function saudacao(){ const el=document.getElementById('saud'); if(!el) return; const h=new Date().getHours(); el.textContent=(h<5?'Boa noite':h<12?'Bom dia':h<18?'Boa tarde':'Boa noite')+' · '; }
+// mostra/esconde um bloco deslizando (altura, respiro e opacidade), em vez de pular
+let visPronto=false;
+function vis(id,on,disp){
+  const el=typeof id==='string'?document.getElementById(id):id; if(!el) return;
+  disp=disp||'block';
+  const aberto=el.style.display!=='none';
+  const animar=()=>visPronto && !semMovimento() && typeof el.animate==='function' && el.offsetParent!==null;
+  const quadro=()=>{ const cs=getComputedStyle(el); return {
+    zero:{height:'0px',paddingTop:'0px',paddingBottom:'0px',marginTop:'0px',marginBottom:'0px',opacity:0},
+    cheio:{height:el.offsetHeight+'px',paddingTop:cs.paddingTop,paddingBottom:cs.paddingBottom,marginTop:cs.marginTop,marginBottom:cs.marginBottom,opacity:1}}; };
+  if(on){
+    if(el._saindo){ el._saindo.cancel(); el._saindo=null; el.style.overflow=''; el.style.display=disp; return; }
+    if(aberto){ if(el.style.display!==disp && el.style.display!=='') el.style.display=disp; return; }
+    el.style.display=disp;
+    if(animar()){ const k=quadro(); el.style.overflow='hidden';
+      const a=el.animate([k.zero,k.cheio],{duration:260,easing:'cubic-bezier(.22,1,.36,1)'}); el._entrando=a;
+      a.onfinish=a.oncancel=()=>{ if(el._entrando===a){ el._entrando=null; el.style.overflow=''; } }; }
+  }else{
+    if(!aberto || el._saindo) return;
+    if(!animar()){ el.style.display='none'; return; }
+    if(el._entrando){ el._entrando.cancel(); el._entrando=null; }
+    const k=quadro(); el.style.overflow='hidden';
+    const a=el.animate([k.cheio,k.zero],{duration:190,easing:'cubic-bezier(.65,0,.35,1)',fill:'forwards'}); el._saindo=a;
+    a.onfinish=()=>{ if(el._saindo!==a) return; el._saindo=null; el.style.display='none'; el.style.overflow=''; a.cancel(); };
+  }
 }
 // tema: classe "dark" no <html> (tokens) e no <body> (compatibilidade); troca com crossfade quando o navegador suporta
 function aplicarTema(d){
@@ -1107,7 +1236,6 @@ function initProdutos(){
 function onProdutoChange(){const i=parseInt(document.getElementById('produto').value);if(i>=0)document.getElementById('tipoAcesso').value=PRODUTOS[i].a;if(ehApp())produtosExtra=[];render();}
 
 // multi-produto (quitação parcial) — aplicativos (ONION, outra empresa) não se misturam com os produtos do IBFT
-function optionsProdutos(sel){return PRODUTOS.map((p,i)=>p.app?'':`<option value="${i}" ${i===sel?'selected':''}>${i+1}. ${p.n}</option>`).join('');}
 function addProdutoExtra(){produtosExtra.push(-1);render();
   const ins=document.querySelectorAll('#produtosExtra .prod-extra-cb input'), u=ins[ins.length-1]; if(u && u.offsetParent){ u.focus(); u.click(); }}
 function delProdutoExtra(i){produtosExtra.splice(i,1);render();}
@@ -1131,19 +1259,22 @@ function renderProdutosExtra(){
   });
 }
 let cbSeq=0;
+// o mesmo seletor serve ao produto principal (ids fixos, valor lido do <select id="produto">) e aos adicionais da quitação parcial
+// o: {valor | getValor, filtro, aoEscolher(i,teclado), aoEnterFechado(), inputId, listId, wrapId, rotulo, placeholder}
 function montarComboProduto(host,o){
-  const id='cbx'+(++cbSeq);
-  host.innerHTML=`<div class="combo"><svg class="ic combo-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input type="text" role="combobox" aria-expanded="false" aria-controls="${id}L" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="${escAtr(o.placeholder||'Buscar produto')}" aria-label="${escAtr(o.rotulo||'Produto')}"><svg class="ic combo-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><div class="combo-pop" id="${id}L" role="listbox" aria-label="Produtos" hidden></div></div>`;
+  const id='cbx'+(++cbSeq), popId=o.listId||id+'L';
+  host.innerHTML=`<div class="combo"${o.wrapId?` id="${o.wrapId}"`:''}><svg class="ic combo-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg><input type="text"${o.inputId?` id="${o.inputId}"`:` aria-label="${escAtr(o.rotulo||'Produto')}"`} role="combobox" aria-expanded="false" aria-controls="${popId}" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="${escAtr(o.placeholder||'Buscar produto')}"><svg class="ic combo-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><div class="combo-pop" id="${popId}" role="listbox" aria-label="Produtos" hidden></div></div>`;
   const wrap=host.firstElementChild, inp=wrap.querySelector('input'), pop=wrap.querySelector('.combo-pop');
   let valor=o.valor, ativo=0, vis=[], q='';
-  const mostrarValor=()=>{ inp.value = valor>=0 ? PRODUTOS[valor].n : ''; };
+  const val=()=>o.getValor?o.getValor():valor, filtro=o.filtro||(()=>true);
+  const mostrarValor=()=>{ const v=val(); inp.value = v>=0 && PRODUTOS[v] ? PRODUTOS[v].n : ''; };
   mostrarValor();
   function desenhar(){
     const cont=rankingProdutos(), termos=semAcento(q.trim()).split(/\s+/).filter(Boolean);
-    const ordem=PRODUTOS.map((p,i)=>i).filter(o.filtro).sort((a,b)=>(cont[b]||0)-(cont[a]||0)||PRODUTOS[a].n.localeCompare(PRODUTOS[b].n,'pt-BR'));
+    const ordem=PRODUTOS.map((p,i)=>i).filter(filtro).sort((a,b)=>(cont[b]||0)-(cont[a]||0)||PRODUTOS[a].n.localeCompare(PRODUTOS[b].n,'pt-BR'));
     let h='',k=0; vis=[];
     const item=i=>{ vis.push(i); const n=cont[i]||0;
-      return `<div class="cb-opt${k===ativo?' on':''}" role="option" id="${id}o${k++}" data-i="${i}" aria-selected="${i===valor}"><span class="nm">${escH(PRODUTOS[i].n)}${n&&!termos.length?`<small>${n}×</small>`:''}</span>${chipAcesso(PRODUTOS[i])}</div>`; };
+      return `<div class="cb-opt${k===ativo?' on':''}" role="option" id="${id}o${k++}" data-i="${i}" aria-selected="${i===val()}"><span class="nm">${escH(PRODUTOS[i].n)}${n&&!termos.length?`<small>${n}×</small>`:''}</span>${chipAcesso(PRODUTOS[i])}</div>`; };
     if(!termos.length){
       const top=ordem.filter(i=>cont[i]>0).slice(0,5);
       if(top.length){ h+='<div class="cb-grp">Mais negociados por você</div>'; top.forEach(i=>h+=item(i)); h+='<div class="cb-grp">Todos os produtos</div>'; }
@@ -1156,25 +1287,26 @@ function montarComboProduto(host,o){
     inp.setAttribute('aria-activedescendant',vis.length?id+'o'+ativo:'');
     const on=pop.querySelector('.cb-opt.on'); if(on) on.scrollIntoView({block:'nearest'});
   }
-  function abrir(){ if(!pop.hidden) return; q=''; pop.hidden=false; wrap.classList.add('open'); inp.setAttribute('aria-expanded','true'); ativo=0; desenhar(); const k=vis.indexOf(valor); if(k>=0){ ativo=k; desenhar(); } }
+  function abrir(){ if(!pop.hidden) return; q=''; pop.hidden=false; wrap.classList.add('open'); inp.setAttribute('aria-expanded','true'); ativo=0; desenhar(); const k=vis.indexOf(val()); if(k>=0){ ativo=k; desenhar(); } }
   function fechar(){ if(pop.hidden) return; pop.hidden=true; wrap.classList.remove('open'); inp.setAttribute('aria-expanded','false'); mostrarValor(); }
-  function escolher(i){ valor=i; fechar(); o.aoEscolher(i); }
+  function escolher(i,teclado){ valor=i; o.aoEscolher(i,!!teclado); fechar(); }
   inp.addEventListener('focus',()=>inp.select());
   inp.addEventListener('click',abrir);
   inp.addEventListener('input',()=>{ abrir(); q=inp.value; ativo=0; desenhar(); });
   inp.addEventListener('keydown',e=>{
     const aberto=!pop.hidden;
     if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); if(!aberto){abrir();return;} ativo = e.key==='ArrowDown' ? Math.min(ativo+1,vis.length-1) : Math.max(ativo-1,0); desenhar(); }
-    else if(e.key==='Enter' && aberto){ e.preventDefault(); e.stopPropagation(); if(vis.length) escolher(vis[ativo]); }
+    else if(e.key==='Enter' && aberto){ e.preventDefault(); e.stopPropagation(); if(vis.length) escolher(vis[ativo],true); }
+    else if(e.key==='Enter' && !aberto && o.aoEnterFechado && o.aoEnterFechado()){ e.preventDefault(); e.stopPropagation(); }
     else if(e.key==='Escape' && aberto){ e.preventDefault(); e.stopPropagation(); fechar(); inp.select(); }
     else if(e.key==='Tab' && aberto){ fechar(); }
   });
   inp.addEventListener('blur',()=>setTimeout(()=>{ if(document.activeElement!==inp) fechar(); },120));
-  pop.addEventListener('mousedown',e=>e.preventDefault());
+  pop.addEventListener('mousedown',e=>e.preventDefault());   // mantém o foco no campo ao clicar na lista
   pop.addEventListener('click',e=>{ const op=e.target.closest('.cb-opt'); if(op) escolher(parseInt(op.dataset.i)); });
   pop.addEventListener('mousemove',e=>{ const op=e.target.closest('.cb-opt'); if(!op||op.classList.contains('on')) return;
     pop.querySelectorAll('.cb-opt.on').forEach(x=>x.classList.remove('on')); op.classList.add('on'); ativo=parseInt(op.id.slice((id+'o').length)); inp.setAttribute('aria-activedescendant',op.id); });
-  return {abrir, foco:()=>{ inp.focus(); abrir(); }};
+  return {abrir, fechar, sync:mostrarValor, foco:()=>{ inp.focus(); abrir(); }};
 }
 // quitação parcial com 2+ produtos: cada parcela da tabela pode ser de um produto (coluna "Produto")
 function produtosDaProposta(){ const pi=parseInt(document.getElementById('produto').value), arr=[]; if(pi>=0) arr.push(pi); produtosExtra.forEach(i=>{ if(i>=0 && arr.indexOf(i)<0) arr.push(i); }); return arr; }
@@ -1361,7 +1493,7 @@ function expBase(){const l=document.getElementById('dataLib').value;return l?add
 function renderParcGrid(){
   const total=totalGeral(),g=document.getElementById('parcGrid');g.innerHTML='';
   for(let n=2;n<=12;n++){const d=document.createElement('button');d.type='button';   // reparcelamento: 2x a 12x (1x = quitação)
-    d.className='parc-op'+(n===parcelasEscolhidas?' sel':'');d.setAttribute('role','radio');d.setAttribute('aria-checked',n===parcelasEscolhidas?'true':'false');
+    d.className='parc-op'+(n===parcelasEscolhidas?' sel':'');d.setAttribute('role','radio');d.setAttribute('aria-checked',n===parcelasEscolhidas?'true':'false');d.tabIndex=n===parcelasEscolhidas?0:-1;
     d.onclick=()=>{parcelasEscolhidas=n;render();const s=document.querySelector('#parcGrid .sel');if(s)s.focus({preventScroll:true});};
     d.innerHTML=`${n}x<b>${total>0?brl(planoParcelas(total,n).base):'—'}</b>`;g.appendChild(d);}
 }
@@ -1484,8 +1616,8 @@ function renderResumo(){
   const cTot=cOrig+cMulta+cJuros;
   if(cTot>0 && (cMulta>0||cJuros>0)){
     const p=v=>Math.round(v/cTot*100);
-    h+=`<div class="compo-bar"><span style="width:${p(cOrig)}%;background:#2b6cb0"></span><span style="width:${p(cMulta)}%;background:#dd9b2e"></span><span style="width:${p(cJuros)}%;background:#c53030"></span></div>`;
-    h+=`<div class="compo-leg"><span><i style="background:#2b6cb0"></i>Original ${p(cOrig)}%</span><span><i style="background:#dd9b2e"></i>Multa ${p(cMulta)}%</span><span><i style="background:#c53030"></i>Juros ${p(cJuros)}%</span></div>`;
+    h+=`<div class="compo-bar"><span style="width:${p(cOrig)}%;background:var(--c-orig)"></span><span style="width:${p(cMulta)}%;background:var(--c-multa)"></span><span style="width:${p(cJuros)}%;background:var(--c-juros)"></span></div>`;
+    h+=`<div class="compo-leg"><span><i style="background:var(--c-orig)"></i>Original ${p(cOrig)}%</span><span><i style="background:var(--c-multa)"></i>Multa ${p(cMulta)}%</span><span><i style="background:var(--c-juros)"></i>Juros ${p(cJuros)}%</span></div>`;
   }
   document.getElementById('resumo').innerHTML=h;
   rolarNumero('#resTot','tot',tg);
@@ -1784,6 +1916,39 @@ function motivoNaoUtil(iso){
 }
 function proximoDiaUtil(iso){let d=iso;for(let i=0;i<10;i++){d=somaDiasUTC(d,1);if(!motivoNaoUtil(d))return d;}return d;}
 function usarVencimento(iso){document.getElementById('dataVenc').value=iso;render();}
+// data padrão do vencimento para o tipo atual (2º reparcelamento: amanhã; demais: hoje)
+function vencPadrao(){ const h=hojeISO(); return document.getElementById('tipoProposta').value==='rep2' ? somaDiasUTC(h,1) : h; }
+// parcelas a vencer que já venceram antes de "alvo": seguem mensais depois da última parcela em atraso
+// (ou a partir do "Venc. da 1ª a vencer", quando informado). Devolve as datas e a próxima a vencer.
+function vencidasAte(alvo){
+  const q=vincQtdRaw(); if(q<=0) return {datas:[],proxima:''};
+  const vv=document.getElementById('vincVenc').value; let gera;
+  if(vv) gera=j=>addMonths(vv,j);
+  else{
+    const vs=atrasos.map(p=>p.venc).filter(Boolean).sort(); if(!vs.length) return {datas:[],proxima:''};
+    const base=vs[0], ult=vs[vs.length-1]; let k=1; while(addMonths(base,k)<=ult && k<600) k++;
+    gera=j=>addMonths(base,k+j);
+  }
+  const datas=[]; for(let j=0;j<q;j++){ const d=gera(j); if(d>=alvo) break; datas.push(d); }
+  return {datas, proxima: datas.length<q ? gera(datas.length) : ''};
+}
+function atualizarParaHoje(){
+  const antes=capturar(), alvo=vencPadrao(), r=vencidasAte(alvo);
+  if(r.datas.length){
+    const q=vincQtdRaw(), val=document.getElementById('vincVal').value||document.getElementById('genVal').value;
+    const gq=document.getElementById('genQtd'), geradas=(parseInt(gq.value)||0)===atrasos.length;
+    const ult=atrasos.filter(p=>p.venc).sort((a,b)=>a.venc<b.venc?-1:a.venc>b.venc?1:0).pop();
+    r.datas.forEach(d=>{ const n={valor:val,venc:d,negativada:false}; if(ult && ult.prod!=null) n.prod=ult.prod; atrasos.push(n); });
+    if(geradas) gq.value=String(atrasos.length);
+    document.getElementById('vincQtd').value=String(q-r.datas.length);
+    document.getElementById('vincVenc').value=r.proxima;
+  }
+  document.getElementById('dataVenc').value=alvo;
+  editadoManual=false; document.getElementById('editNotice').style.display='none';
+  render(); modoVer();
+  const n=r.datas.length;
+  showToast('Proposta atualizada para '+(alvo===hojeISO()?'hoje':'amanhã')+(n?'. '+(n===1?'1 parcela a vencer passou':n+' parcelas a vencer passaram')+' para "em atraso"':''),{tipo:'ok',acao:{rotulo:'Desfazer',fn:()=>voltar(antes)}});
+}
 
 function renderCoerencia(){
   const el=document.getElementById('coerencia'); if(!el)return;
@@ -1802,12 +1967,17 @@ function renderCoerencia(){
   if(duasOpcoes() && totalGeral()>0){ const q=opcaoQuitacao(), dif=totalGeral()-q.total, pct=dif/totalGeral()*100;
     if(dif>0.005 && pct<3) av.push('A diferença entre as opções é pequena: a opção 1 sai só '+brl(dif)+' mais barata (cerca de '+Math.max(1,Math.round(pct))+'%). Talvez valha aumentar o desconto da opção 1 ou enviar só o parcelamento.'); }
   if(duasOpcoes() && totalGeral()>0 && opcaoQuitacao().total>=totalGeral()-0.005) av.push('A opção 1 (à vista) não está mais barata que o parcelamento. Aplique um desconto em "Desconto da opção 1", à esquerda, ou desligue a proposta com 2 opções.');
+  // vencimento que já passou (proposta recuperada de outro dia): juros parados na data antiga
+  if(dv && dv<hoje){ const alvo=vencPadrao(), r=vencidasAte(alvo), n=r.datas.length;
+    av.unshift('O '+nomeVenc()+' ('+dataBR(dv)+') já passou. Multa e juros foram calculados só até essa data, e a proposta fala de uma data antiga. <button type="button" class="link-btn" onclick="atualizarParaHoje()">'+(alvo===hoje?'Usar hoje':'Usar amanhã')+'</button> <span class="hint-inline">Atualiza a data'+(alvo===hoje?'':' para amanhã (padrão do 2º reparcelamento)')+' e recalcula a proposta'+(n?'. '+(n===1?'A parcela a vencer de ':'As parcelas a vencer de ')+r.datas.map(d=>dataBR(d).slice(0,5)).join(', ').replace(/, ([^,]*)$/,' e $1')+(n===1?' já venceu e passa':' já venceram e passam')+' para "em atraso"':'')+'.</span>');
+  }
   // vencimento em fim de semana ou feriado: o boleto não compensa nesse dia
-  const mn=motivoNaoUtil(dv);
+  const mn=dv && dv>=hoje ? motivoNaoUtil(dv) : '';
   if(mn){ const prox=proximoDiaUtil(dv);
-    av.push('O vencimento ('+dataBR(dv)+') cai em '+(mn.indexOf('feriado')===0?'um ':'um ')+mn+'. Os bancos não compensam boleto nesse dia. Próximo dia útil: '+DIAS_SEMANA[diaSemana(prox)]+', '+dataBR(prox)+'. <button type="button" class="link-btn" onclick="usarVencimento(\''+prox+'\')">Usar '+dataBR(prox).slice(0,5)+'</button> <span class="hint-inline">Os valores em atraso são recalculados até a nova data.</span>'); }
-  el.style.display = av.length ? 'block':'none';
-  el.innerHTML = av.length ? av.join('<br>') : '';
+    av.push('O vencimento ('+dataBR(dv)+') cai em um '+mn+'. Os bancos não compensam boleto nesse dia. Próximo dia útil: '+DIAS_SEMANA[diaSemana(prox)]+', '+dataBR(prox)+'. <button type="button" class="link-btn" onclick="usarVencimento(\''+prox+'\')">Usar '+dataBR(prox).slice(0,5)+'</button> <span class="hint-inline">Os valores em atraso são recalculados até a nova data.</span>'); }
+  if(av.length){ el.innerHTML=av.join('<br>'); vis(el,true); }
+  else{ vis(el,false);   // o texto some junto com o bloco (depois da animação de saída)
+    if(el.style.display==='none') el.innerHTML=''; else setTimeout(()=>{ if(el.style.display==='none') el.innerHTML=''; },240); }
 }
 function atualizarProgresso(){
   const prodOk=parseInt(document.getElementById('produto').value)>=0;
@@ -1868,78 +2038,28 @@ function rankingProdutos(){
 }
 const semAcento=s=>String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
 const escH=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-let cbAtivo=0, cbVis=[], cbQuery='';
 function chipAcesso(p){
   if(p.app) return '<span class="cb-chip a">App · outra empresa</span>';
   return p.a==='vital' ? '<span class="cb-chip v">Vitalício</span>' : p.a==='livro' ? '<span class="cb-chip l">Livro</span>' : '<span class="cb-chip">12 meses</span>';
 }
-function desenharProdutos(){
-  const pop=document.getElementById('prodLista'), inp=document.getElementById('prodBusca');
-  const cont=rankingProdutos(), sel=parseInt(document.getElementById('produto').value);
-  const termos=semAcento(cbQuery.trim()).split(/\s+/).filter(Boolean);
-  const ordem=PRODUTOS.map((p,i)=>i).sort((a,b)=>(cont[b]||0)-(cont[a]||0)||PRODUTOS[a].n.localeCompare(PRODUTOS[b].n,'pt-BR'));
-  let h='',k=0; cbVis=[];
-  const item=i=>{ cbVis.push(i); const n=cont[i]||0;
-    return `<div class="cb-opt${k===cbAtivo?' on':''}" role="option" id="cbo${k++}" data-i="${i}" aria-selected="${i===sel}"><span class="nm">${escH(PRODUTOS[i].n)}${n&&!termos.length?`<small>${n}×</small>`:''}</span>${chipAcesso(PRODUTOS[i])}</div>`; };
-  if(!termos.length){
-    const top=ordem.filter(i=>cont[i]>0).slice(0,5);
-    if(top.length){ h+='<div class="cb-grp">Mais negociados por você</div>'; top.forEach(i=>h+=item(i)); h+='<div class="cb-grp">Todos os produtos</div>'; }
-    ordem.filter(i=>top.indexOf(i)<0).forEach(i=>h+=item(i));
-  }else{
-    ordem.filter(i=>{const n=semAcento(PRODUTOS[i].n);return termos.every(t=>n.indexOf(t)>=0);}).forEach(i=>h+=item(i));
-    if(!cbVis.length) h='<div class="cb-vazio">Nenhum produto com esse nome.</div>';
-  }
-  pop.innerHTML=h;
-  inp.setAttribute('aria-activedescendant',cbVis.length?'cbo'+cbAtivo:'');
-  const on=pop.querySelector('.cb-opt.on'); if(on) on.scrollIntoView({block:'nearest'});
+let prodCB=null;   // seletor do produto principal (criado no início, ver criarSeletorProduto)
+function criarSeletorProduto(){
+  prodCB=montarComboProduto(document.getElementById('prodComboHost'),{inputId:'prodBusca',listId:'prodLista',wrapId:'prodCombo',
+    getValor:()=>parseInt(document.getElementById('produto').value),
+    aoEscolher:(i,teclado)=>{ escolherProduto(i); if(teclado){ const b=proximoCampo('prodBusca'); if(b) b.focus(); } },
+    aoEnterFechado:()=>{ if(!prodSel()) return false; const b=proximoCampo('prodBusca'); if(b) b.focus(); return true; }});
 }
-function abrirProdutos(){
-  const inp=document.getElementById('prodBusca'), pop=document.getElementById('prodLista');
-  if(!pop.hidden) return;
-  cbQuery=''; const sel=parseInt(document.getElementById('produto').value);
-  pop.hidden=false; document.getElementById('prodCombo').classList.add('open'); inp.setAttribute('aria-expanded','true');
-  cbAtivo=0; desenharProdutos();
-  const k=cbVis.indexOf(sel); if(k>=0){ cbAtivo=k; desenharProdutos(); }
-}
-function fecharProdutos(){
-  const pop=document.getElementById('prodLista'); if(pop.hidden) return;
-  pop.hidden=true; document.getElementById('prodCombo').classList.remove('open');
-  document.getElementById('prodBusca').setAttribute('aria-expanded','false'); syncProd(true);
-}
+function abrirProdutos(){ if(prodCB) prodCB.abrir(); }
+function fecharProdutos(){ if(prodCB) prodCB.fechar(); }
 function escolherProduto(i){
-  document.getElementById('produto').value=String(i); fecharProdutos(); onProdutoChange();
+  document.getElementById('produto').value=String(i); onProdutoChange();
   const pb=document.getElementById('prodBusca'); if(pb && pb._limparErro) pb._limparErro();
 }
 // mostra no campo o produto escolhido (quando o atendente não está digitando nele)
 function syncProd(forcar){
-  const inp=document.getElementById('prodBusca'); if(!inp) return;
+  const inp=document.getElementById('prodBusca'); if(!inp||!prodCB) return;
   if(!forcar && document.activeElement===inp) return;
-  const p=prodSel(); inp.value=p?p.n:'';
-}
-function initProdBusca(){
-  const inp=document.getElementById('prodBusca'), pop=document.getElementById('prodLista');
-  inp.addEventListener('focus',()=>inp.select());
-  inp.addEventListener('click',abrirProdutos);
-  inp.addEventListener('input',()=>{ abrirProdutos(); cbQuery=inp.value; cbAtivo=0; desenharProdutos(); });
-  inp.addEventListener('keydown',e=>{
-    const aberto=!pop.hidden;
-    if(e.key==='ArrowDown'||e.key==='ArrowUp'){
-      e.preventDefault(); if(!aberto){abrirProdutos();return;}
-      cbAtivo = e.key==='ArrowDown' ? Math.min(cbAtivo+1,cbVis.length-1) : Math.max(cbAtivo-1,0); desenharProdutos();
-    }else if(e.key==='Enter' && aberto){ e.preventDefault(); e.stopPropagation(); if(cbVis.length){ escolherProduto(cbVis[cbAtivo]); const b=proximoCampo('prodBusca'); if(b) b.focus(); } }
-    else if(e.key==='Enter' && !aberto && prodSel()){ e.preventDefault(); e.stopPropagation(); const b=proximoCampo('prodBusca'); if(b) b.focus(); }
-    else if(e.key==='Escape' && aberto){ e.preventDefault(); e.stopPropagation(); fecharProdutos(); inp.select(); }
-    else if(e.key==='Tab' && aberto){ fecharProdutos(); }
-  });
-  inp.addEventListener('blur',()=>setTimeout(()=>{ if(document.activeElement!==inp) fecharProdutos(); },120));
-  pop.addEventListener('mousedown',e=>e.preventDefault());   // mantém o foco no campo ao clicar na lista
-  // o destaque segue o mouse (a mesma opção que as setas movem); sem redesenhar a lista, para não pular a rolagem
-  pop.addEventListener('mousemove',e=>{
-    const o=e.target.closest('.cb-opt'); if(!o || o.classList.contains('on')) return;
-    pop.querySelectorAll('.cb-opt.on').forEach(x=>x.classList.remove('on'));
-    o.classList.add('on'); cbAtivo=parseInt(o.id.slice(3)); inp.setAttribute('aria-activedescendant',o.id);
-  });
-  pop.addEventListener('click',e=>{ const o=e.target.closest('.cb-opt'); if(o) escolherProduto(parseInt(o.dataset.i)); });
+  prodCB.sync();
 }
 
 // ===== tipo de acesso em botões; escreve no <select id="tipoAcesso"> (que continua existindo) =====
@@ -1989,24 +2109,24 @@ function render(){
   syncAcesso();
   const quit=ehQuit();
   if(!quit && parcelasEscolhidas<2) parcelasEscolhidas=2;   // reparcelamento começa em 2x
-  document.getElementById('quitTotalWrap').style.display = quit ? 'block' : 'none';
+  vis('quitTotalWrap',quit);
   const opc=duasOpcoes();
-  document.getElementById('cardDesconto').style.display=(quit||opc)?'block':'none';
+  vis('cardDesconto',quit||opc);
   document.getElementById('numAcesso').textContent = (quit||opc) ? '5' : '4';
   document.getElementById('lblDesc').textContent = opc ? 'Desconto da opção 1 (quitação à vista)' : 'Descontos da quitação';
-  document.getElementById('opcWrap').style.display = quit ? 'none' : 'block';
+  vis('opcWrap',!quit);
   document.getElementById('negInfoWrap').style.display = 'block';
   document.getElementById('negInfoHint').innerHTML = quit
     ? 'Na quitação, as parcelas marcadas em <b>Negat.</b> na tabela já avisam sozinhas. Use este interruptor se a dívida tem negativação mas as parcelas estão lançadas como em atraso (os valores não mudam).'
     : 'Só serve para a proposta avisar que a negativação é retirada após o pagamento. <b>Não muda nenhum valor</b>: as parcelas continuam com multa e juros normais, como parcelas em atraso.';
-  document.getElementById('opcAcoes').hidden = !opc;
-  document.getElementById('appHint').style.display = ehApp() ? 'block' : 'none';
+  vis('opcAcoes',opc);
+  vis('appHint',ehApp());
   // desconto nos juros: só no reparcelamento
-  document.getElementById('descJurosWrap').style.display = quit ? 'none' : 'block';
+  vis('descJurosWrap',!quit);
   // multi-produto: só na quitação parcial (o ONION, outra empresa, não se mistura com produtos do IBFT)
   const parcial = quit && !document.getElementById('quitTotal').checked;
-  document.getElementById('produtosExtraWrap').style.display = (parcial && !ehApp()) ? 'block' : 'none';
-  document.getElementById('tipoAcessoWrap').style.display = parcial ? 'none' : 'block';   // acesso irrelevante na parcial
+  vis('produtosExtraWrap',parcial && !ehApp());
+  vis('tipoAcessoWrap',!parcial);   // acesso irrelevante na parcial
   renderProdutosExtra();
   const ext=parseInt(document.getElementById('extDias').value)||0;
   document.getElementById('alertaExt').classList.toggle('show',ext>90);
@@ -2016,11 +2136,11 @@ function render(){
     const N=pNeg().length,A=pAtraso().length,V=qtdVinc();
     const soNeg=N>0&&A===0&&V===0;
     // isenção de juros do atraso: TOTAL e PARCIAL; multa e demais descontos: só TOTAL
-    document.getElementById('ctlJurosMulta').style.display=(A>0)?'block':'none';
-    document.getElementById('lblRetMulta').style.display=total?'flex':'none';   // multa só na total
-    document.getElementById('ctlVinc').style.display=(total&&V>0)?'block':'none';
-    document.getElementById('ctlNeg').style.display=(total&&soNeg)?'block':'none';
-    document.getElementById('ctlGeral').style.display=total?'block':'none';
+    vis('ctlJurosMulta',A>0);
+    vis('lblRetMulta',total,'flex');   // multa só na total
+    vis('ctlVinc',total&&V>0);
+    vis('ctlNeg',total&&soNeg);
+    vis('ctlGeral',total);
     quitModel();
     document.getElementById('alertaNeg').classList.toggle('show',negClamped);
     let g='';
@@ -2037,11 +2157,11 @@ function render(){
     document.getElementById('quitGuide').innerHTML=g;
   }else if(opc){
     const A=pAtraso().length,V=qtdVinc();
-    document.getElementById('ctlJurosMulta').style.display=(A>0)?'block':'none';
-    document.getElementById('lblRetMulta').style.display='flex';
-    document.getElementById('ctlVinc').style.display=(V>0)?'block':'none';
-    document.getElementById('ctlNeg').style.display='none';
-    document.getElementById('ctlGeral').style.display='block';
+    vis('ctlJurosMulta',A>0);
+    vis('lblRetMulta',true,'flex');
+    vis('ctlVinc',V>0);
+    vis('ctlNeg',false);
+    vis('ctlGeral',true);
     document.getElementById('alertaNeg').classList.remove('show');
     document.getElementById('quitGuide').innerHTML='<b>Opção 1 da proposta (quitação à vista).</b> Padrão: retirar os juros do atraso'+(V>0?' e 10% de desconto nas parcelas a vencer':'')+'. A opção 2 é o parcelamento, sem estes descontos.';
   }
@@ -2052,7 +2172,7 @@ function render(){
     bN.textContent = (atrasos.length>0 && atrasos.every(p=>p.negativada)) ? 'Desmarcar todas as negativadas' : 'Marcar todas como negativadas'; }
 
   const tipoAc=document.getElementById('tipoAcesso').value,info=document.getElementById('acessoInfo'),nota=document.getElementById('notaConclusao');
-  document.getElementById('cardAcesso').style.display = (tipoAc==='12m' && !parcial) ? 'block' : 'none';
+  vis('cardAcesso',tipoAc==='12m' && !parcial);
   if(tipoAc==='12m'){
     const exp=expBase(), expirou=exp&&exp<hojeISO();
     if(exp){
@@ -2073,14 +2193,25 @@ function render(){
   // campo de venc. das vincendas só aparece quando é relevante (pagamento futuro + há parcelas a vencer)
   const futuro = refCalc()>hojeISO();
   const temVinc = vincQtdRaw()>0;
-  document.getElementById('vincVencWrap').style.display = (futuro && temVinc) ? 'block' : 'none';
+  vis('vincVencWrap',futuro && temVinc);
   const semData = temVinc && !document.getElementById('vincVenc').value;
   document.getElementById('warnCross').classList.toggle('show', futuro && semData);
 
   renderResumo();renderParcGrid();aplicarStatus();atualizarProgresso();renderCoerencia();resumoSecoes();limparErrosResolvidos();
-  document.getElementById('parcWrap').style.display=quit?'none':'block';
+  vis('parcWrap',!quit);
+  renderChips();
   atualizarSaida();
 }
+// atalhos de data (vencimento) e de extensão; a lista de datas só é recriada quando o dia muda (não perde o foco)
+function renderChips(){
+  const h=hojeISO(), dv=document.getElementById('dataVenc').value, c=document.getElementById('vencChips');
+  if(c && c._h!==h){ c._h=h;
+    c.innerHTML=[['Hoje',h],['Amanhã',somaDiasUTC(h,1)],['+7 dias',somaDiasUTC(h,7)]].map(([r,d])=>`<button type="button" class="chip-q" data-d="${d}" aria-pressed="false" onclick="usarVencimento('${d}')" title="${DIAS_SEMANA[diaSemana(d)]}, ${dataBR(d)}">${r} <small>${dataBR(d).slice(0,5)}</small></button>`).join(''); }
+  if(c) c.querySelectorAll('.chip-q').forEach(b=>b.setAttribute('aria-pressed',b.dataset.d===dv?'true':'false'));
+  const ext=parseInt(document.getElementById('extDias').value)||0;
+  document.querySelectorAll('#extChips .chip-q').forEach(b=>b.setAttribute('aria-pressed',parseInt(b.dataset.d)===ext?'true':'false'));
+}
+function setExt(n){ const e=document.getElementById('extDias'); e.value=(parseInt(e.value)||0)===n?'0':String(n); render(); }
 
 // gera o texto/preview (progressivo); chamado pelo render completo e pela atualização leve
 function atualizarSaida(){
@@ -2099,6 +2230,7 @@ function atualizarSaida(){
   pv.innerHTML = (!vazio && textoAnterior!==null && textoAnterior!==novo && !semMovimento()) ? renderPreviewDiff(novo,textoAnterior) : renderPreview(novo);
   mostrarVazio(vazio);
   textoAnterior = vazio ? null : novo;
+  const hr=document.getElementById('waHora'); if(hr){ const d=new Date(); hr.textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
 }
 let textoAnterior=null, estavaVazio=null;
 function renderPreviewDiff(t,antes){
@@ -2226,10 +2358,9 @@ function copiar(){
     alvos.push(['card2', !q||q==='0' ? 'genQtd' : (!v ? 'genVenc' : 'genVal')]); }
   if(!document.getElementById('dataVenc').value){ probs.push(nomeVenc()); alvos.push(['cardResumo','dataVenc']); }
   if(probs.length){ showToast('Falta: '+probs.join(', '),{tipo:'aviso'}); irPara(alvos[0][0],alvos[0][1]); alvos.forEach(a=>avisarCampo(a[1])); return; }
-  salvarHist();   // guarda no histórico a proposta copiada
-  incrementaContador();   // 50 · soma no contador do dia
-  copiarTexto(document.getElementById('saida').value).then(ok=>{
-    if(ok) feedbackCopiado();
+  const txt=document.getElementById('saida').value;
+  copiarTexto(txt).then(ok=>{
+    if(ok){ salvarHist(true,txt); bumpContador(); feedbackCopiado(); }   // guarda a proposta copiada (com o texto enviado) e soma no dia
     else showToast('Não foi possível copiar. Selecione o texto em Editar texto e use Ctrl+C.',{tipo:'erro',ms:8000});
   });
 }
@@ -2258,6 +2389,7 @@ function restore(s){
   document.getElementById('temNegativada').checked=!!s.temNegativada;
   set('nomeAluno',s.nomeAluno||'');
   produtosExtra=s.produtosExtra||[];
+  vincValManual=(s.vincVal||'')!==(s.genVal||'');
   atrasos=s.atrasos||[];parcelasEscolhidas=s.parcelasEscolhidas||2;editadoManual=false;document.getElementById('editNotice').style.display='none';render();
 }
 // histórico de todas as propostas copiadas (sem limite fixo; só encolhe se o armazenamento do navegador encher)
@@ -2270,13 +2402,25 @@ function resumoSnap(){
   const venc=document.getElementById('dataVenc').value;
   return `${tipoMap[document.getElementById('tipoProposta').value]||''} · ${prod} · ${brl(totalGeral())}${extra} · venc ${venc?dataBR(venc).slice(0,5):'—'}`;
 }
-function salvarHist(){
+function formaAtual(){
+  const t=totalGeral();
+  if(ehQuit()) return document.getElementById('quitTotal').checked ? 'à vista' : 'parcial, à vista';
+  return parcelasEscolhidas+'x de '+brl(planoParcelas(t,parcelasEscolhidas).base)+(duasOpcoes()?' ou à vista':'');
+}
+// copiado=true: a proposta foi copiada agora (entra no contador do dia e guarda o texto enviado)
+// copiado=false ("Nova proposta"): só guarda; se a mesma proposta já tinha sido copiada, mantém essa marca e o texto
+function salvarHist(copiado,txt){
   if(totalGeral()<=0) return;                 // não guarda proposta vazia
   const snap=snapshot(); snap._resumo=resumoSnap(); snap._ts=Date.now();
-  historico=historico.filter(s=>!(s._resumo===snap._resumo && (s.nomeAluno||'')===(snap.nomeAluno||'')));   // remove duplicadas
+  snap._total=Math.round(totalGeral()*100)/100; snap._forma=formaAtual(); snap._c=copiado?1:0;
+  const igual=s=>s._resumo===snap._resumo && (s.nomeAluno||'')===(snap.nomeAluno||'');
+  const ant=historico.filter(igual);
+  if(copiado){ snap._cts=snap._ts; snap._txt=txt; }
+  else{ const c=ant.reduce((m,x)=>Math.max(m,ctsDe(x)),0); if(c){ snap._c=1; snap._cts=c; const t=ant.find(x=>x._txt); if(t) snap._txt=t._txt; } }
+  historico=historico.filter(s=>!igual(s));   // remove duplicadas
   historico.unshift(snap);   // guarda TODAS as propostas (sem limite fixo)
   gravarHist();
-  renderHist();
+  renderHist(); renderContador();
 }
 // grava no navegador; só remove as mais antigas se o armazenamento encher (quota ~5MB)
 function gravarHist(){   // devolve quantas propostas mais antigas não couberam no navegador (normalmente 0)
@@ -2328,10 +2472,13 @@ function renderHist(){
   const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const p2=n=>('0'+n).slice(-2);
   let o='';
+  // valores digitados sem formatação ("1234") também encontram "R$ 1.234,00"
+  const dig=termo.replace(/\D/g,''), soNum=dig.length>=2 && /^[\d\s.,r$]+$/i.test(termo);
+  const valoresDig=r=>(r.match(/R\$\s?[\d.,]+/g)||[]).map(v=>v.replace(/\D/g,''));
   historico.forEach((s,i)=>{const r=(s._resumo||'');
     const h=new Date(s._ts||Date.now());
     const quando=p2(h.getDate())+'/'+p2(h.getMonth()+1)+' · '+p2(h.getHours())+':'+p2(h.getMinutes());
-    if(termo && (r+' '+quando+' '+(s.nomeAluno||'')).toLowerCase().indexOf(termo)<0)return;
+    if(termo && (r+' '+quando+' '+(s.nomeAluno||'')).toLowerCase().indexOf(termo)<0 && !(soNum && valoresDig(r).some(v=>v.indexOf(dig)>=0)))return;
     // _resumo = "tipo · produto · valor[ · Nx] · venc dd/mm"
     const partes=r.split(' · '), tipo=partes[0]||'', prod=partes[1]||'', valor=partes[2]||'', resto=partes.slice(3).join(' · ');
     o+=`<button type="button" class="hist-item" onclick="restaurarHist(${i})" title="${esc(r)}"><span class="hi-dt">${quando}</span><span class="hi-chip${tipo.indexOf('Quit')===0?' q':''}">${esc(tipo)}</span><span class="hi-prod">${s.nomeAluno?`<b>${esc(formatarNome(s.nomeAluno))}</b> · `:''}${esc(prod)}${resto?`<small>${esc(resto)}</small>`:''}</span><span class="hi-val">${esc(valor)}</span></button>`;
@@ -2348,7 +2495,49 @@ function fadeHist(){
   l.classList.toggle('fade-t',l.scrollTop>2);
   l.classList.toggle('fade-b',l.scrollTop+l.clientHeight<l.scrollHeight-2);
 }
-function restaurarHist(i){ if(i==null)return; restore(historico[parseInt(i)]); modoVer(); showToast('Proposta recuperada',{tipo:'ok'}); }
+function restaurarHist(i){
+  if(i==null)return; const antes=capturar();   // Desfazer: a proposta que estava na tela não se perde
+  restore(historico[parseInt(i)]); modoVer();
+  const dv=document.getElementById('dataVenc').value, venceu=dv && dv<hojeISO();
+  showToast(venceu?'Proposta recuperada. O vencimento dela já passou: atualize no aviso do resumo.':'Proposta recuperada',{tipo:venceu?'aviso':'ok',ms:venceu?9000:undefined,acao:{rotulo:'Desfazer',fn:()=>voltar(antes)}});
+}
+// ===== painel "Propostas de hoje" =====
+const TIPO_CURTO={rep1:'1º Reparc.',rep2:'2º Reparc.',quit:'Quitação'};
+function valorDe(x){ return x._total!=null ? x._total : parseV(((x._resumo||'').split(' · ')[2]||'').replace(/[^\d.,]/g,'')); }
+function tipoDe(x){ return x.tipoProposta==='quit' && x.quitTotal===false ? 'Quitação parcial' : (TIPO_CURTO[x.tipoProposta]||''); }
+function horaDe(ts){ const d=new Date(ts); return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+function toggleHoje(){ const ov=document.getElementById('hojeOverlay'); if(!ov.classList.contains('in')) renderHoje(); toggleDlg('hojeOverlay'); }
+function renderHoje(){
+  const hoje=hojeISO(), it=propostasDoDia(hoje), esc=escH;
+  const dsem=DIAS_SEMANA[diaSemana(hoje)];
+  document.getElementById('hojeSub').textContent=dsem.charAt(0).toUpperCase()+dsem.slice(1)+', '+dataBR(hoje);
+  const total=it.reduce((a,o)=>a+valorDe(o.x),0), tipos={};
+  it.forEach(o=>{ const t=tipoDe(o.x); tipos[t]=(tipos[t]||0)+1; });
+  // últimos 7 dias (hoje em dourado)
+  const dias=[]; for(let k=6;k>=0;k--){ const d=somaDiasUTC(hoje,-k); dias.push({d,n:propostasDoDia(d).length}); }
+  const mx=Math.max(1,...dias.map(x=>x.n));
+  const graf='<div class="hj-graf" role="img" aria-label="Propostas copiadas nos últimos 7 dias: '+dias.map(x=>dataBR(x.d).slice(0,5)+' '+x.n).join(', ')+'">'+dias.map((x,k)=>{
+    const eh=x.d===hoje, nome=DIAS_SEMANA[diaSemana(x.d)];
+    return '<div class="hj-col'+(eh?' hoje':'')+(x.n?'':' zero')+'" title="'+nome+', '+dataBR(x.d).slice(0,5)+': '+(x.n===1?'1 proposta':x.n+' propostas')+'"><div class="hj-area">'+(eh&&x.n?'<span class="hj-n" style="bottom:calc('+Math.round(x.n/mx*100)+'% + 2px);top:auto">'+x.n+'</span>':'')+'<span class="hj-bar" style="height:'+(x.n?Math.max(6,Math.round(x.n/mx*100)):0)+'%;animation-delay:'+(k*40)+'ms"></span></div><span class="hj-d">'+(eh?'Hoje':nome.slice(0,3))+'</span></div>';
+  }).join('')+'</div>';
+  let h='<div class="hj-stats"><div class="hj-tile"><small>Propostas copiadas</small><b>'+it.length+'</b></div><div class="hj-tile"><small>Total negociado</small><b>'+brl(total)+'</b></div></div>';
+  const ORD=['1º Reparc.','2º Reparc.','Quitação','Quitação parcial'], tk=Object.keys(tipos).sort((x,y)=>ORD.indexOf(x)-ORD.indexOf(y));
+  if(tk.length) h+='<div class="hj-tipos">'+tk.map(t=>'<span class="hi-chip'+(t.indexOf('Quit')===0?' q':'')+'">'+tipos[t]+' · '+esc(t)+'</span>').join('')+'</div>';
+  h+='<p class="hj-sec">Últimos 7 dias</p>'+graf;
+  h+='<p class="hj-sec">'+(it.length?'Copiadas hoje, da mais recente para a mais antiga':'Copiadas hoje')+'</p>';
+  if(!it.length) h+='<div class="hj-vazio">Nenhuma proposta copiada hoje ainda.<br>Elas aparecem aqui assim que você clicar em <b>Copiar proposta</b>.</div>';
+  it.forEach((o,k)=>{ const x=o.x, pi=parseInt(x.produto), tipo=tipoDe(x), nome=x.nomeAluno?formatarNome(x.nomeAluno):'';
+    h+='<div class="hj-item" style="animation-delay:'+Math.min(k*35,350)+'ms"><span class="hj-hora">'+horaDe(ctsDe(x))+'</span>'
+      +'<div class="hj-info"><div class="hj-l1">'+(nome?'<b>'+esc(nome)+'</b>':'<span class="hj-semnome">Sem nome</span>')+'<span class="hi-chip'+(tipo.indexOf('Quit')===0?' q':'')+'">'+esc(tipo)+'</span></div><div class="hj-l2" title="'+escAtr(pi>=0&&PRODUTOS[pi]?PRODUTOS[pi].n:'')+'">'+esc(pi>=0&&PRODUTOS[pi]?nomeCurto(PRODUTOS[pi]):'(sem produto)')+'</div></div>'
+      +'<div class="hj-val">'+brl(valorDe(x))+(x._forma?'<small>'+esc(x._forma)+'</small>':'')+'</div>'
+      +'<div class="hj-acts">'+(x._txt?'<button type="button" class="btn btn-text btn-sm" onclick="copiarDoDia('+o.i+')">Copiar texto</button>':'')+'<button type="button" class="btn btn-secondary btn-sm" onclick="abrirDoDia('+o.i+')">Abrir</button></div></div>';
+  });
+  h+='<p class="hj-nota">Conta as propostas diferentes que você copiou hoje neste navegador. Copiar a mesma proposta de novo não soma.</p>';
+  document.getElementById('hojeCorpo').innerHTML=h;
+}
+function abrirDoDia(i){ fecharDlg('hojeOverlay'); restaurarHist(i); }
+function copiarDoDia(i){ const x=historico[i]; if(!x||!x._txt) return;
+  copiarTexto(x._txt).then(ok=>showToast(ok?'Texto copiado (proposta das '+horaDe(ctsDe(x))+')':'Não foi possível copiar o texto.',{tipo:ok?'ok':'erro'})); }
 
 function novaProposta(){
   const antes=capturar();   // para o Desfazer
@@ -2397,12 +2586,25 @@ document.getElementById('genVenc').value=hojeISO();
 setVencDefault();
 addAtraso();
 initSeg();
-initProdBusca();
+criarSeletorProduto();
 initAcesso();
 try{historico=JSON.parse(localStorage.getItem('ibft_hist')||'[]')||[];}catch(e){historico=[];}   // antes do render: o ranking de produtos usa o histórico
 render();
 renderHist();
 renderContador();   // 50 · mostra o contador do dia ao abrir
+saudacao();
+setInterval(()=>{ renderContador(); saudacao(); },60000);   // vira o dia (e a saudação) com a aba aberta
+document.getElementById('parcGrid').addEventListener('keydown',e=>{
+  const g=e.currentTarget, cols=(getComputedStyle(g).gridTemplateColumns||'').split(' ').filter(Boolean).length||4;
+  const passo={ArrowRight:1,ArrowLeft:-1,ArrowDown:cols,ArrowUp:-cols,Home:-99,End:99}[e.key]; if(passo===undefined) return;
+  e.preventDefault(); const n=Math.min(12,Math.max(2,parcelasEscolhidas+passo)); if(n===parcelasEscolhidas) return;
+  parcelasEscolhidas=n; render(); const sel=document.querySelector('#parcGrid .sel'); if(sel) sel.focus({preventScroll:true});
+});
+// novidades: um aviso discreto, uma vez por versão (não aparece para quem abre pela primeira vez)
+try{ const visto=localStorage.getItem('ibft_visto');
+  if(visto!==VERSAO){ if(visto!==null || historico.length) setTimeout(()=>showToast('Novidades da '+VERSAO+': veja o que mudou',{tipo:'ok',ms:9000,acao:{rotulo:'Ver',fn:toggleNovidades}}),1400);
+    localStorage.setItem('ibft_visto',VERSAO); } }catch(e){}
+setTimeout(()=>{ visPronto=true; },0);   // blocos deslizam só depois da primeira montagem
 modoVer();   // rótulo do botão Editar texto
 // preferência de tema: a salva vale; sem nenhuma, segue o sistema (e acompanha se o sistema mudar)
 aplicarTema(document.documentElement.classList.contains('dark'));
@@ -2433,7 +2635,7 @@ function recarregarMantendo(){ try{ sessionStorage.setItem('ibft_retomar',JSON.s
 function atualizarVersao(){ try{sessionStorage.setItem('ibft_retomar',JSON.stringify(capturar()));}catch(e){} location.reload(); }
 setTimeout(checarVersao,20000);
 setInterval(checarVersao,15*60000);
-document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') checarVersao(); });
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'){ checarVersao(); renderContador(); saudacao(); } });
 // logo da barra fixa reaproveita a do header (sem duplicar o base64)
 try{document.getElementById('tbLogo').src=document.querySelector('.logo-ibft').src;}catch(e){}
 // barra fixa: aparece quando o header sai da tela
