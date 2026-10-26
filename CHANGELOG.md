@@ -4,6 +4,10 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v40 — out/2026
+- **Correção (campo ligado ao texto):** o foco em um campo da coluna da direita (grade de parcelas, atalhos Hoje · Amanhã · +7 dias, vencimento, interruptor das 2 opções) rolava essa mesma coluna até a linha da prévia no meio do clique; o botão saía de baixo do mouse e a escolha não era registrada. Agora a linha continua acendendo, mas a rolagem automática só acontece quando o campo está na coluna da esquerda (`#colEsq`).
+- Nenhuma regra de cálculo nem de texto mudou (73 cenários idênticos).
+
 ## v39 — out/2026
 - **Busca rápida (Ctrl+K):** caixa central que acha ações (nova proposta, tipo, copiar, tema, regras, exportar…), produtos e propostas do histórico (nome, produto, valor), com as letras que batem destacadas, setas e Enter. Novos atalhos: Ctrl+P (produto), Ctrl+E (editar texto), Ctrl+H (propostas de hoje); os de Alt continuam.
 - **Campo ligado ao texto:** a prévia passa a ser desenhada linha a linha; o campo em uso acende a linha que ele muda (`linhasDoGrupo`) e a coluna da direita rola até ela. Teste automático confere que cada campo acha a sua linha.

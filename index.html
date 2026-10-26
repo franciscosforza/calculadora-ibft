@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v39">
+<meta name="versao" content="v40">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -1009,7 +1009,7 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v39</a> · out/2026</footer>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v40</a> · out/2026</footer>
       <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
@@ -1089,6 +1089,8 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v40 · out/2026</h4>
+      <p><b>Correção:</b> clicar no número de parcelas (e nos atalhos de data Hoje · Amanhã · +7 dias, no vencimento e nas 2 opções) às vezes rolava a coluna da direita até o texto da proposta no meio do clique, e a escolha não era feita. Agora a linha da prévia continua acendendo, mas a coluna só rola sozinha quando o campo está na coluna da esquerda. Nenhuma regra de cálculo nem de texto mudou.</p>
       <h4>v39 · out/2026</h4>
       <p><b>Busca rápida (Ctrl+K).</b> Uma caixa no centro da tela acha ações ("nova proposta", "quitação", "tema escuro", "propostas de hoje"…), produtos e propostas do histórico pelo nome do aluno, produto ou valor. As letras que batem ficam destacadas, as setas navegam e <kbd>Enter</kbd> executa. Novos atalhos com Ctrl: <b>Ctrl+P</b> (produto), <b>Ctrl+E</b> (editar texto) e <b>Ctrl+H</b> (propostas de hoje). Os atalhos com Alt continuam valendo.</p>
       <p><b>Campo ligado ao texto.</b> Ao clicar num campo, a linha da prévia que ele muda acende em azul, e a coluna da direita rola até ela se estiver escondida. <b>Cor por tipo:</b> o fio do topo, a barra do resumo e a etiqueta no botão de copiar ficam azuis no 1º reparcelamento, âmbar no 2º e verdes na quitação. <b>Dicas próprias:</b> os "i" e os botões do topo mostram um balão na hora, no visual da calculadora.</p>
@@ -2471,7 +2473,9 @@ function marcarLinhas(rolar){
     if(rl.top<rc.top+20 || rl.bottom>rc.bottom-90){ const alvo=c.scrollTop+(rl.top-rc.top)-rc.height/3; c.scrollTo({top:Math.max(0,alvo),behavior:semMovimento()?'auto':'smooth'}); }
   }
 }
-document.addEventListener('focusin',e=>{ const g=grupoDoFoco(e.target); if(g!==campoFoco){ campoFoco=g; marcarLinhas(true); } });
+// só rola a coluna da direita quando o campo está na esquerda: rolar a coluna onde está o próprio campo
+// tiraria o botão de baixo do mouse no meio do clique (ex.: grade de parcelas, atalhos de data)
+document.addEventListener('focusin',e=>{ const g=grupoDoFoco(e.target); if(g!==campoFoco){ campoFoco=g; marcarLinhas(!!e.target.closest('#colEsq')); } });
 document.addEventListener('focusout',()=>setTimeout(()=>{ if(!grupoDoFoco(document.activeElement) && campoFoco){ campoFoco=null; marcarLinhas(); } },80));
 // coluna direita sem proposta: ilustração + os 3 passos (cada passo leva ao campo)
 function mostrarVazio(vazio){
