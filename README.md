@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v41** | out/2026 | Correção: com o mouse sobre a tabela de parcelas em atraso, a roda não rolava a tela (a tabela tinha rolagem própria). Agora ela rola junto com a coluna e os títulos ficam presos no topo da coluna. Cálculos inalterados. |
 | **v40** | out/2026 | Correção: clicar no número de parcelas (e nos atalhos de data) às vezes rolava a coluna da direita até o texto no meio do clique e a escolha não era feita; agora a coluna só rola sozinha quando o campo está na esquerda. Cálculos inalterados. |
 | **v39** | out/2026 | Busca rápida (Ctrl+K) e atalhos Ctrl+P/E/H, campo ligado à linha da prévia, cor por tipo de proposta, dicas próprias, grade de parcelas com destaque deslizante, resumo que anima, avisos com linha de tempo e arrastar para dispensar, topo que encolhe, botões − e + nas quantidades, tabela com títulos fixos e Desfazer ao apagar parcela, troca de tema em círculo. Cálculos inalterados. |
 | **v38** | out/2026 | Painel "Propostas de hoje" no contador (lista, total do dia, gráfico de 7 dias, abrir e copiar de novo), contador corrigido, "Usar hoje" em proposta antiga (parcelas a vencer que venceram passam para atraso), Desfazer ao recuperar do histórico, blocos que deslizam, ícones animados, atalhos de data e extensão. Cálculos inalterados. |

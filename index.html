@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v40">
+<meta name="versao" content="v41">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -703,7 +703,9 @@
   @keyframes stUp{from{color:transparent;text-shadow:0 12px 0 var(--text)}to{color:transparent;text-shadow:0 0 0 var(--text)}}
   @keyframes stDown{from{color:transparent;text-shadow:0 -12px 0 var(--text)}to{color:transparent;text-shadow:0 0 0 var(--text)}}
   /* tabela de parcelas: títulos fixos, linha nova em destaque */
-  .tbl-wrap{max-height:404px;overflow:auto;overscroll-behavior:contain;}
+  /* sem rolagem própria (prendia a roda do mouse): no desktop a tabela rola junto com a coluna e os títulos ficam presos no topo dela;
+     só ganha rolagem lateral se as colunas não couberem na largura */
+  html.shell .tbl-wrap:not(.rola-x){overflow:visible;}
   .tbl-wrap thead th{position:sticky;top:0;z-index:2;background:var(--surface);border-bottom:0;box-shadow:inset 0 -1px 0 var(--line);}
   tr.nova td{animation:linhaNova 1300ms var(--ease-out);}
   @keyframes linhaNova{0%{background:rgba(47,111,224,.18);opacity:0;transform:translateY(-4px)}20%{opacity:1;transform:none}100%{background:transparent}}
@@ -1009,7 +1011,7 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v40</a> · out/2026</footer>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v41</a> · out/2026</footer>
       <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
@@ -1089,6 +1091,8 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v41 · out/2026</h4>
+      <p><b>Correção:</b> com o mouse em cima da tabela de parcelas em atraso, a roda do mouse não rolava a tela (a tabela tinha uma rolagem própria que prendia o movimento). Agora a tabela rola junto com a coluna, e no computador os títulos (Valor orig., Vencimento, Atualizado) ficam presos no topo da coluna enquanto a tabela está à vista. Nenhuma regra de cálculo nem de texto mudou.</p>
       <h4>v40 · out/2026</h4>
       <p><b>Correção:</b> clicar no número de parcelas (e nos atalhos de data Hoje · Amanhã · +7 dias, no vencimento e nas 2 opções) às vezes rolava a coluna da direita até o texto da proposta no meio do clique, e a escolha não era feita. Agora a linha da prévia continua acendendo, mas a coluna só rola sozinha quando o campo está na coluna da esquerda. Nenhuma regra de cálculo nem de texto mudou.</p>
       <h4>v39 · out/2026</h4>
@@ -1539,6 +1543,12 @@ function renderAtrasos(){
     if(i===nova) tr.classList.add('nova');
     tb.appendChild(tr);
   });
+  ajustarTabela();
+}
+// rolagem lateral só quando as colunas da tabela não cabem (senão os títulos fixos não acompanham a coluna)
+function ajustarTabela(){
+  const w=document.querySelector(".tbl-wrap"), t=w&&w.querySelector("table"); if(!t) return;
+  w.classList.remove("rola-x"); w.classList.toggle("rola-x", t.scrollWidth>w.clientWidth+1);
 }
 // atualização leve: recalcula tudo SEM recriar os inputs da tabela (mantém o foco no campo)
 function renderLeve(){
@@ -2905,6 +2915,7 @@ document.getElementById('histLista').addEventListener('scroll',fadeHist,{passive
 // ===== área de trabalho no desktop: altura das colunas = janela − cabeçalho (compensa o zoom) =====
 function ajustarPaineis(){
   const w=document.querySelector('.wrap'); if(!w) return;
+  if(typeof ajustarTabela==='function') ajustarTabela();
   const on=window.matchMedia('(min-width: 941px) and (min-height: 560px)').matches;
   const era=document.documentElement.classList.contains('shell');
   document.documentElement.classList.toggle('shell',on);
