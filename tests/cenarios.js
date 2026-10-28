@@ -83,6 +83,9 @@ const S={
  n_r1_neg_opc(){ base('rep1',0,3,-95,'450,00'); set('vincQtd','2');render(); parcelasEscolhidas=6; set('dataLib',d(-200)); chk('temNegativada',true); render(); $('duasOpcoes').checked=true; onDuasOpcoes(); },
  n_r1_neg_opc_escolheu1(){ base('rep1',0,3,-95,'450,00'); set('vincQtd','2');render(); parcelasEscolhidas=6; set('dataLib',d(-200)); chk('temNegativada',true); render(); $('duasOpcoes').checked=true; onDuasOpcoes(); escolherOpcao(1); },
  n_quit_atraso_com_flag(){ base('quit',0,2,-50,'299,70'); chk('retJuros',true); set('dataLib',d(-100)); chk('temNegativada',true); render(); },
+ q_parcial_cartao(){ base('quit',0,0); chk('quitTotal',false); render(); set('genQtd','2');set('genVenc',d(-35));set('genVal','299,70');gerarParcelas(); set('nomeAluno','Carla'); chk('cartOferta',true); cartaoParc=6; render(); },
+ q_parcial_cartao_juros_2prod(){ base('quit',0,0); chk('quitTotal',false); render(); set('genQtd','3');set('genVenc',d(-75));set('genVal','299,70');gerarParcelas(); chk('retJuros',true); addProdutoExtra(); updProdutoExtra(0,'21'); atrasos[2].prod=21; chk('cartOferta',true); cartaoParc=12; render(); },
+ q_parcial_cartao_desligado_na_total(){ base('quit',0,2,-40,'300,00'); chk('quitTotal',false); render(); chk('cartOferta',true); cartaoParc=4; chk('quitTotal',true); set('dataLib',d(-100)); render(); },
  q_livro(){ base('quit',17,2,-30,'59,90'); render(); },
 };
 const out={};

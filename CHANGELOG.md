@@ -4,6 +4,13 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v42 — out/2026
+- **Quitação parcial no cartão:** chave "Oferecer também o parcelamento no cartão de crédito" (só na quitação parcial) com grade de 2x a 12x. A proposta ganha a linha 💳 "em até Nx de R$ …" e a pergunta final passa a pedir *PIX* ou *CARTÃO*. O valor total não muda (sem taxa). Entra no resumo, no botão de copiar, no histórico, no Desfazer e na busca rápida (`cartOferta`, `cartaoParc`, `cartaoOn()`).
+- **Conferência ao copiar:** cartão rápido com total, aluno, tipo, forma de pagamento e vencimento com dia da semana; avisa vencimento passado ou em dia não útil, texto editado à mão e falta do nome (`conferirEnvio`). Não bloqueia.
+- **Prévia clicável:** clicar numa linha da prévia leva ao campo que a muda (`ligarLinhas`, `irParaGrupo`).
+- **Visual:** valor do cartão rola como o total; linha 💳 em âmbar na prévia; dia da semana por extenso sob a data de pagamento; ajustes de espaçamento.
+- Nenhuma regra de cálculo mudou (73 cenários anteriores idênticos; 3 novos de cartão e 1 teste próprio).
+
 ## v41 — out/2026
 - **Correção (rolagem):** a tabela de parcelas em atraso, que na v39 ganhou rolagem própria (`max-height:404px; overflow:auto; overscroll-behavior:contain`) para fixar os títulos, prendia a roda do mouse quando o cursor estava sobre ela. A rolagem própria saiu: no desktop (`html.shell`) a tabela rola junto com a coluna e os títulos ficam `sticky` no topo da coluna; só ganha rolagem lateral (`.rola-x`) quando as colunas não cabem na largura.
 - Nenhuma regra de cálculo nem de texto mudou (73 cenários idênticos).

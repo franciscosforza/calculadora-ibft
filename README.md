@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v42** | out/2026 | Quitação parcial com opção de dividir no cartão de crédito (2x a 12x, sem acréscimo; o à vista segue como padrão). Conferência ao copiar (total, forma de pagamento e vencimento com avisos), prévia clicável (a linha leva ao campo), dia da semana sob a data de pagamento e valor do cartão que rola. Cálculos inalterados. |
 | **v41** | out/2026 | Correção: com o mouse sobre a tabela de parcelas em atraso, a roda não rolava a tela (a tabela tinha rolagem própria). Agora ela rola junto com a coluna e os títulos ficam presos no topo da coluna. Cálculos inalterados. |
 | **v40** | out/2026 | Correção: clicar no número de parcelas (e nos atalhos de data) às vezes rolava a coluna da direita até o texto no meio do clique e a escolha não era feita; agora a coluna só rola sozinha quando o campo está na esquerda. Cálculos inalterados. |
 | **v39** | out/2026 | Busca rápida (Ctrl+K) e atalhos Ctrl+P/E/H, campo ligado à linha da prévia, cor por tipo de proposta, dicas próprias, grade de parcelas com destaque deslizante, resumo que anima, avisos com linha de tempo e arrastar para dispensar, topo que encolhe, botões − e + nas quantidades, tabela com títulos fixos e Desfazer ao apagar parcela, troca de tema em círculo. Cálculos inalterados. |

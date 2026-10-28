@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v41">
+<meta name="versao" content="v42">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -735,6 +735,38 @@
   .cmd-vazio{padding:22px 12px;text-align:center;font-size:13px;color:var(--text-muted);}
   .cmd-pe{display:flex;gap:16px;flex-wrap:wrap;padding:9px 16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--text-faint);flex:none;}
 
+  /* ===== v42: parcelamento no cartão (quitação parcial) ===== */
+  #cartWrap{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);}
+  #cartAcoes{margin-top:6px;}
+  #cartAcoes .parc-grid{margin-top:6px;}
+  #cartHint b{color:var(--text);font-variant-numeric:tabular-nums;}
+  #cartWrap .chk-line{margin:0;}
+  #cartAcoes > label{margin-top:10px;}
+  #cartHint{margin-top:8px;}
+  #vencHint .vh-dia{color:var(--text);font-weight:600;}
+  #vencHint .vh-dia.ruim{color:var(--alerta);}
+  /* linha do cartão na prévia: tom âmbar suave (some quando o campo em uso acende a linha em azul) */
+  #preview .ln.cartao:not(.foco){background:rgba(236,147,16,.13);box-shadow:0 0 0 2px rgba(236,147,16,.13);}
+  :root.dark #preview .ln.cartao:not(.foco){background:rgba(242,163,58,.2);box-shadow:0 0 0 2px rgba(242,163,58,.2);}
+  /* prévia clicável: cada linha leva ao campo que a muda */
+  #preview .ln[data-g]{cursor:pointer;}
+  #preview .ln[data-g]:hover:not(.foco){background:rgba(47,111,224,.08);box-shadow:0 0 0 2px rgba(47,111,224,.08);}
+  :root.dark #preview .ln[data-g]:hover:not(.foco){background:rgba(110,162,255,.12);box-shadow:0 0 0 2px rgba(110,162,255,.12);}
+  .achado{animation:achado 1100ms var(--ease-out);border-radius:var(--r-sm);}
+  @keyframes achado{0%,35%{box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 55%,transparent),0 0 0 9px color-mix(in srgb,var(--accent) 14%,transparent)}100%{box-shadow:0 0 0 0 transparent,0 0 0 0 transparent}}
+  /* conferência ao copiar: um cartão rápido com o essencial */
+  .toast.conf{align-items:flex-start;padding:12px 12px 14px 14px;min-width:300px;max-width:380px;}
+  .toast.conf .t-ic{margin-top:2px;}
+  .cf{flex:1;min-width:0;}
+  .cf-top{font-size:12px;font-weight:600;color:#9FB0C8;letter-spacing:.01em;}
+  .cf-top b{color:#5FD39A;font-weight:700;}
+  .cf-tot{margin:2px 0 8px;font:700 22px/1.15 var(--display);color:#fff;font-variant-numeric:tabular-nums;}
+  .cf-grid{display:grid;grid-template-columns:auto 1fr;gap:3px 14px;font-size:12.5px;line-height:1.45;}
+  .cf-grid span{color:#9FB0C8;}
+  .cf-grid b{font-weight:600;color:#F2F5FA;overflow-wrap:anywhere;}
+  .cf-av{margin-top:8px;padding:6px 9px;border-radius:8px;background:rgba(242,163,58,.16);color:#F7C77D;font-size:12px;font-weight:600;line-height:1.4;}
+  .cf-av + .cf-av{margin-top:4px;}
+  @media (prefers-reduced-motion: reduce){ .achado{animation:none;outline:2px solid var(--accent);outline-offset:2px;} }
   /* ===== responsivo ===== */
   @media(max-width:940px){
     .wrap{grid-template-columns:minmax(0,1fr);}
@@ -964,6 +996,14 @@
         <input type="date" id="dataVenc" oninput="render()">
         <div class="chips" id="vencChips" role="group" aria-label="Vencimento rápido"></div>
         <div id="vencHint" class="hint"></div>
+        <div id="cartWrap" style="display:none">
+          <label class="chk-line"><input type="checkbox" id="cartOferta" onchange="render()"> Oferecer também o parcelamento no cartão de crédito<span class="info-i" title="Só na quitação parcial. Por padrão a quitação é à vista (boleto, PIX ou cartão). Ligue para oferecer dividir no cartão, escolhendo até quantas vezes. O valor total não muda.">i</span></label>
+          <div id="cartAcoes" style="display:none">
+            <label>Até quantas vezes no cartão?</label>
+            <div class="parc-grid" id="cartGrid" role="radiogroup" aria-label="Parcelas no cartão"></div>
+            <p class="hint" id="cartHint"></p>
+          </div>
+        </div>
         <div id="parcWrap">
           <label>Parcelamento</label>
           <div class="parc-box"><span class="parc-ind" id="parcInd" aria-hidden="true"></span><div class="parc-grid" id="parcGrid" role="radiogroup" aria-label="Número de parcelas"></div></div>
@@ -1011,7 +1051,7 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v41</a> · out/2026</footer>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v42</a> · out/2026</footer>
       <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
@@ -1074,6 +1114,8 @@
       <p>Só em atraso: 1ª oferta com juros e multa; se o aluno achar caro, retira juros e multa (cobra só o original). Atraso + a vencer: retira os juros do atraso + até <b>10%</b> nas a vencer. Só a vencer: até <b>10%</b>. Negativadas + atraso: retira os juros do atraso (negativadas no valor original). Pode haver desconto adicional sobre o total, caso a caso.</p>
       <h4>Quitação parcial</h4>
       <p>Valores cheios por padrão. Opcionalmente, é possível retirar os juros das parcelas em atraso (a multa e os demais descontos são só da quitação total). Para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link.</p>
+      <p><b>Prévia clicável.</b> Clique numa linha da prévia para ir direto ao campo que a muda. Depois de copiar, um cartão rápido mostra total, forma de pagamento e vencimento para você conferir antes de enviar.</p>
+      <p><b>Parcelar no cartão.</b> O padrão é à vista (boleto, PIX ou cartão). Quando o aluno pedir para dividir, ligue <b>"Oferecer também o parcelamento no cartão de crédito"</b> na coluna da direita e escolha até quantas vezes (2x a 12x). A proposta mostra o valor de cada parcela, o valor total não muda, e o aluno responde <b>PIX</b> ou <b>cartão</b>. A divisão é feita no link de pagamento do cartão, não é reparcelamento.</p>
       <h4>Reparcelamento</h4>
       <p>De 2x a 12x. Parcelas negativadas entram no reparcelamento como parcelas em atraso, com multa e juros normais (lance-as junto com as demais). Marque <b>"Há parcela negativada nesta dívida"</b> para a proposta avisar que a restrição é retirada em até 5 dias úteis depois do pagamento da 1ª parcela. Dívidas antigas podem receber % de desconto <b>só sobre os juros</b> do atraso, caso a caso. Vencimento padrão da 1ª parcela: hoje no 1º reparcelamento e amanhã no 2º. Normalmente oferecido a partir de 2 parcelas em atraso. <b>Limite de 2 reparcelamentos por dívida de cada produto</b>. O limite não é comentado com o aluno no 1º; no 2º, a proposta avisa que é o último e que, se uma parcela atrasar, não haverá novo parcelamento. Parcela do acordo paga com atraso tem multa e juros pelo Asaas.</p>
       <h4>2º reparcelamento: formalização</h4>
@@ -1091,6 +1133,11 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v42 · out/2026</h4>
+      <p><b>Quitação parcial no cartão, em até 12x.</b> Na coluna da direita, abaixo da data de pagamento, aparece <b>"Oferecer também o parcelamento no cartão de crédito"</b> (só na quitação parcial). Ligue, escolha até quantas vezes (2x a 12x) e a proposta ganha uma linha 💳 com o valor de cada parcela. O pagamento à vista (boleto, PIX ou cartão) continua sendo o padrão, e a pergunta final pede para o aluno responder <b>PIX</b> ou <b>CARTÃO</b>. O resumo, o botão de copiar, o histórico, a busca rápida (Ctrl+K) e o "Desfazer" acompanham. Nenhuma regra de cálculo mudou: o valor total é o mesmo, só dividido.</p>
+      <p><b>Conferência ao copiar.</b> Ao copiar a proposta, aparece por 3 segundos um cartão com o total, o tipo, a forma de pagamento e o vencimento com o dia da semana. Se algo merece um segundo olhar (vencimento que já passou ou cai em fim de semana/feriado, texto editado à mão, proposta sem o nome do aluno), o aviso aparece ali e o cartão fica mais tempo. Passe o mouse para segurá-lo; <kbd>Esc</kbd> fecha. Não bloqueia nada: a proposta já está copiada.</p>
+      <p><b>Clique na prévia para ir ao campo.</b> Ao passar o mouse, cada linha da prévia acende de leve; clique e a calculadora leva você ao campo que muda aquela linha (data, parcelas, desconto, acesso…), com um brilho rápido em volta. É o caminho inverso do "campo ligado ao texto".</p>
+      <p><b>Detalhes visuais.</b> O valor das parcelas no cartão rola até o novo número, como o total. A linha 💳 fica em tom âmbar na prévia. Abaixo da data de pagamento aparece o dia da semana por extenso ("Segunda-feira, 27/10 (hoje)"), em laranja quando a data já passou ou não é dia útil. Espaços da coluna da direita ajustados.</p>
       <h4>v41 · out/2026</h4>
       <p><b>Correção:</b> com o mouse em cima da tabela de parcelas em atraso, a roda do mouse não rolava a tela (a tabela tinha uma rolagem própria que prendia o movimento). Agora a tabela rola junto com a coluna, e no computador os títulos (Valor orig., Vencimento, Atualizado) ficam presos no topo da coluna enquanto a tabela está à vista. Nenhuma regra de cálculo nem de texto mudou.</p>
       <h4>v40 · out/2026</h4>
@@ -1325,6 +1372,7 @@ const PRODUTOS=[
  {n:"Formação em Psicossomática",a:"12m",obj:"concluir sua formação em psicossomática"},
 ];   // novos produtos sempre no FINAL: o histórico guarda o produto pela posição na lista · obj = frase de objetivo usada na abertura da proposta
 
+let cartaoParc=3;   // v42: até quantas vezes no cartão (quitação parcial)
 let atrasos=[]; let parcelasEscolhidas=2; let editadoManual=false; let produtosExtra=[]; let historico=[];
 let vincValManual=false;   // vira true quando o atendente edita o valor da parcela a vencer (para o espelhamento parar)
 const JUROS_MES=0.02, MULTA=0.02, NEG_PISO=500;
@@ -1553,7 +1601,7 @@ function ajustarTabela(){
 // atualização leve: recalcula tudo SEM recriar os inputs da tabela (mantém o foco no campo)
 function renderLeve(){
   atrasos.forEach((p,i)=>{const c=document.getElementById('atual'+i);if(c)c.innerHTML=atualCellHTML(p);});
-  renderResumo();renderParcGrid();atualizarSaida();resumoSecoes();
+  renderResumo();renderParcGrid();renderCartGrid();atualizarSaida();resumoSecoes();
 }
 
 function ehQuit(){return document.getElementById('tipoProposta').value==='quit';}
@@ -1633,6 +1681,19 @@ function quitModel(forcarTotal){   // forcarTotal: calcula como quitação total
 // proposta com duas opções (1º e 2º reparcelamento): 1 = quitação à vista com desconto, 2 = o parcelamento
 function duasOpcoes(){ const c=document.getElementById('duasOpcoes'); return !!(c && c.checked) && !ehQuit(); }
 function opcaoQuitacao(){ return quitModel(true); }
+// v42: quitação PARCIAL com a opção de dividir no cartão de crédito (o padrão continua sendo à vista)
+function cartaoOn(){ const c=document.getElementById('cartOferta'); return !!(c&&c.checked) && ehQuit() && !document.getElementById('quitTotal').checked; }
+function renderCartGrid(){
+  const g=document.getElementById('cartGrid'); if(!g||!cartaoOn()) return;
+  const total=totalGeral(); g.innerHTML='';
+  for(let n=2;n<=12;n++){ const d=document.createElement('button'); d.type='button';
+    d.className='parc-op'+(n===cartaoParc?' sel':''); d.setAttribute('role','radio'); d.setAttribute('aria-checked',n===cartaoParc?'true':'false'); d.tabIndex=n===cartaoParc?0:-1;
+    d.onclick=()=>{ cartaoParc=n; render(); const s=document.querySelector('#cartGrid .sel'); if(s) s.focus({preventScroll:true}); };
+    d.innerHTML=`${n}x<b>${total>0?brl(planoParcelas(total,n).base):'—'}</b>`; g.appendChild(d); }
+  const h=document.getElementById('cartHint');
+  if(h) h.innerHTML= total>0 ? `A proposta oferece <b>até ${cartaoParc}x de <span id="cartHintV">${brl(planoParcelas(total,cartaoParc).base)}</span></b> no cartão, além do pagamento à vista. O aluno paga num único link e divide na fatura; o valor total não muda.` : 'Informe as parcelas para ver o valor de cada vez no cartão.';
+  if(total>0) rolarNumero('#cartHintV','cartH',planoParcelas(total,cartaoParc).base); else if(numAnim.cartH) numAnim.cartH.val=NaN;
+}
 function totalGeral(){return ehQuit()?quitModel().total:(totalAtraso()+totalVinc());}
 
 function expBase(){const l=document.getElementById('dataLib').value;return l?addMonths(l,12):null;}
@@ -1766,6 +1827,9 @@ function renderResumo(){
     { const pp=planoParcelas(totalGeral(),parcelasEscolhidas);
       h+=`<div class="lin parc"><span>${parcelasEscolhidas}x de</span><b id="resParc">${brl(pp.base)}</b></div>`;
       if(Math.abs(pp.ultima-pp.base)>0.001) h+=sub('↳ última parcela (ajuste de centavos)',pp.ultima); }
+  if(cartaoOn() && totalGeral()>0){ const pc=planoParcelas(totalGeral(),cartaoParc);
+    h+=`<div class="lin parc"><span>Cartão · até ${cartaoParc}x de</span><b id="resCart">${brl(pc.base)}</b></div>`;
+    if(Math.abs(pc.ultima-pc.base)>0.001) h+=sub('↳ última parcela (ajuste de centavos)',pc.ultima); }
   if(duasOpcoes() && totalGeral()>0){ const q1=opcaoQuitacao();
     h+=`<div class="lin opc1"><span>Opção 1 · à vista</span><b>${brl(q1.total)}</b></div>`;
     if(q1.descTotal>0) h+=sub('↳ desconto da opção 1',-q1.descTotal,GREEN); }
@@ -1780,6 +1844,7 @@ function renderResumo(){
   trocarResumo(h);
   rolarNumero('#resTot','tot',tg);
   if(!ehQuit() && parcelasEscolhidas>0 && tg>0) rolarNumero('#resParc','parc',planoParcelas(tg,parcelasEscolhidas).base); else if(numAnim.parc) numAnim.parc.val=NaN;
+  if(cartaoOn() && tg>0) rolarNumero('#resCart','cart',planoParcelas(tg,cartaoParc).base); else if(numAnim.cart) numAnim.cart.val=NaN;
   atualizarDock(); if(typeof checarDock==='function') checarDock();
 }
 // troca o conteúdo do resumo; linhas novas entram e as que somem saem deslizando (o resto não se mexe)
@@ -1807,7 +1872,7 @@ function trocarResumo(h){
 function atualizarDock(){
   const tot=document.getElementById('dockTot'); if(!tot) return;
   const t=totalGeral(); rolarNumero('#dockTot','dock',t);
-  document.getElementById('dockSub').textContent = t<=0 ? '' : ehQuit() ? 'à vista' : parcelasEscolhidas+'x de '+brl(planoParcelas(t,parcelasEscolhidas).base);
+  document.getElementById('dockSub').textContent = t<=0 ? '' : ehQuit() ? (cartaoOn() ? 'à vista · ou até '+cartaoParc+'x no cartão' : 'à vista') : parcelasEscolhidas+'x de '+brl(planoParcelas(t,parcelasEscolhidas).base);
 }
 
 // texto da proposta (v30): blocos curtos — abertura · Como está hoje · descontos · Sua proposta · acesso · regras · validade · pergunta final
@@ -1927,6 +1992,7 @@ function gerarTexto(){
     t+= !vencISO ? `• À vista, com vencimento em *(DATA DE VENCIMENTO)*\n`
       : vencISO===hoje ? `• À vista, com vencimento hoje, *${curta(vencISO)}*\n` : vencISO===somaDiasUTC(hoje,1) ? `• À vista, com vencimento amanhã, *${curta(vencISO)}*\n` : `• À vista, com vencimento em *${dataBR(vencISO)}*\n`;
     t+=formas;
+    if(cartaoOn() && m.total>0) t+=`• 💳 Prefere dividir? No cartão de crédito, em até *${cartaoParc}x de ${brl(planoParcelas(m.total,cartaoParc).base)}*. Dividir *não aumenta* o valor.\n`;
     if(parcial) t+=`• As demais parcelas do seu parcelamento seguem normalmente.\n`;
     if(descs.length) t+=`\n💚 *Você economiza ${economiaTexto(descTot,pctEcon)} quitando nessa condição!*\n`;
     t+='\n';
@@ -2020,6 +2086,10 @@ function gerarTexto(){
 
   // pergunta final, com resposta de uma palavra (compromisso): PIX na quitação; boleto no 1º reparc.; formulário/contrato no 2º reparc.
   if(opc)                   t+=`Qual fica melhor para você? É só responder *1* ou *2*. ✅`;
+  else if(quit && cartaoOn() && m.total>0)
+                            t+= quitSemBeneficio
+                              ? `Posso já gerar o seu pagamento? É só responder *PIX* ou *CARTÃO* (em até ${cartaoParc}x). ✅`
+                              : `Posso já gerar o seu pagamento pra você garantir essa condição? É só responder *PIX* ou *CARTÃO* (em até ${cartaoParc}x). ✅`;
   else if(quit)             t+= quitSemBeneficio
                               ? `Posso já gerar o seu *PIX*? É só responder *SIM*. A confirmação é na hora. ✅`
                               : `Posso já gerar o seu *PIX* pra você garantir essa condição? É só responder *SIM*. A confirmação é na hora. ✅`;
@@ -2367,7 +2437,9 @@ function render(){
   const tp=document.getElementById('tipoProposta').value;
   const vEmpty=!document.getElementById('dataVenc').value;
   const nv=nomeVenc(); document.getElementById('lblVenc').textContent = nv.charAt(0).toUpperCase()+nv.slice(1)+(ehQuit()?'':' do acordo');
-  document.getElementById('vencHint').innerHTML = (vEmpty?'<span style="color:var(--vermelho);font-weight:700">⚠ Defina o '+nv+' (obrigatório). </span>':'')+(tp==='rep1'?'Padrão: hoje (1º reparcelamento). ':tp==='rep2'?'Padrão: amanhã (2º reparcelamento). ':'Padrão: hoje. ')+'<b>Os valores em atraso são atualizados até esta data de vencimento (o campo logo acima).</b>';
+  const dvH=document.getElementById('dataVenc').value, hj=hojeISO();
+  const diaH = !dvH ? '' : '<span class="vh-dia'+(dvH<hj||motivoNaoUtil(dvH)?' ruim':'')+'">'+(DIAS_SEMANA[diaSemana(dvH)].charAt(0).toUpperCase()+DIAS_SEMANA[diaSemana(dvH)].slice(1))+', '+dataBR(dvH)+(dvH===hj?' (hoje)':dvH===somaDiasUTC(hj,1)?' (amanhã)':'')+'</span>. ';
+  document.getElementById('vencHint').innerHTML = diaH+(vEmpty?'<span style="color:var(--vermelho);font-weight:700">⚠ Defina o '+nv+' (obrigatório). </span>':'')+(tp==='rep1'?'Padrão: hoje (1º reparcelamento). ':tp==='rep2'?'Padrão: amanhã (2º reparcelamento). ':'Padrão: hoje. ')+'<b>Os valores em atraso são atualizados até esta data de vencimento (o campo logo acima).</b>';
 
   // campo de venc. das vincendas só aparece quando é relevante (pagamento futuro + há parcelas a vencer)
   const futuro = refCalc()>hojeISO();
@@ -2376,8 +2448,10 @@ function render(){
   const semData = temVinc && !document.getElementById('vincVenc').value;
   document.getElementById('warnCross').classList.toggle('show', futuro && semData);
 
-  renderResumo();renderParcGrid();aplicarStatus();atualizarProgresso();renderCoerencia();resumoSecoes();limparErrosResolvidos();
+  renderResumo();renderParcGrid();renderCartGrid();aplicarStatus();atualizarProgresso();renderCoerencia();resumoSecoes();limparErrosResolvidos();
   vis('parcWrap',!quit);
+  vis('cartWrap',parcial);
+  vis('cartAcoes',cartaoOn());
   posicionarInd(false);
   renderChips();
   document.documentElement.dataset.tipo=document.getElementById('tipoProposta').value;   // cor por tipo
@@ -2419,7 +2493,7 @@ let textoAnterior=null, estavaVazio=null;
 // prévia linha a linha: cada linha num <span class="ln"> (liga campo e texto); com "antes", destaca as linhas que mudaram
 function previewHTML(t,antes){
   const velhas=antes!=null ? new Set(antes.split('\n')) : null;
-  return String(t).split('\n').map((l,i)=>{ let h=renderPreview(l); if(velhas && l.trim() && !velhas.has(l)) h='<span class="chg">'+h+'</span>'; return '<span class="ln" data-i="'+i+'">'+h+'</span>'; }).join('\n');
+  return String(t).split('\n').map((l,i)=>{ let h=renderPreview(l); if(velhas && l.trim() && !velhas.has(l)) h='<span class="chg">'+h+'</span>'; return '<span class="ln'+(l.includes('💳')?' cartao':'')+'" data-i="'+i+'">'+h+'</span>'; }).join('\n');
 }
 // ===== campo ligado ao texto: a linha da prévia que o campo em uso muda fica acesa =====
 let campoFoco=null;
@@ -2435,6 +2509,7 @@ function grupoDoFoco(el){
   if(['vincQtd','vincVal','vincVenc'].indexOf(id)>=0) return 'vinc';
   if(id==='descJurosPerc'||em('#cardDesconto')) return 'desc';
   if(id==='dataVenc'||em('#vencChips')) return 'venc';
+  if(id==='cartOferta'||em('#cartAcoes')) return 'cart';
   if(em('#parcGrid')) return 'parc';
   if(id==='duasOpcoes'||em('#opcAcoes')) return 'opc';
   if(id==='dataLib'||id==='extDias'||em('#extChips')||em('#accTipo')) return 'acesso';
@@ -2465,13 +2540,41 @@ function linhasDoGrupo(g,linhas){
     else if(g==='venc') ok = ((k==='prop'||k==='op1'||k==='op2') && /1ª parcela|vencimento|Pagamento único|À vista/.test(l)) || k==='valid';
     else if(g==='parc') ok = (k==='prop'||k==='op2') && /^(✅|2️⃣)|parcela|Demais|Total do acordo/u.test(l);
     else if(g==='opc') ok = k==='op1';
+    else if(g==='cart') ok = (k==='prop' && /💳/u.test(l)) || k==='cta';
     else if(g==='acesso') ok = k==='acesso';
     else if(g==='neg') ok = k==='neg' || (k==='sit' && /negativad/.test(l));
     if(ok) r.push(i); });
   return r;
 }
+// ordem: do mais específico ao mais geral (a primeira que contém a linha vence)
+const GRUPOS_CLIQUE=['cart','opc','venc','parc','desc','neg','vinc','atraso','acesso','quitTotal','prod','nome','tipo'];
+const ALVO_GRUPO={nome:['#nomeAluno'],prod:['#prodBusca'],tipo:['#segTipo [aria-checked="true"]'],quitTotal:['#quitTotal'],atraso:['#genQtd'],vinc:['#vincQtd'],
+  desc:['#cardDesconto input:not([type=hidden])','#descJurosPerc'],venc:['#dataVenc'],parc:['#parcGrid .sel'],opc:['#duasOpcoes'],acesso:['#dataLib','#tipoAcesso'],neg:['#temNegativada'],cart:['#cartGrid .sel','#cartOferta']};
+function ligarLinhas(pv){
+  if(editadoManual) return;   // texto editado à mão: as linhas já não correspondem aos campos
+  const L=document.getElementById('saida').value.split('\n'), dono={};
+  const parcial=ehQuit() && !document.getElementById('quitTotal').checked;
+  GRUPOS_CLIQUE.filter(g=>alvoDoGrupo(g) && !(parcial && g==='acesso')).forEach(g=>linhasDoGrupo(g,L).forEach(i=>{ if(!(i in dono)) dono[i]=g; }));
+  Object.keys(dono).forEach(i=>{ const sp=pv.querySelector('.ln[data-i="'+i+'"]'); if(sp) sp.dataset.g=dono[i]; });
+}
+// primeiro campo visível do grupo (um card recolhido conta como visível: ele é aberto no clique)
+function alvoDoGrupo(g){
+  const vis=el=>el && (el.offsetParent!==null || !!el.closest('.card.collapsed'));
+  for(const sel of ALVO_GRUPO[g]||[]){ const c=[...document.querySelectorAll(sel)].find(vis); if(c) return c; }
+  return null;
+}
+function irParaGrupo(g){
+  const alvo=alvoDoGrupo(g); if(!alvo) return;
+  const card=alvo.closest('.card');
+  if(card && card.classList.contains('collapsed')){ const h=card.querySelector(':scope > h2'); if(h) toggleCard(h); }
+  const ancora=alvo.closest('.combo, .affix, .stepper, .chk-line, .seg')||alvo;
+  ancora.scrollIntoView({behavior:semMovimento()?'auto':'smooth',block:'center'});
+  ancora.classList.remove('achado'); void ancora.offsetWidth; ancora.classList.add('achado'); setTimeout(()=>ancora.classList.remove('achado'),1200);
+  setTimeout(()=>{ try{ alvo.focus({preventScroll:true}); }catch(e){} },semMovimento()?0:320);
+}
 function marcarLinhas(rolar){
   const pv=document.getElementById('preview'); if(!pv) return;
+  if(!pv.querySelector('.ln[data-g]')) pv._lig=false;   // liga as linhas aos campos só quando o mouse chega (blocos que estão saindo já sumiram)
   pv.querySelectorAll('.ln.foco').forEach(x=>x.classList.remove('foco'));
   if(!campoFoco || document.getElementById('waWrap').style.display==='none') return;
   const idx=linhasDoGrupo(campoFoco,document.getElementById('saida').value.split('\n'));
@@ -2485,6 +2588,14 @@ function marcarLinhas(rolar){
 }
 // só rola a coluna da direita quando o campo está na esquerda: rolar a coluna onde está o próprio campo
 // tiraria o botão de baixo do mouse no meio do clique (ex.: grade de parcelas, atalhos de data)
+document.getElementById('preview').addEventListener('pointermove',e=>{ const pv=e.currentTarget; if(!pv._lig){ pv._lig=true; ligarLinhas(pv); } });
+document.getElementById('preview').addEventListener('pointerleave',e=>{ const pv=e.currentTarget; pv._lig=false; pv.querySelectorAll('.ln[data-g]').forEach(x=>x.removeAttribute('data-g')); });
+document.getElementById('preview').addEventListener('click',e=>{
+  const pv=e.currentTarget; if(!pv._lig){ pv._lig=true; ligarLinhas(pv); }
+  const ln=e.target.closest('.ln[data-g]'); if(!ln) return;
+  const sel=window.getSelection&&window.getSelection(); if(sel && String(sel).length) return;   // selecionando texto: não navega
+  irParaGrupo(ln.dataset.g);
+});
 document.addEventListener('focusin',e=>{ const g=grupoDoFoco(e.target); if(g!==campoFoco){ campoFoco=g; marcarLinhas(!!e.target.closest('#colEsq')); } });
 document.addEventListener('focusout',()=>setTimeout(()=>{ if(!grupoDoFoco(document.activeElement) && campoFoco){ campoFoco=null; marcarLinhas(); } },80));
 // coluna direita sem proposta: ilustração + os 3 passos (cada passo leva ao campo)
@@ -2517,7 +2628,7 @@ function showToast(msg,o){
   o=o||{}; const tipo=o.tipo||'ok', box=document.getElementById('toasts'); if(!box)return;
   const el=document.createElement('div'); el.className='toast t-'+tipo; el.setAttribute('role',tipo==='erro'?'alert':'status');
   el.innerHTML='<span class="t-ic">'+(ICO[tipo]||ICO.ok)+'</span><span class="t-msg"></span>';
-  el.querySelector('.t-msg').textContent=msg;
+  if(o.html){ if(o.classe) el.classList.add(o.classe); el.querySelector('.t-msg').innerHTML=msg; } else el.querySelector('.t-msg').textContent=msg;
   let t=null; const fechar=()=>{ if(el._fim)return; el._fim=1; clearTimeout(t); el.classList.remove('in'); el.classList.add('out'); setTimeout(()=>el.remove(),240); };
   if(o.acao){ const b=document.createElement('button'); b.type='button'; b.className='t-act'; b.textContent=o.acao.rotulo; b.onclick=()=>{ fechar(); o.acao.fn(); }; el.appendChild(b); }
   if(!o.fixo){ const br=document.createElement('i'); br.className='t-barra'; el.appendChild(br); el.style.setProperty('--t',(o.ms||(o.acao?7000:4000))+'ms'); }
@@ -2591,7 +2702,32 @@ function feedbackCopiado(){
     b.classList.add('copied'); if(l) l.textContent='Copiado ✓'; clearTimeout(b._t);
     b._t=setTimeout(()=>{ b.classList.remove('copied'); if(l) l.textContent='Copiar proposta'; },1600); });
   const bb=document.getElementById('waBubble'); if(bb){ bb.classList.remove('flash'); void bb.offsetWidth; bb.classList.add('flash'); }
-  showToast('Proposta copiada',{tipo:'ok'});
+  conferirEnvio();
+}
+// cartão rápido depois de copiar: total, forma, vencimento e o que merece um segundo olhar (não bloqueia nada)
+function conferirEnvio(){
+  const esc=x=>String(x).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  const hoje=hojeISO(), dv=document.getElementById('dataVenc').value, tp=document.getElementById('tipoProposta').value;
+  const tipo=tp==='rep1'?'1º reparcelamento':tp==='rep2'?'2º reparcelamento':(document.getElementById('quitTotal').checked?'Quitação':'Quitação parcial');
+  const p=prodSel(), prod=p?(p.txt||p.n.replace(/^Formação de Terapeutas - /,'').replace(/^Formação Avançada em /,'Avançada em ').replace(/^Formação em /,'')):'';
+  const t=totalGeral();
+  const forma = ehQuit() ? (cartaoOn() ? 'à vista · ou até '+cartaoParc+'x de '+brl(planoParcelas(t,cartaoParc).base)+' no cartão' : 'à vista')
+    : parcelasEscolhidas+'x de '+brl(planoParcelas(t,parcelasEscolhidas).base)+(duasOpcoes()?' · ou à vista '+brl(opcaoQuitacao().total):'');
+  const ds=dv?DIAS_SEMANA[diaSemana(dv)]:'', quando = !dv ? '—' : (dv===hoje?'hoje, ':dv===somaDiasUTC(hoje,1)?'amanhã, ':'')+ds.replace('-feira','')+' '+dataBR(dv).slice(0,5);
+  const av=[];
+  if(dv && dv<hoje) av.push('O vencimento já passou.');
+  else if(dv && motivoNaoUtil(dv)) av.push('O vencimento cai em '+motivoNaoUtil(dv)+'.');
+  if(editadoManual) av.push('O texto foi editado à mão: os valores da tela podem não bater com o texto.');
+  if(!nomeAlunoTexto()) av.push('Sem o nome do aluno.');
+  const h='<div class="cf"><div class="cf-top"><b>Copiada</b> · confira antes de enviar</div>'
+    +'<div class="cf-tot">'+brl(t)+'</div>'
+    +'<div class="cf-grid">'
+    +(nomeAlunoTexto()?'<span>Aluno</span><b>'+esc(nomeAlunoTexto())+'</b>':'')
+    +'<span>Proposta</span><b title="'+esc(tipo+(prod?' · '+prod:''))+'">'+esc(tipo+(prod?' · '+prod:''))+'</b>'
+    +'<span>Pagamento</span><b title="'+esc(forma)+'">'+esc(forma)+'</b>'
+    +'<span>Vencimento</span><b>'+esc(quando)+'</b></div>'
+    +av.map(a=>'<div class="cf-av">⚠ '+esc(a)+'</div>').join('')+'</div>';
+  return showToast(h,{tipo:'ok',html:true,classe:'conf',ms:av.length?5200:3200});
 }
 // campo com problema: treme de leve, fica com borda vermelha e ganha uma frase dizendo o que fazer
 const MSG_CAMPO={prodBusca:'Escolha o produto na lista para continuar.',genQtd:'Informe quantas parcelas estão em atraso.',genVenc:'Informe o vencimento da parcela em atraso mais antiga.',genVal:'Informe o valor original de cada parcela.',dataVenc:'Escolha a data de vencimento.'};
@@ -2639,7 +2775,7 @@ function snapshot(){
     retJuros:document.getElementById('retJuros').checked,retMulta:document.getElementById('retMulta').checked,
     descVincPerc:g('descVincPerc'),descNegPerc:g('descNegPerc'),descJurosPerc:g('descJurosPerc'),descGeralPerc:g('descGeralPerc'),quitTotal:document.getElementById('quitTotal').checked,isentarJurosNeg:document.getElementById('isentarJurosNeg').checked,
     dataLib:g('dataLib'),extDias:g('extDias'),dataVenc:g('dataVenc'),
-    atrasos:JSON.parse(JSON.stringify(atrasos)),parcelasEscolhidas,produtosExtra:[...produtosExtra],nomeAluno:g('nomeAluno'),duasOpcoes:document.getElementById('duasOpcoes').checked,temNegativada:document.getElementById('temNegativada').checked};
+    atrasos:JSON.parse(JSON.stringify(atrasos)),parcelasEscolhidas,produtosExtra:[...produtosExtra],nomeAluno:g('nomeAluno'),duasOpcoes:document.getElementById('duasOpcoes').checked,cartOferta:document.getElementById('cartOferta').checked,cartaoParc,temNegativada:document.getElementById('temNegativada').checked};
 }
 function restore(s){
   const set=(id,v)=>document.getElementById(id).value=v;
@@ -2652,6 +2788,7 @@ function restore(s){
   if(s.quitTotal!==undefined)document.getElementById('quitTotal').checked=s.quitTotal;
   if(s.isentarJurosNeg!==undefined)document.getElementById('isentarJurosNeg').checked=s.isentarJurosNeg;
   document.getElementById('duasOpcoes').checked=!!s.duasOpcoes;
+  document.getElementById('cartOferta').checked=!!s.cartOferta; cartaoParc=s.cartaoParc||3;
   document.getElementById('temNegativada').checked=!!s.temNegativada;
   set('nomeAluno',s.nomeAluno||'');
   produtosExtra=s.produtosExtra||[];
@@ -2664,13 +2801,13 @@ function resumoSnap(){
   const pi=parseInt(document.getElementById('produto').value);
   let prod=pi>=0?PRODUTOS[pi].n:'(sem produto)';
   if(prod.length>30) prod=prod.slice(0,29)+'…';
-  const extra=ehQuit()?'':' · '+parcelasEscolhidas+'x'+(duasOpcoes()?' ou à vista '+brl(opcaoQuitacao().total):'');
+  const extra=ehQuit()?(cartaoOn()?' · até '+cartaoParc+'x no cartão':''):' · '+parcelasEscolhidas+'x'+(duasOpcoes()?' ou à vista '+brl(opcaoQuitacao().total):'');
   const venc=document.getElementById('dataVenc').value;
   return `${tipoMap[document.getElementById('tipoProposta').value]||''} · ${prod} · ${brl(totalGeral())}${extra} · venc ${venc?dataBR(venc).slice(0,5):'—'}`;
 }
 function formaAtual(){
   const t=totalGeral();
-  if(ehQuit()) return document.getElementById('quitTotal').checked ? 'à vista' : 'parcial, à vista';
+  if(ehQuit()) return document.getElementById('quitTotal').checked ? 'à vista' : cartaoOn() ? 'parcial, à vista ou até '+cartaoParc+'x no cartão' : 'parcial, à vista';
   return parcelasEscolhidas+'x de '+brl(planoParcelas(t,parcelasEscolhidas).base)+(duasOpcoes()?' ou à vista':'');
 }
 // copiado=true: a proposta foi copiada agora (entra no contador do dia e guarda o texto enviado)
@@ -2830,6 +2967,7 @@ function novaProposta(){
   document.getElementById('descGeralPerc').value='0';
   document.getElementById('isentarJurosNeg').checked=true;
   document.getElementById('quitTotal').checked=true;
+  document.getElementById('cartOferta').checked=false; cartaoParc=3;
   atrasos=[]; parcelasEscolhidas=2; editadoManual=false; produtosExtra=[]; vincValManual=false;
   document.getElementById('editNotice').style.display='none';
   setVencDefault();
@@ -2866,6 +3004,13 @@ document.getElementById('parcGrid').addEventListener('keydown',e=>{
   e.preventDefault(); const n=Math.min(12,Math.max(2,parcelasEscolhidas+passo)); if(n===parcelasEscolhidas) return;
   parcelasEscolhidas=n; render(); const sel=document.querySelector('#parcGrid .sel'); if(sel) sel.focus({preventScroll:true});
 });
+document.getElementById('cartGrid').addEventListener('keydown',e=>{
+  const g=e.currentTarget, cols=(getComputedStyle(g).gridTemplateColumns||'').split(' ').filter(Boolean).length||4;
+  const passo={ArrowRight:1,ArrowLeft:-1,ArrowDown:cols,ArrowUp:-cols,Home:-99,End:99}[e.key]; if(passo===undefined) return;
+  e.preventDefault(); const n=Math.min(12,Math.max(2,cartaoParc+passo)); if(n===cartaoParc) return;
+  cartaoParc=n; render(); const sel=document.querySelector('#cartGrid .sel'); if(sel) sel.focus({preventScroll:true});
+});
+document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return; const c=document.querySelector('#toasts .toast.conf.in'); if(c){ c.classList.remove('in'); c.classList.add('out'); setTimeout(()=>c.remove(),240); } });
 // novidades: um aviso discreto, uma vez por versão (não aparece para quem abre pela primeira vez)
 try{ const visto=localStorage.getItem('ibft_visto');
   if(visto!==VERSAO){ if(visto!==null || historico.length) setTimeout(()=>showToast('Novidades da '+VERSAO+': veja o que mudou',{tipo:'ok',ms:9000,acao:{rotulo:'Ver',fn:toggleNovidades}}),1400);
@@ -3012,6 +3157,7 @@ function acoesCmd(){
     {t:'Exportar histórico',ic:'baixa',x:'backup salvar arquivo',run:exportarHist},
     {t:'Importar histórico',ic:'sobe',x:'backup trazer arquivo',run:()=>el('histArquivo').click()},
     {t:'Recarregar mantendo a proposta',ic:'recarrega',x:'atualizar recarregar',run:recarregarMantendo}];
+  if(ehQuit() && !el('quitTotal').checked) a.splice(5,0,{t:(el('cartOferta').checked?'Desligar':'Oferecer')+' parcelamento no cartão (quitação parcial)',ic:'duas',x:'cartão crédito parcelar dividir vezes quitação parcial',run:()=>{ el('cartOferta').checked=!el('cartOferta').checked; render(); }});
   if(!ehQuit()) a.splice(5,0,{t:(el('duasOpcoes').checked?'Desligar':'Ligar')+' proposta com 2 opções',ic:'duas',x:'duas opções à vista quitação',run:()=>{ el('duasOpcoes').checked=!el('duasOpcoes').checked; onDuasOpcoes(); }});
   if(dv && dv<hojeISO()) a.unshift({t:'Usar hoje (o vencimento já passou)',ic:'hoje',x:'atualizar data vencida hoje',run:atualizarParaHoje});
   ['1','1.1','1.25','1.5','1.75','2'].forEach(z=>a.push({t:'Zoom '+Math.round(z*100)+'%',ic:'zoom',x:'zoom tamanho tela',run:()=>aplicarZoom(z),so:true}));

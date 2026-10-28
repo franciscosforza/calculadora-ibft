@@ -50,7 +50,7 @@ for (const [k, v] of Object.entries(atual)) {
   if (/\n\n\n/.test(t)) falha(k, 'linhas em branco em excesso');
   if (/[ \t]+\n/.test(t)) falha(k, 'espaço sobrando no fim de linha');
   if ((t.match(/\*/g) || []).length % 2) falha(k, 'asterisco sem par (negrito quebrado)');
-  if (!/É só responder \*SIM\*|É só responder \*1\* ou \*2\*/.test(t)) falha(k, 'falta a pergunta final ("SIM" ou "1 ou 2")');
+  if (!/É só responder \*SIM\*|É só responder \*1\* ou \*2\*|É só responder \*PIX\* ou \*CARTÃO\*/.test(t)) falha(k, 'falta a pergunta final ("SIM", "1 ou 2" ou "PIX ou CARTÃO")');
   // proposta com duas opções: as duas aparecem, a opção 1 vem antes, e nada do texto de uma opção só
   if (/^o_/.test(k) && /É só responder \*1\* ou \*2\*/.test(t)) {
     const i1 = t.indexOf('1️⃣ *Quitar à vista'), i2 = t.indexOf('2️⃣ *');
@@ -172,6 +172,34 @@ if (w.eval(`typeof linhasDoGrupo==='function'`)) {
     novaProposta(); return ruins;
   })()`);
   lig.forEach(r => falha('campo ligado ao texto', r));
+}
+
+// ---------- quitação parcial no cartão (v42) ----------
+if (w.eval(`typeof cartaoOn==='function'`)) {
+  const ct = w.eval(`(()=>{
+    const $=id=>document.getElementById(id), set=(id,v)=>{$(id).value=v;}, ruins=[], H=hojeISO();
+    novaProposta(); set('tipoProposta','quit'); onTipoChange(); set('produto','0'); onProdutoChange(); $('quitTotal').checked=false; render();
+    set('genQtd','2'); set('genVenc',addDays(H,-35)); set('genVal','300,00'); gerarParcelas(); render();
+    const sem=$('saida').value; if(/💳|CARTÃO/.test(sem)) ruins.push('sem a opção ligada, o texto cita o cartão parcelado');
+    if(!document.getElementById('cartWrap').style.display || document.getElementById('cartWrap').style.display==='none'){}
+    $('cartOferta').checked=true; cartaoParc=5; render();
+    const t=$('saida').value, tot=totalGeral(), pp=planoParcelas(tot,5);
+    if(!t.includes('💳 Prefere dividir? No cartão de crédito, em até *5x de '+brl(pp.base)+'*')) ruins.push('a linha do cartão não traz 5x do valor certo');
+    if(!t.includes('*PIX* ou *CARTÃO* (em até 5x)')) ruins.push('a pergunta final não oferece PIX ou cartão');
+    if(!/Boleto bancário, PIX ou cartão de crédito/.test(t)) ruins.push('o pagamento à vista deixou de ser citado');
+    if(!/valor total não muda|não aumenta/.test(t+$('cartHint').textContent)) ruins.push('falta dizer que o valor não aumenta');
+    if(!$('resumo').textContent.includes('Cartão · até 5x de')) ruins.push('o resumo não mostra a linha do cartão');
+    if(totalGeral()!==tot) ruins.push('o cartão mudou o total');
+    const s=snapshot(); $('cartOferta').checked=false; cartaoParc=3; restore(s);
+    if(!$('cartOferta').checked||cartaoParc!==5) ruins.push('recuperar não devolveu o cartão');
+    $('quitTotal').checked=true; render();
+    if(/💳|CARTÃO/.test($('saida').value)) ruins.push('na quitação total aparece o cartão parcelado');
+    set('tipoProposta','rep1'); onTipoChange(); render();
+    if(/💳|CARTÃO/.test($('saida').value)) ruins.push('no reparcelamento aparece o cartão parcelado');
+    novaProposta(); if($('cartOferta').checked||cartaoParc!==3) ruins.push('Nova proposta não limpou o cartão');
+    return ruins;
+  })()`);
+  ct.forEach(r => falha('parcelar no cartão', r));
 }
 
 // ---------- confere com o resultado aprovado ----------
