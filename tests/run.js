@@ -202,6 +202,45 @@ if (w.eval(`typeof cartaoOn==='function'`)) {
   ct.forEach(r => falha('parcelar no cartão', r));
 }
 
+// ---------- rascunho automático, título da aba e teclado (v43) ----------
+if (w.eval(`typeof salvarRascunho==='function'`)) {
+  const rs = w.eval(`(()=>{
+    const $=id=>document.getElementById(id), set=(id,v)=>{$(id).value=v;}, ruins=[], H=hojeISO();
+    const ev=(el,t,o)=>{ const e=new KeyboardEvent(t,Object.assign({bubbles:true,cancelable:true},o)); el.dispatchEvent(e); return e; };
+    novaProposta(); localStorage.removeItem(RASC);
+    // rascunho: salva, some com Nova proposta, volta com Retomar
+    set('nomeAluno','Carla'); set('produto','0'); onProdutoChange(); set('genQtd','2'); set('genVenc',addDays(H,-35)); set('genVal','299,70'); gerarParcelas(); render();
+    const tot=totalGeral(); salvarRascunho();
+    const guardado=localStorage.getItem(RASC); if(!guardado) ruins.push('o rascunho não foi guardado');
+    novaProposta(); if(localStorage.getItem(RASC)) ruins.push('Nova proposta não apagou o rascunho');
+    if(totalGeral()!==0) ruins.push('Nova proposta não limpou a tela');
+    localStorage.setItem(RASC,guardado); if(!retomarRascunho()) ruins.push('Retomar não achou o rascunho');
+    if(totalGeral()!==tot || $('nomeAluno').value!=='Carla') ruins.push('Retomar não devolveu a proposta');
+    // rascunho velho (19 h) não é oferecido
+    const velho=JSON.parse(guardado); velho.ts=Date.now()-19*3600e3; localStorage.setItem(RASC,JSON.stringify(velho));
+    if(lerRascunho()) ruins.push('rascunho de 19 h ainda é oferecido');
+    // tela vazia não grava rascunho
+    novaProposta(); salvarRascunho(); if(localStorage.getItem(RASC)) ruins.push('tela vazia gravou rascunho');
+    // título da aba
+    set('nomeAluno','Carla'); set('produto','0'); onProdutoChange(); set('genQtd','2'); set('genVenc',addDays(H,-35)); set('genVal','299,70'); gerarParcelas(); render();
+    if(!document.title.includes('Carla') || !document.title.includes(brl(totalGeral()))) ruins.push('título da aba sem aluno/total: '+document.title);
+    // atalhos de data
+    const dv=$('dataVenc'); dv.focus(); ev(dv,'keydown',{key:'a'}); if(dv.value!==somaDiasUTC(H,1)) ruins.push('A não deu amanhã');
+    ev(dv,'keydown',{key:'+'}); if(dv.value!==somaDiasUTC(H,2)) ruins.push('+ não somou um dia');
+    ev(dv,'keydown',{key:'-'}); ev(dv,'keydown',{key:'-'}); if(dv.value!==H) ruins.push('− não tirou um dia');
+    ev(dv,'keydown',{key:'h'}); if(dv.value!==H) ruins.push('H não deu hoje');
+    // tabela: Enter desce na mesma coluna
+    set('genQtd','3'); gerarParcelas(); render();
+    const linhas=[...document.querySelectorAll('#atrasoBody tr')]; linhas[0].querySelector('input').focus();
+    ev(document.activeElement,'keydown',{key:'Enter'});
+    if(document.activeElement!==linhas[1].querySelector('input')) ruins.push('Enter na tabela não desceu para a linha de baixo');
+    ev(document.activeElement,'keydown',{key:'ArrowUp'});
+    if(document.activeElement!==linhas[0].querySelector('input')) ruins.push('seta para cima não subiu na tabela');
+    novaProposta(); return ruins;
+  })()`);
+  rs.forEach(x => falha('rascunho e teclado', x));
+}
+
 // ---------- confere com o resultado aprovado ----------
 if (atualizar) {
   fs.writeFileSync(ESPERADO, JSON.stringify(atual, null, 1) + '\n');

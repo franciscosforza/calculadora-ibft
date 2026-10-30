@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v42">
+<meta name="versao" content="v43">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -993,7 +993,7 @@
         <div class="note-warn" id="coerencia" style="display:none"></div>
         <div class="resumo" id="resumo"></div>
         <label for="dataVenc" id="lblVenc">Vencimento da 1ª parcela do acordo</label>
-        <input type="date" id="dataVenc" oninput="render()">
+        <input type="date" id="dataVenc" oninput="render()" title="Atalhos: H = hoje · A = amanhã · + ou − muda um dia">
         <div class="chips" id="vencChips" role="group" aria-label="Vencimento rápido"></div>
         <div id="vencHint" class="hint"></div>
         <div id="cartWrap" style="display:none">
@@ -1051,7 +1051,7 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v42</a> · out/2026</footer>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v43</a> · out/2026</footer>
       <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
@@ -1114,6 +1114,7 @@
       <p>Só em atraso: 1ª oferta com juros e multa; se o aluno achar caro, retira juros e multa (cobra só o original). Atraso + a vencer: retira os juros do atraso + até <b>10%</b> nas a vencer. Só a vencer: até <b>10%</b>. Negativadas + atraso: retira os juros do atraso (negativadas no valor original). Pode haver desconto adicional sobre o total, caso a caso.</p>
       <h4>Quitação parcial</h4>
       <p>Valores cheios por padrão. Opcionalmente, é possível retirar os juros das parcelas em atraso (a multa e os demais descontos são só da quitação total). Para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link.</p>
+      <p><b>Rascunho e teclado.</b> A proposta em andamento é guardada sozinha: se a aba fechar, ao reabrir aparece o botão <b>Retomar</b>. Nos campos de data, <kbd>H</kbd> = hoje, <kbd>A</kbd> = amanhã e <kbd>+</kbd>/<kbd>−</kbd> mudam um dia. Na tabela de parcelas, <kbd>Enter</kbd> e as setas ↑ ↓ vão para a linha de baixo ou de cima.</p>
       <p><b>Prévia clicável.</b> Clique numa linha da prévia para ir direto ao campo que a muda. Depois de copiar, um cartão rápido mostra total, forma de pagamento e vencimento para você conferir antes de enviar.</p>
       <p><b>Parcelar no cartão.</b> O padrão é à vista (boleto, PIX ou cartão). Quando o aluno pedir para dividir, ligue <b>"Oferecer também o parcelamento no cartão de crédito"</b> na coluna da direita e escolha até quantas vezes (2x a 12x). A proposta mostra o valor de cada parcela, o valor total não muda, e o aluno responde <b>PIX</b> ou <b>cartão</b>. A divisão é feita no link de pagamento do cartão, não é reparcelamento.</p>
       <h4>Reparcelamento</h4>
@@ -1133,6 +1134,12 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v43 · out/2026</h4>
+      <p><b>Rascunho automático.</b> A proposta em andamento é guardada sozinha neste navegador. Se a aba fechar, o computador reiniciar ou você sair sem querer, ao reabrir aparece "Rascunho de Carla · R$ 619,36 · há 12 min" com o botão <b>Retomar</b>. Depois de copiar a proposta, o rascunho some (ela já está no histórico).</p>
+      <p><b>Tabela de parcelas mais rápida.</b> No valor de cada parcela, <kbd>Enter</kbd> ou as setas ↑ ↓ passam para a mesma coluna da linha de baixo ou de cima. Na data, <kbd>Enter</kbd> faz o mesmo. No fim da tabela, <kbd>Enter</kbd> segue para o próximo campo da proposta.</p>
+      <p><b>Atalhos nos campos de data.</b> Com o cursor numa data: <kbd>H</kbd> = hoje, <kbd>A</kbd> = amanhã, <kbd>+</kbd> e <kbd>−</kbd> mudam um dia. Funciona no vencimento do pagamento, na data da parcela mais antiga, nas datas da tabela e na liberação do acesso.</p>
+      <p><b>Campos de valor selecionam tudo ao entrar.</b> Ao clicar ou dar Tab num valor, quantidade, % ou dias, o conteúdo fica selecionado: é só digitar por cima. <b>A roda do mouse não muda mais números por acidente</b> quando um campo numérico está com o cursor.</p>
+      <p><b>Título da aba.</b> A aba do navegador mostra o total e o nome do aluno ("R$ 619,36 · Carla — Calculadora IBFT") e um ✓ por alguns segundos depois de copiar. Com várias abas abertas, fica fácil achar a certa.</p>
       <h4>v42 · out/2026</h4>
       <p><b>Quitação parcial no cartão, em até 12x.</b> Na coluna da direita, abaixo da data de pagamento, aparece <b>"Oferecer também o parcelamento no cartão de crédito"</b> (só na quitação parcial). Ligue, escolha até quantas vezes (2x a 12x) e a proposta ganha uma linha 💳 com o valor de cada parcela. O pagamento à vista (boleto, PIX ou cartão) continua sendo o padrão, e a pergunta final pede para o aluno responder <b>PIX</b> ou <b>CARTÃO</b>. O resumo, o botão de copiar, o histórico, a busca rápida (Ctrl+K) e o "Desfazer" acompanham. Nenhuma regra de cálculo mudou: o valor total é o mesmo, só dividido.</p>
       <p><b>Conferência ao copiar.</b> Ao copiar a proposta, aparece por 3 segundos um cartão com o total, o tipo, a forma de pagamento e o vencimento com o dia da semana. Se algo merece um segundo olhar (vencimento que já passou ou cai em fim de semana/feriado, texto editado à mão, proposta sem o nome do aluno), o aviso aparece ali e o cartão fica mais tempo. Passe o mouse para segurá-lo; <kbd>Esc</kbd> fecha. Não bloqueia nada: a proposta já está copiada.</p>
@@ -1372,6 +1379,8 @@ const PRODUTOS=[
  {n:"Formação em Psicossomática",a:"12m",obj:"concluir sua formação em psicossomática"},
 ];   // novos produtos sempre no FINAL: o histórico guarda o produto pela posição na lista · obj = frase de objetivo usada na abertura da proposta
 
+const RASC='ibft_rascunho'; let rascTimer=null, rascTrava=false, rascCopiado=null;   // v43: rascunho automático
+const TITULO_BASE=document.title; let tituloCopiado=0;
 let cartaoParc=3;   // v42: até quantas vezes no cartão (quitação parcial)
 let atrasos=[]; let parcelasEscolhidas=2; let editadoManual=false; let produtosExtra=[]; let historico=[];
 let vincValManual=false;   // vira true quando o atendente edita o valor da parcela a vencer (para o espelhamento parar)
@@ -2487,6 +2496,7 @@ function atualizarSaida(){
   marcarLinhas();
   mostrarVazio(vazio);
   textoAnterior = vazio ? null : novo;
+  agendarRascunho(); atualizarTitulo();
   const hr=document.getElementById('waHora'); if(hr){ const d=new Date(); hr.textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
 }
 let textoAnterior=null, estavaVazio=null;
@@ -2762,7 +2772,7 @@ function copiar(){
   if(probs.length){ showToast('Falta: '+probs.join(', '),{tipo:'aviso'}); irPara(alvos[0][0],alvos[0][1]); alvos.forEach(a=>avisarCampo(a[1])); return; }
   const txt=document.getElementById('saida').value;
   copiarTexto(txt).then(ok=>{
-    if(ok){ salvarHist(true,txt); bumpContador(); feedbackCopiado(); }   // guarda a proposta copiada (com o texto enviado) e soma no dia
+    if(ok){ salvarHist(true,txt); bumpContador(); try{ rascCopiado=JSON.stringify(snapshot()); }catch(e){} descartarRascunho(); tituloCopiado=Date.now()+4000; atualizarTitulo(); setTimeout(atualizarTitulo,4100); feedbackCopiado(); }   // guarda a proposta copiada (com o texto enviado) e soma no dia
     else showToast('Não foi possível copiar. Selecione o texto em Editar texto e use Ctrl+C.',{tipo:'erro',ms:8000});
   });
 }
@@ -2944,6 +2954,7 @@ function copiarDoDia(i){ const x=historico[i]; if(!x||!x._txt) return;
 
 function novaProposta(){
   const antes=capturar();   // para o Desfazer
+  rascTrava=false; rascCopiado=null; descartarRascunho();
   salvarHist();   // guarda a proposta atual no histórico antes de limpar
   document.getElementById('duasOpcoes').checked=false;
   document.getElementById('temNegativada').checked=false;
@@ -3011,6 +3022,59 @@ document.getElementById('cartGrid').addEventListener('keydown',e=>{
   cartaoParc=n; render(); const sel=document.querySelector('#cartGrid .sel'); if(sel) sel.focus({preventScroll:true});
 });
 document.addEventListener('keydown',e=>{ if(e.key!=='Escape') return; const c=document.querySelector('#toasts .toast.conf.in'); if(c){ c.classList.remove('in'); c.classList.add('out'); setTimeout(()=>c.remove(),240); } });
+// ===== v43: rascunho automático =====
+function rascunhoVazio(){ return totalGeral()<=0 && !nomeAlunoTexto() && !(parseInt(document.getElementById('produto').value)>=0); }
+function lerRascunho(){ try{ const r=JSON.parse(localStorage.getItem(RASC)||'null'); return r&&r.c&&r.c.snap&&(Date.now()-r.ts<18*3600e3) ? r : null; }catch(e){ return null; } }
+function descartarRascunho(){ try{ localStorage.removeItem(RASC); }catch(e){} }
+function salvarRascunho(){
+  try{
+    if(rascunhoVazio()){ if(!rascTrava) localStorage.removeItem(RASC); return; }   // trava: não apaga o rascunho antigo antes de oferecer
+    const c=capturar();
+    if(rascCopiado && JSON.stringify(c.snap)===rascCopiado) return;   // acabou de ser copiada: já está no histórico
+    rascTrava=false;
+    localStorage.setItem(RASC,JSON.stringify({ts:Date.now(),c,nome:nomeAlunoTexto(),total:totalGeral()}));
+  }catch(e){}
+}
+function agendarRascunho(){ clearTimeout(rascTimer); rascTimer=setTimeout(salvarRascunho,700); }
+function retomarRascunho(){ const r=lerRascunho(); if(!r) return false; rascTrava=false; voltar(r.c); return true; }
+function haQuanto(ts){ const m=Math.max(1,Math.round((Date.now()-ts)/60000)); return m<60 ? m+' min' : m<1440 ? Math.round(m/60)+' h' : Math.round(m/1440)+' d'; }
+// título da aba: total e aluno (e um ✓ por alguns segundos depois de copiar)
+function atualizarTitulo(){
+  const t=totalGeral(), n=nomeAlunoTexto(), p=[t>0?brl(t):'',n].filter(Boolean).join(' · ');
+  document.title=(Date.now()<tituloCopiado?'✓ Copiada · ':'')+(p?p+' — Calculadora IBFT':TITULO_BASE);
+}
+// a roda do mouse não muda o número do campo que está com o cursor (rolar a tela com um campo em foco alterava o valor)
+document.addEventListener('wheel',e=>{ const a=document.activeElement; if(a && a.type==='number' && a===e.target) a.blur(); },{passive:true});
+// ao entrar num campo de valor/quantidade, o conteúdo fica selecionado (digita-se por cima)
+document.addEventListener('focusin',e=>{
+  const a=e.target; if(!a || a.tagName!=='INPUT' || !(a.type==='number' || a.inputMode==='decimal')) return;
+  const f=ev=>ev.preventDefault(); a.addEventListener('mouseup',f,{once:true}); setTimeout(()=>a.removeEventListener('mouseup',f),400);
+  setTimeout(()=>{ try{ if(document.activeElement===a) a.select(); }catch(_){} },0);
+});
+// atalhos nos campos de data: H hoje · A amanhã · + / − um dia
+document.addEventListener('keydown',e=>{
+  const a=e.target; if(!a || a.tagName!=='INPUT' || a.type!=='date' || e.ctrlKey || e.metaKey || e.altKey) return;
+  const k=(e.key||'').toLowerCase(), h=hojeISO(); let v=null;
+  if(k==='h') v=h; else if(k==='a') v=somaDiasUTC(h,1);
+  else if(k==='+'||k==='=') v=somaDiasUTC(a.value||h,1); else if(k==='-'||k==='_') v=somaDiasUTC(a.value||h,-1);
+  if(v===null) return;
+  e.preventDefault(); const lab=a.getAttribute('aria-label'); a.value=v;
+  a.dispatchEvent(new Event('input',{bubbles:true})); a.dispatchEvent(new Event('change',{bubbles:true}));
+  if(!a.isConnected && lab){ const n=document.querySelector('#atrasoBody [aria-label="'+lab+'"]'); if(n) n.focus(); }   // a tabela é redesenhada: devolve o foco
+});
+// tabela de parcelas: Enter e setas passam para a mesma coluna da linha de baixo/cima; Enter na última linha segue o fluxo
+document.getElementById('atrasoBody').addEventListener('keydown',e=>{
+  const inp=e.target; if(!inp || inp.tagName!=='INPUT' || inp.type==='checkbox' || e.ctrlKey || e.metaKey || e.altKey || e.shiftKey) return;
+  let dir=0; if(e.key==='Enter') dir=1; else if(inp.type==='text' && e.key==='ArrowDown') dir=1; else if(inp.type==='text' && e.key==='ArrowUp') dir=-1;
+  if(!dir) return;
+  const tr=inp.closest('tr'); if(!tr) return;
+  const col=[...tr.querySelectorAll('input')].indexOf(inp);
+  e.preventDefault(); e.stopPropagation();
+  const alvo=dir>0?tr.nextElementSibling:tr.previousElementSibling;
+  const prox=alvo && alvo.querySelectorAll('input')[col];
+  if(prox){ prox.focus(); if(prox.type!=='date') try{ prox.select(); }catch(_){} return; }
+  if(dir>0){ const p=proximoCampo('genVal'); if(p){ const card=p.closest('.card.col'); if(card && card.classList.contains('collapsed')){ const h=card.querySelector(':scope > h2'); if(h) toggleCard(h); } p.focus(); if(p.select && p.type!=='date') try{ p.select(); }catch(_){} } }
+});
 // novidades: um aviso discreto, uma vez por versão (não aparece para quem abre pela primeira vez)
 try{ const visto=localStorage.getItem('ibft_visto');
   if(visto!==VERSAO){ if(visto!==null || historico.length) setTimeout(()=>showToast('Novidades da '+VERSAO+': veja o que mudou',{tipo:'ok',ms:9000,acao:{rotulo:'Ver',fn:toggleNovidades}}),1400);
@@ -3029,6 +3093,10 @@ try{ const r=sessionStorage.getItem('ibft_retomar'); if(r){ sessionStorage.remov
 // logo: a própria imagem vira a máscara do brilho; entrada suave e um brilho ao abrir
 try{ const lb=document.getElementById('logoBtn'), li=lb&&lb.querySelector('img'); if(li){ lb.style.setProperty('--logo-url','url("'+li.src+'")');
   if(!semMovimento()){ lb.classList.add('entra'); setTimeout(()=>{ lb.classList.remove('entra'); brilharLogo(); },650); } } }catch(e){}
+try{ const r=lerRascunho();
+  if(r && rascunhoVazio()){ rascTrava=true;
+    const partes=['Rascunho'+(r.nome?' de '+r.nome:''), r.total>0?brl(r.total):'', 'há '+haQuanto(r.ts)].filter(Boolean);
+    setTimeout(()=>showToast(partes.join(' · '),{tipo:'ok',ms:14000,acao:{rotulo:'Retomar',fn:retomarRascunho}}),900); } }catch(e){}
 // aviso de nova versão: só quando aberta pelo site (GitHub Pages); compara a meta "versao" publicada com a desta página
 function checarVersao(){
   if(!/^https?:$/.test(location.protocol) || checarVersao.avisou) return;

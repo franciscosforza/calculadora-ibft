@@ -4,6 +4,14 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v43 — out/2026
+- **Rascunho automático:** a proposta em andamento é guardada no navegador (`ibft_rascunho`, 700 ms depois da última alteração) e oferecida com "Retomar" ao reabrir, se a tela estiver vazia e o rascunho tiver menos de 18 h. Some ao copiar e em Nova proposta (`salvarRascunho`, `lerRascunho`, `retomarRascunho`).
+- **Tabela de parcelas pelo teclado:** Enter e ↑ ↓ vão à mesma coluna da linha de baixo/cima; Enter na última linha segue o fluxo (`proximoCampo`).
+- **Campos de data:** H = hoje, A = amanhã, + / − um dia.
+- **Campos numéricos/valor:** selecionam tudo ao entrar; a roda do mouse não altera um número em foco.
+- **Título da aba** com total e aluno, e ✓ por 4 s depois de copiar (`atualizarTitulo`).
+- Nenhuma regra de cálculo mudou (76 cenários idênticos; teste novo de rascunho, título e teclado).
+
 ## v42 — out/2026
 - **Quitação parcial no cartão:** chave "Oferecer também o parcelamento no cartão de crédito" (só na quitação parcial) com grade de 2x a 12x. A proposta ganha a linha 💳 "em até Nx de R$ …" e a pergunta final passa a pedir *PIX* ou *CARTÃO*. O valor total não muda (sem taxa). Entra no resumo, no botão de copiar, no histórico, no Desfazer e na busca rápida (`cartOferta`, `cartaoParc`, `cartaoOn()`).
 - **Conferência ao copiar:** cartão rápido com total, aluno, tipo, forma de pagamento e vencimento com dia da semana; avisa vencimento passado ou em dia não útil, texto editado à mão e falta do nome (`conferirEnvio`). Não bloqueia.

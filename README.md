@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v43** | out/2026 | Rascunho automático com "Retomar", Enter e setas na tabela de parcelas, atalhos H/A/+/− nos campos de data, campos de valor selecionam tudo ao entrar, a roda do mouse não altera números por acidente e o título da aba mostra total e aluno. Cálculos inalterados. |
 | **v42** | out/2026 | Quitação parcial com opção de dividir no cartão de crédito (2x a 12x, sem acréscimo; o à vista segue como padrão). Conferência ao copiar (total, forma de pagamento e vencimento com avisos), prévia clicável (a linha leva ao campo), dia da semana sob a data de pagamento e valor do cartão que rola. Cálculos inalterados. |
 | **v41** | out/2026 | Correção: com o mouse sobre a tabela de parcelas em atraso, a roda não rolava a tela (a tabela tinha rolagem própria). Agora ela rola junto com a coluna e os títulos ficam presos no topo da coluna. Cálculos inalterados. |
 | **v40** | out/2026 | Correção: clicar no número de parcelas (e nos atalhos de data) às vezes rolava a coluna da direita até o texto no meio do clique e a escolha não era feita; agora a coluna só rola sozinha quando o campo está na esquerda. Cálculos inalterados. |
