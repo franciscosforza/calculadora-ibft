@@ -241,6 +241,52 @@ if (w.eval(`typeof salvarRascunho==='function'`)) {
   rs.forEach(x => falha('rascunho e teclado', x));
 }
 
+// ---------- v44: desfazer/refazer, regras editáveis, avisos, histórico, cronograma ----------
+if (w.eval(`typeof passoU==='function'`)) {
+  const v44 = w.eval(`(()=>{
+    const $=id=>document.getElementById(id), set=(id,v)=>{$(id).value=v;}, ruins=[], H=hojeISO();
+    const monta=()=>{ set('produto','0'); onProdutoChange(); set('genQtd','2'); set('genVenc',addDays(H,-40)); set('genVal','300,00'); gerarParcelas(); render(); };
+    // desfazer / refazer
+    novaProposta(); registrarU(); set('nomeAluno','Ana'); render(); registrarU(); monta(); registrarU();
+    const tot=totalGeral();
+    passoU(-1); if(totalGeral()!==0 || $('nomeAluno').value!=='Ana') ruins.push('desfazer não voltou ao passo anterior');
+    passoU(-1); if($('nomeAluno').value!=='') ruins.push('desfazer duas vezes não limpou o nome');
+    passoU(1); passoU(1); if(totalGeral()!==tot) ruins.push('refazer não devolveu o total');
+    // regras: padrão = política; personalizar muda; voltar ao padrão restaura
+    if(regrasPersonalizadas()) ruins.push('regras começam personalizadas');
+    const antes=totalGeral(); gravarRegras({juros:3}); const depois=totalGeral();
+    if(!(depois>antes)) ruins.push('juros de 3% não aumentaram o total');
+    if($('rgAviso').hidden) ruins.push('aviso de regras personalizadas não apareceu');
+    gravarRegras(Object.assign({},REGRAS_PADRAO)); if(totalGeral()!==antes || regrasPersonalizadas()) ruins.push('voltar ao padrão não restaurou o total');
+    if(localStorage.getItem('ibft_regras')) ruins.push('regras padrão ficaram gravadas');
+    // avisos de valores fora do normal
+    novaProposta(); set('produto','0'); onProdutoChange(); set('genQtd','30'); set('genVenc',addDays(H,-1300)); set('genVal','15000,00'); gerarParcelas(); render();
+    const co=$('coerencia').textContent;
+    if(!/30 parcelas em atraso/.test(co)) ruins.push('sem aviso de quantidade fora do normal');
+    if(!/mais de 3 anos/.test(co)) ruins.push('sem aviso de vencimento muito antigo');
+    if(!/valor fora do normal/.test(co)) ruins.push('sem aviso de valor fora do normal');
+    // cronograma e total por data
+    novaProposta(); monta(); parcelasEscolhidas=4; render();
+    const li=document.querySelectorAll('#crono li'); if(li.length!==4) ruins.push('cronograma não tem 4 parcelas');
+    const soma=[...li].reduce((a,x)=>a+parseV(x.querySelector(':scope > b').textContent.replace(/[^0-9,]/g,'')),0);
+    if(Math.abs(soma-totalGeral())>0.005) ruins.push('cronograma não soma o total');
+    if(Math.abs(totalNaData($('dataVenc').value)-totalGeral())>0.001) ruins.push('total do atalho de data difere do total');
+    if(!(totalNaData(addDays(H,7))>totalGeral())) ruins.push('total em +7 dias não é maior');
+    // quitação com 2 produtos: subtotal por produto soma o total cheio
+    novaProposta(); setTipo('quit'); $('quitTotal').checked=false; render(); set('produto','0'); onProdutoChange(); set('genQtd','2'); set('genVenc',addDays(H,-40)); set('genVal','300,00'); gerarParcelas(); addProdutoExtra(); updProdutoExtra(0,'21'); atrasos[1].prod=21; render();
+    const pp=[...document.querySelectorAll('#resumo .lin.pp b')].reduce((a,x)=>a+parseV(x.textContent.replace(/[^0-9,]/g,'')),0);
+    if(Math.abs(pp-atrasoComEnc())>0.005) ruins.push('subtotais por produto não somam o atraso');
+    // histórico: apagar e desfazer
+    novaProposta(); historico=[]; monta(); salvarHist(true,'texto'); const n0=historico.length;
+    apagarHist(0); if(historico.length!==n0-1) ruins.push('apagar do histórico não apagou');
+    // ano ainda sendo digitado (0202) não pode quebrar o cálculo
+    novaProposta(); monta(); for(const y of ['0002','0020','0202','2025']){ set('dataLib',y+'-12-12'); try{ render(); }catch(e){ ruins.push('data com ano '+y+' quebrou o cálculo: '+e.message); } }
+    set('genVenc','0202-05-02'); try{ gerarParcelas(); render(); }catch(e){ ruins.push('vencimento com ano 0202 quebrou: '+e.message); }
+    novaProposta(); return ruins;
+  })()`);
+  v44.forEach(x => falha('v44', x));
+}
+
 // ---------- confere com o resultado aprovado ----------
 if (atualizar) {
   fs.writeFileSync(ESPERADO, JSON.stringify(atual, null, 1) + '\n');

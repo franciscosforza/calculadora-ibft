@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v43">
+<meta name="versao" content="v44">
+<meta name="versao-data" content="2026-10-30">
+<meta name="testes" content="ok: 76 cenários de proposta, regras de texto, soma das parcelas, desfazer, regras, avisos, histórico e datas (30/10/2026)">
+<meta name="theme-color" content="#0E2A55">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
 <link rel="shortcut icon" href="favicon.ico">
@@ -767,6 +770,138 @@
   .cf-av{margin-top:8px;padding:6px 9px;border-radius:8px;background:rgba(242,163,58,.16);color:#F7C77D;font-size:12px;font-weight:600;line-height:1.4;}
   .cf-av + .cf-av{margin-top:4px;}
   @media (prefers-reduced-motion: reduce){ .achado{animation:none;outline:2px solid var(--accent);outline-offset:2px;} }
+  /* ===== v44 ===== */
+  /* contraste: cinza claro das dicas e legendas passa AA (4,5:1); placeholders seguem mais claros que valores */
+  :root{--text-faint:#5F7086;}
+  :root.dark{--text-faint:#8395AE;}
+  input::placeholder,textarea::placeholder{color:#8494AA;}
+  :root.dark input::placeholder,:root.dark textarea::placeholder{color:#6C7E98;}
+  /* "i" sempre na mesma linha do rótulo; nas linhas de campos, as caixas se alinham embaixo */
+  .nw{white-space:nowrap;}
+  .row{align-items:stretch;} .row>div{display:flex;flex-direction:column;justify-content:flex-end;}
+  .row>div>.erro-msg{order:9;}
+  /* tipo de proposta: rótulo curto no celular */
+  .seg .ss{display:none;}
+  /* atalhos de data com o total daquela data */
+  #vencChips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+  #vencChips .chip-q{height:auto;min-height:30px;padding:5px 10px;flex-direction:column;align-items:flex-start;justify-content:center;gap:1px;border-radius:12px;line-height:1.2;}
+  #vencChips .chip-q .ct{font-size:12px;font-weight:700;color:var(--heading);font-variant-numeric:tabular-nums;}
+  #vencChips .chip-q .ct:empty{display:none;}
+  #vencChips .chip-q[aria-pressed="true"] .ct{color:var(--on-sel);}
+  #vencChips .chip-q .cd{font-size:10.5px;font-weight:600;color:var(--neg);}
+  #vencChips .chip-q[aria-pressed="true"] .cd{color:var(--on-sel);opacity:.85;}
+  /* resumo: valores copiáveis, por produto, antes → depois, cronograma */
+  .resumo .lin[data-v]{cursor:copy;}
+  .resumo .lin[data-v]:hover > :last-child{text-decoration:underline dotted;text-underline-offset:3px;}
+  .resumo .lin.cab{padding-top:8px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);border-top:none;}
+  .resumo .lin.pp span{padding-left:10px;}
+  .antdep{margin:8px 0 2px;padding:9px 11px;border-radius:var(--r-sm);background:var(--surface-2);border:1px solid var(--line);display:grid;gap:6px;}
+  .ad-l{display:grid;grid-template-columns:78px 1fr auto;align-items:center;gap:8px;font-size:11.5px;color:var(--text-muted);}
+  .ad-l i{display:block;height:8px;border-radius:4px;background:var(--line-strong);transition:width 420ms var(--ease-out);}
+  .ad-l.n i{background:var(--pos);}
+  .ad-l b{font-size:12px;color:var(--text);font-variant-numeric:tabular-nums;text-align:right;min-width:86px;}
+  .ad-l.n b{color:var(--pos);}
+  .crono{margin-top:8px;}
+  .crono details{border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface);}
+  .crono summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:8px 11px;font-size:12.5px;font-weight:600;color:var(--heading);border-radius:var(--r-sm);}
+  .crono summary::-webkit-details-marker{display:none;}
+  .crono summary::before{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg);transition:transform var(--d2) var(--ease-out);}
+  .crono details[open] summary::before{transform:rotate(45deg);}
+  .crono summary:focus-visible{outline:none;box-shadow:var(--ring);}
+  .crono ol{list-style:none;margin:0;padding:2px 11px 8px;display:grid;gap:1px;}
+  .crono li{display:flex;justify-content:space-between;gap:10px;padding:4px 0;font-size:12.5px;border-top:1px dashed var(--line);font-variant-numeric:tabular-nums;}
+  .crono li:first-child{border-top:none;}
+  .crono li span{color:var(--text-muted);} .crono li span b{color:var(--text);font-weight:600;}
+  .crono li.nu span::after{content:" · não é dia útil";color:var(--alerta);font-weight:600;}
+  /* prévia: o que ficou sem preencher aparece em vermelho */
+  #preview mark.pend{background:rgba(200,58,58,.16);color:#B42318;border-radius:3px;padding:0 2px;}
+  :root.dark #preview mark.pend{background:rgba(242,139,139,.22);color:#FFC2C2;}
+  /* tabela: soma no rodapé, linhas mais baixas com muitas parcelas, coluna de dias, cálculo da parcela */
+  #atrasoPe td{padding-top:8px;border-top:1px solid var(--line);font-size:12px;color:var(--text-muted);font-variant-numeric:tabular-nums;}
+  #atrasoPe td b{color:var(--text);}
+  #atrasoPe .val-atual{color:var(--heading);}
+  @media (pointer:fine){
+    table.denso td{padding-top:2px;padding-bottom:2px;}
+    table.denso td input{height:30px;font-size:12.5px;}
+    table.denso .btn-x{width:28px;height:28px;}
+  }
+  table.com-dias .val-atual > br:first-of-type,table.com-dias .val-atual > br:first-of-type + span{display:none;}
+  td.dias{font-weight:600;color:var(--text-muted);white-space:nowrap;font-variant-numeric:tabular-nums;}
+  td.dias.d90{color:var(--alerta);} td.dias.d180{color:var(--neg);}
+  .val-atual{cursor:help;border-radius:6px;}
+  .val-atual:hover{background:var(--surface-3);}
+  .acts .chk-line.mini{margin:0 0 0 auto;font-size:12px;font-weight:500;}
+  #calcPop{position:fixed;z-index:96;width:300px;max-width:calc(100vw - 16px);padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line-strong);box-shadow:var(--e3);font-size:12.5px;color:var(--text);opacity:0;transform:translateY(4px);transition:opacity 140ms var(--ease-out),transform 160ms var(--ease-out);pointer-events:none;}
+  #calcPop.on{opacity:1;transform:none;pointer-events:auto;}
+  #calcPop h5{margin:0 0 8px;font:700 12.5px var(--font);color:var(--heading);}
+  #calcPop .cp-l{display:flex;justify-content:space-between;gap:12px;padding:3px 0;font-variant-numeric:tabular-nums;}
+  #calcPop .cp-l span{color:var(--text-muted);}
+  #calcPop .cp-l.t{margin-top:4px;padding-top:7px;border-top:1px solid var(--line);font-weight:700;}
+  #calcPop .cp-l.g b{color:var(--pos);}
+  #calcPop p{margin:8px 0 0;font-size:11.5px;color:var(--text-muted);line-height:1.45;}
+  /* seção concluída: brilho verde curto na borda */
+  .card.concluiu{animation:cardOk 900ms var(--ease-out);}
+  @keyframes cardOk{0%{box-shadow:var(--e1),0 0 0 0 rgba(31,157,99,0)}30%{box-shadow:var(--e1),0 0 0 4px rgba(31,157,99,.28)}100%{box-shadow:var(--e1),0 0 0 0 rgba(31,157,99,0)}}
+  /* histórico: ações por item, filtros, dias, prévia do texto, uso do espaço */
+  .hist-row{position:relative;border-bottom:1px solid var(--line);}
+  .hist-row:last-child{border-bottom:none;}
+  .hist-row .hist-item{border-bottom:none;}
+  .hi-acts{position:absolute;right:6px;top:50%;transform:translateY(-50%);display:flex;gap:2px;padding-left:18px;background:linear-gradient(90deg,transparent,var(--surface-3) 18px);opacity:0;pointer-events:none;transition:opacity var(--d1);}
+  .hist-row:hover .hi-acts,.hist-row:focus-within .hi-acts{opacity:1;pointer-events:auto;}
+  .hi-b{width:30px;height:30px;display:inline-flex;align-items:center;justify-content:center;border:0;border-radius:8px;background:transparent;color:var(--text-muted);cursor:pointer;}
+  .hi-b .ic{width:16px;height:16px;}
+  .hi-b:hover{background:var(--surface);color:var(--heading);}
+  .hi-b.del:hover{color:var(--neg);background:var(--neg-bg);}
+  .hi-b:focus-visible{outline:none;box-shadow:var(--ring);}
+  .hist-row:hover .hist-item,.hist-row:focus-within .hist-item{background:var(--surface-3);}
+  .hist-dia{position:sticky;top:0;z-index:1;padding:5px 12px;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);background:var(--surface-2);border-bottom:1px solid var(--line);}
+  .hist-fil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:8px;}
+  .hist-fil .chip-q{height:26px;padding:0 10px;font-size:11.5px;}
+  .hist-fil select{height:28px;padding:0 26px 0 9px;font-size:12px;width:auto;max-width:170px;}
+  #histUso{margin-top:6px;}
+  #histUso.cheio{color:var(--alerta);font-weight:600;}
+  #histPrev{position:fixed;z-index:94;width:340px;max-height:min(60vh,460px);overflow:hidden;padding:9px 12px 10px;border-radius:10px;border-top-right-radius:0;background:#D9FDD3;color:#111B21;box-shadow:var(--e3);font:13px/1.5 -apple-system,"Segoe UI",system-ui,Roboto,Arial,sans-serif;white-space:pre-wrap;word-break:break-word;opacity:0;transform:translateX(6px);transition:opacity 140ms var(--ease-out),transform 160ms var(--ease-out);pointer-events:none;-webkit-mask-image:linear-gradient(180deg,#000 85%,transparent);mask-image:linear-gradient(180deg,#000 85%,transparent);}
+  :root.dark #histPrev{background:#005C4B;color:#E9EDEF;}
+  #histPrev.on{opacity:1;transform:none;}
+  #histPrev small{display:block;margin-bottom:6px;font-weight:600;opacity:.7;}
+  /* regras editáveis */
+  .rg-box{margin:0 0 6px;padding:12px 14px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface-2);}
+  .rg-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13px;}
+  .rg-head .link-btn{margin-left:auto;}
+  .rg-selo{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--warn-bg);color:var(--alerta);border:1px solid var(--warn-line);}
+  .rg-vals{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .rg-vals span{font-size:12px;padding:3px 9px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--text-muted);}
+  .rg-vals span b{color:var(--text);}
+  .rg-form{margin-top:10px;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px 12px;}
+  .rg-form label{margin:8px 0 4px;}
+  .rg-acts{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center;}
+  .rg-acts .hint{flex-basis:100%;margin:2px 0 0;}
+  .rg-aviso{margin-left:10px;font-size:11px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--warn-bg);color:var(--alerta);border:1px solid var(--warn-line);cursor:pointer;}
+  .rg-aviso[hidden]{display:none;}
+  /* janelas novas: atalhos, diagnóstico, sobre */
+  .tab-at{width:100%;border-collapse:collapse;margin:4px 0 10px;}
+  .tab-at td{padding:6px 4px;border-bottom:1px solid var(--line);font-size:13px;vertical-align:top;}
+  .tab-at td:first-child{white-space:nowrap;width:1%;padding-right:16px;}
+  .diag-pre{margin:0;padding:12px;border-radius:var(--r-sm);background:var(--surface-2);border:1px solid var(--line);font:12px/1.55 ui-monospace,Consolas,monospace;white-space:pre;overflow:auto;max-height:52vh;}
+  .sobre-l{display:grid;grid-template-columns:150px 1fr;gap:6px 14px;font-size:13px;margin:6px 0 12px;}
+  .sobre-l span{color:var(--text-muted);}
+  .dlg-bts{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+  /* foco: contorno em tudo que é clicável e ainda não tinha */
+  .link-btn:focus-visible,.rodape a:focus-visible,.hist-fil .chip-q:focus-visible{outline:none;box-shadow:var(--ring);border-radius:4px;}
+  .val-atual:focus-visible{outline:none;box-shadow:var(--ring);}
+  /* toque (celular e tablet): alvos de pelo menos 44 px */
+  @media (pointer:coarse){
+    .st-b{width:44px;top:2px;bottom:2px;} .stepper input{padding:0 50px;}
+    .chip-q,#vencChips .chip-q{min-height:44px;}
+    .stepper input{height:44px;}
+    .btn-x{width:44px;height:44px;}
+    .hi-b{width:40px;height:40px;}
+    .hb{min-width:44px;min-height:44px;}
+    .info-i{position:relative;}
+    .info-i::after{content:"";position:absolute;inset:-14px;}
+    .parc-op{min-height:52px;}
+    .hi-acts{opacity:1;pointer-events:auto;}
+  }
   /* ===== responsivo ===== */
   @media(max-width:940px){
     .wrap{grid-template-columns:minmax(0,1fr);}
@@ -789,6 +924,9 @@
     .parc-grid{grid-template-columns:repeat(3,1fr);}
   }
   @media(max-width:520px){
+    .seg .sl{display:none;} .seg .ss{display:inline;}
+    .seg button{padding:0 4px;}
+    .hdr-zoom{display:none;}
     .row{flex-wrap:wrap;}
     .row>div{flex:1 1 140px;}
     .hb .hb-t{display:none;}
@@ -841,7 +979,7 @@
   <div class="fio" aria-hidden="true"><div class="fio-fill" id="progBar2"></div></div>
 </div>
 
-<div class="prog-line" id="progLine"><span id="progTxt">Comece preenchendo as seções</span><span id="progPct">0%</span></div>
+<div class="prog-line" id="progLine"><span id="progTxt">Comece preenchendo as seções</span><span><button type="button" class="rg-aviso" id="rgAviso" hidden onclick="toggleRegras()" title="Os valores de juros, multa ou descontos foram alterados neste navegador">Regras personalizadas</button><span id="progPct">0%</span></span></div>
 
 <div class="wrap">
   <div class="pane" id="colEsq">
@@ -860,8 +998,8 @@
         <div class="seg-scroll">
           <div class="seg" id="segTipo" role="radiogroup" aria-labelledby="lblTipo" data-i="0">
             <span class="seg-ind" aria-hidden="true"></span>
-            <button type="button" role="radio" data-v="rep1" aria-checked="true" tabindex="0">1º Reparcelamento</button>
-            <button type="button" role="radio" data-v="rep2" aria-checked="false" tabindex="-1">2º Reparcelamento</button>
+            <button type="button" role="radio" data-v="rep1" aria-checked="true" tabindex="0"><span class="sl">1º Reparcelamento</span><span class="ss" aria-hidden="true">1º Reparc.</span></button>
+            <button type="button" role="radio" data-v="rep2" aria-checked="false" tabindex="-1"><span class="sl">2º Reparcelamento</span><span class="ss" aria-hidden="true">2º Reparc.</span></button>
             <button type="button" role="radio" data-v="quit" aria-checked="false" tabindex="-1">Quitação</button>
           </div>
         </div>
@@ -907,12 +1045,14 @@
           <p class="hint">As parcelas são geradas sozinhas (vencimentos mensais a partir da mais antiga) conforme você preenche. Apagar a quantidade zera tudo. Depois, é só editar ou apagar as linhas que não baterem, como uma parcela paga no meio.</p>
         </div>
         <div class="tbl-wrap"><table>
-          <thead><tr><th>Valor orig.</th><th>Vencimento</th><th id="thProd" style="display:none">Produto</th><th id="thNegat" class="check">Negat.</th><th>Atualizado</th><th><span class="sr-only">Apagar</span></th></tr></thead>
+          <thead><tr><th>Valor orig.</th><th>Vencimento</th><th id="thDias" style="display:none">Dias</th><th id="thProd" style="display:none">Produto</th><th id="thNegat" class="check">Negat.</th><th>Atualizado</th><th><span class="sr-only">Apagar</span></th></tr></thead>
           <tbody id="atrasoBody"></tbody>
+          <tfoot id="atrasoPe"></tfoot>
         </table></div>
         <div class="acts">
           <button type="button" class="btn btn-text" onclick="novaParcela()">+ Adicionar parcela</button>
           <button type="button" class="btn btn-text" id="btnTodasNeg" onclick="toggleTodasNeg()" style="display:none">Marcar todas como negativadas</button>
+          <label class="chk-line mini"><input type="checkbox" id="mostrarDias" onchange="toggleDias(this.checked)"> Coluna de dias de atraso</label>
         </div>
         <div id="negInfoWrap" style="display:none">
           <label class="chk-line"><input type="checkbox" id="temNegativada" onchange="render()"> Há parcela negativada nesta dívida</label>
@@ -948,14 +1088,14 @@
           <label class="chk-line" id="lblRetMulta"><input type="checkbox" id="retMulta" onchange="render()"> Retirar a multa das parcelas em atraso</label>
         </div>
         <div id="ctlVinc" style="display:none">
-          <label for="descVincPerc">Desconto nas parcelas a vencer (máx. 10%)</label>
+          <label for="descVincPerc">Desconto nas parcelas a vencer (máx. <span class="rg-dv">10</span>%)</label>
           <div class="affix suf w220"><input type="number" id="descVincPerc" min="0" max="10" step="0.5" value="0" oninput="render()"><span class="ax">%</span></div>
         </div>
         <div id="ctlNeg" style="display:none">
           <label class="chk-line"><input type="checkbox" id="isentarJurosNeg" checked onchange="render()"> Mostrar isenção dos juros (negativadas voltam ao valor original)</label>
           <label for="descNegPerc">Desconto na dívida negativada</label>
           <div class="affix suf w220"><input type="number" id="descNegPerc" min="0" max="100" step="1" value="0" oninput="render()"><span class="ax">%</span></div>
-          <div class="alerta" id="alertaNeg">Limite atingido: a dívida negativada não pode ficar abaixo de R$ 500,00. O valor foi travado nesse piso.</div>
+          <div class="alerta" id="alertaNeg">Limite atingido: a dívida negativada não pode ficar abaixo de <span class="rg-piso">R$ 500,00</span>. O valor foi travado nesse piso.</div>
         </div>
         <div id="ctlGeral" style="display:none">
           <label for="descGeralPerc">Desconto adicional sobre o total (opcional)</label>
@@ -973,7 +1113,7 @@
           <div><label for="extDias">Extensão<span class="info-i" title="Dias extras de acesso concedidos no pagamento. Acima de 90 dias → análise do Francisco. Deixe 0 se não houver extensão.">i</span></label><div class="affix suf dias"><input type="number" id="extDias" min="0" value="0" oninput="render()"><span class="ax">dias</span></div></div>
         </div>
         <div class="chips" id="extChips" role="group" aria-label="Extensão rápida"><button type="button" class="chip-q" data-d="30" aria-pressed="false" onclick="setExt(30)">+30 dias</button><button type="button" class="chip-q" data-d="60" aria-pressed="false" onclick="setExt(60)">+60 dias</button><button type="button" class="chip-q" data-d="90" aria-pressed="false" onclick="setExt(90)">+90 dias</button></div>
-        <div class="alerta" id="alertaExt">Extensão acima de 90 dias: leve para análise do Francisco antes de conceder.</div>
+        <div class="alerta" id="alertaExt">Extensão acima de <span class="rg-ext">90</span> dias: leve para análise do Francisco antes de conceder.</div>
         <div id="acessoInfo" class="hint"></div>
         <p class="hint" id="notaConclusao"></p>
       </div></div>
@@ -992,6 +1132,7 @@
         </div>
         <div class="note-warn" id="coerencia" style="display:none"></div>
         <div class="resumo" id="resumo"></div>
+        <div class="crono" id="crono"></div>
         <label for="dataVenc" id="lblVenc">Vencimento da 1ª parcela do acordo</label>
         <input type="date" id="dataVenc" oninput="render()" title="Atalhos: H = hoje · A = amanhã · + ou − muda um dia">
         <div class="chips" id="vencChips" role="group" aria-label="Vencimento rápido"></div>
@@ -1029,7 +1170,7 @@
         </div>
         <p class="revise"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg><span>Antes de enviar, revise a proposta e confira se ela corresponde à situação real do aluno.</span></p>
         <button type="button" class="btn btn-primary btn-copy" id="btnCopiar" onclick="copiar()" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="lbl">Copiar proposta</span><span class="tipo-pill" id="tipoPill"></span></button>
-        <p class="atalhos" aria-hidden="true"><span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> copia</span><span><kbd>Enter</kbd> avança</span><span><kbd>Ctrl</kbd>+<kbd>K</kbd> busca</span><span><kbd>Ctrl</kbd>+<kbd>P</kbd> produto</span><span><kbd>Alt</kbd>+<kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> tipo</span><span><kbd>Alt</kbd>+<kbd>N</kbd> nova</span></p>
+        <p class="atalhos" aria-hidden="true"><span><kbd>Ctrl</kbd>+<kbd>Enter</kbd> copia</span><span><kbd>Enter</kbd> avança</span><span><kbd>Ctrl</kbd>+<kbd>K</kbd> busca</span><span><kbd>Ctrl</kbd>+<kbd>P</kbd> produto</span><span><kbd>Alt</kbd>+<kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> tipo</span><span><kbd>Alt</kbd>+<kbd>N</kbd> nova</span><span><kbd>?</kbd> todos os atalhos</span></p>
         <div class="wa" id="waWrap">
           <div class="wa-bubble" id="waBubble"><div id="preview"></div><div class="wa-meta"><span id="waHora">agora</span> <svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="m1.5 12.5 4.5 4.5 9-10"/><path d="m11 16 1 1 9.5-10"/></svg></div></div>
           <textarea id="saida" oninput="onSaidaInput()" style="display:none" aria-label="Texto da proposta"></textarea>
@@ -1046,12 +1187,18 @@
           </div>
           <div id="histCorpo">
             <div class="affix pre"><span class="ax"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.2-4.2"/></svg></span><input type="text" id="histSearch" placeholder="Filtrar por nome, produto, tipo, valor ou data" oninput="renderHist()" autocomplete="off"></div>
+            <div class="hist-fil" role="group" aria-label="Filtrar o histórico">
+              <span class="chips" id="hfTipo"><button type="button" class="chip-q" data-t="" aria-pressed="true">Todos</button><button type="button" class="chip-q" data-t="1º Reparc." aria-pressed="false">1º Reparc.</button><button type="button" class="chip-q" data-t="2º Reparc." aria-pressed="false">2º Reparc.</button><button type="button" class="chip-q" data-t="Quitação" aria-pressed="false">Quitação</button><button type="button" class="chip-q" data-t="Quitação parcial" aria-pressed="false">Parcial</button></span>
+              <select id="hfPer" aria-label="Período" onchange="renderHist()"><option value="">Qualquer data</option><option value="0">Hoje</option><option value="7">Últimos 7 dias</option><option value="30">Últimos 30 dias</option></select>
+              <select id="hfProd" aria-label="Produto" onchange="renderHist()"><option value="">Todos os produtos</option></select>
+            </div>
             <div id="histLista" class="hist-list"></div>
+            <p class="hint" id="histUso"></p>
           </div>
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v43</a> · out/2026</footer>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v44</a> · out/2026 · <a href="#" onclick="toggleSobre();return false;">Sobre</a> · <a href="#" onclick="reportarProblema();return false;" title="Copia um diagnóstico (sem o nome do aluno) para enviar ao Francisco">Reportar problema</a></footer>
       <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
@@ -1095,6 +1242,13 @@
       <p>Ao clicar num campo, a linha da prévia que ele muda fica em azul (por exemplo, a extensão acende o bloco "Seu acesso"). A cor do fio do topo, da barra do resumo e da etiqueta no botão de copiar mostra o tipo da proposta: <b>azul</b> no 1º reparcelamento, <b>âmbar</b> no 2º e <b>verde</b> na quitação. Nas quantidades de parcelas, use <b>−</b> e <b>+</b> (segure para ir mais rápido). Apagar uma parcela da tabela tem <b>Desfazer</b>.</p>
       <h4>Atalhos de data</h4>
       <p>Abaixo do vencimento há os botões <b>Hoje</b>, <b>Amanhã</b> e <b>+7 dias</b>. Na extensão de acesso, <b>+30</b>, <b>+60</b> e <b>+90 dias</b> (clique de novo para zerar).</p>
+      <h4>Recursos recentes</h4>
+      <p><b>Rascunho e teclado.</b> A proposta em andamento é guardada sozinha: se a aba fechar, ao reabrir aparece o botão <b>Retomar</b>. Nos campos de data, <kbd>H</kbd> = hoje, <kbd>A</kbd> = amanhã e <kbd>+</kbd>/<kbd>−</kbd> mudam um dia. Na tabela de parcelas, <kbd>Enter</kbd> e as setas ↑ ↓ vão para a linha de baixo ou de cima.</p>
+      <p><b>Prévia clicável.</b> Clique numa linha da prévia para ir direto ao campo que a muda. Depois de copiar, um cartão rápido mostra total, forma de pagamento e vencimento para você conferir antes de enviar.</p>
+      <p><b>Parcelar no cartão.</b> O padrão é à vista (boleto, PIX ou cartão). Quando o aluno pedir para dividir, ligue <b>"Oferecer também o parcelamento no cartão de crédito"</b> na coluna da direita e escolha até quantas vezes (2x a 12x). A proposta mostra o valor de cada parcela, o valor total não muda, e o aluno responde <b>PIX</b> ou <b>cartão</b>. A divisão é feita no link de pagamento do cartão, não é reparcelamento.</p>
+      <h4>Desfazer, atalhos e diagnóstico (v44)</h4>
+      <p><kbd>Ctrl</kbd>+<kbd>Z</kbd> desfaz a última alteração de qualquer campo e <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> (ou <kbd>Ctrl</kbd>+<kbd>Y</kbd>) refaz. A tecla <kbd>?</kbd> mostra todos os atalhos. <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> copia e já começa uma nova proposta. <kbd>Ctrl</kbd>+<kbd>.</kbd> leva ao próximo campo que falta. <kbd>Alt</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> pula de seção.</p>
+      <p>Clique no valor da coluna <b>Atualizado</b> para ver o cálculo daquela parcela (dias, multa e juros). Clique no <b>total</b> do resumo para copiar só o valor. Se algo der errado, a calculadora avisa e oferece <b>Copiar diagnóstico</b>; o mesmo está em <b>Reportar problema</b>, no rodapé.</p>
     </div>
   </div>
 </div>
@@ -1106,23 +1260,33 @@
     <div class="dlg-head"><h3 id="regrasTit">Regras vigentes</h3><button type="button" class="dlg-x" onclick="toggleRegras()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">Resumo da política, para consulta rápida. Em caso de dúvida ou exceção, fale com o Francisco.</p>
+      <div class="rg-box" id="rgBox">
+        <div class="rg-head"><b>Valores em vigor neste navegador</b><span class="rg-selo" id="rgSelo" hidden>Personalizados</span><button type="button" class="link-btn" id="rgEditar" onclick="editarRegras(true)">Editar valores</button></div>
+        <div class="rg-vals" id="rgVals"></div>
+        <form class="rg-form" id="rgForm" hidden onsubmit="salvarRegras();return false;">
+          <div><label for="rgJuros">Juros ao mês (%)</label><input type="number" id="rgJuros" min="0" max="10" step="0.1"></div>
+          <div><label for="rgMulta">Multa (%)</label><input type="number" id="rgMulta" min="0" max="10" step="0.1"></div>
+          <div><label for="rgPiso">Piso da negativada (R$)</label><input type="number" id="rgPiso" min="0" max="100000" step="10"></div>
+          <div><label for="rgDv">Desconto máx. nas a vencer (%)</label><input type="number" id="rgDv" min="0" max="100" step="0.5"></div>
+          <div><label for="rgExt">Extensão sem análise (dias)</label><input type="number" id="rgExt" min="0" max="365" step="1"></div>
+          <div class="rg-acts"><button type="submit" class="btn btn-primary btn-sm">Salvar</button><button type="button" class="btn btn-secondary btn-sm" onclick="editarRegras(false)">Cancelar</button><button type="button" class="btn btn-text btn-sm" onclick="restaurarRegras()">Voltar ao padrão</button>
+            <p class="hint">Muda os cálculos só <b>neste navegador</b>. As propostas já copiadas não mudam. Enquanto os valores estiverem diferentes do padrão, aparece "Regras personalizadas" no topo.</p></div>
+        </form>
+      </div>
       <h4>Encargos sobre o atraso</h4>
-      <p><b>Multa:</b> 2% fixos (uma vez) sobre o valor da parcela. <b>Juros:</b> 2% ao mês, pró-rata por dia corrido a partir do vencimento, até a data de pagamento do acordo. Sem teto: os juros correm cheios. Cálculo idêntico ao Asaas. Se o pagamento for futuro, as parcelas a vencer que vencem até essa data passam a contar como atraso.</p>
+      <p><b>Multa:</b> <span class="rg-multa">2</span>% fixos (uma vez) sobre o valor da parcela. <b>Juros:</b> <span class="rg-juros">2</span>% ao mês, pró-rata por dia corrido a partir do vencimento, até a data de pagamento do acordo. Sem teto: os juros correm cheios. Cálculo idêntico ao Asaas. Se o pagamento for futuro, as parcelas a vencer que vencem até essa data passam a contar como atraso.</p>
       <h4>Parcelas negativadas</h4>
-      <p>Voltam ao <b>valor original</b> (sem juros nem multa). Na quitação só de negativadas, o desconto na negociação vai até o <b>piso de R$ 500,00</b> e não pode ficar abaixo disso. Depois do pagamento do acordo, a restrição sai em até <b>5 dias úteis</b> (geralmente no dia seguinte ao pedido de retirada).</p>
+      <p>Voltam ao <b>valor original</b> (sem juros nem multa). Na quitação só de negativadas, o desconto na negociação vai até o <b>piso de <span class="rg-piso">R$ 500,00</span></b> e não pode ficar abaixo disso. Depois do pagamento do acordo, a restrição sai em até <b>5 dias úteis</b> (geralmente no dia seguinte ao pedido de retirada).</p>
       <h4>Descontos na quitação total</h4>
-      <p>Só em atraso: 1ª oferta com juros e multa; se o aluno achar caro, retira juros e multa (cobra só o original). Atraso + a vencer: retira os juros do atraso + até <b>10%</b> nas a vencer. Só a vencer: até <b>10%</b>. Negativadas + atraso: retira os juros do atraso (negativadas no valor original). Pode haver desconto adicional sobre o total, caso a caso.</p>
+      <p>Só em atraso: 1ª oferta com juros e multa; se o aluno achar caro, retira juros e multa (cobra só o original). Atraso + a vencer: retira os juros do atraso + até <b><span class="rg-dv">10</span>%</b> nas a vencer. Só a vencer: até <b><span class="rg-dv">10</span>%</b>. Negativadas + atraso: retira os juros do atraso (negativadas no valor original). Pode haver desconto adicional sobre o total, caso a caso.</p>
       <h4>Quitação parcial</h4>
       <p>Valores cheios por padrão. Opcionalmente, é possível retirar os juros das parcelas em atraso (a multa e os demais descontos são só da quitação total). Para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link.</p>
-      <p><b>Rascunho e teclado.</b> A proposta em andamento é guardada sozinha: se a aba fechar, ao reabrir aparece o botão <b>Retomar</b>. Nos campos de data, <kbd>H</kbd> = hoje, <kbd>A</kbd> = amanhã e <kbd>+</kbd>/<kbd>−</kbd> mudam um dia. Na tabela de parcelas, <kbd>Enter</kbd> e as setas ↑ ↓ vão para a linha de baixo ou de cima.</p>
-      <p><b>Prévia clicável.</b> Clique numa linha da prévia para ir direto ao campo que a muda. Depois de copiar, um cartão rápido mostra total, forma de pagamento e vencimento para você conferir antes de enviar.</p>
-      <p><b>Parcelar no cartão.</b> O padrão é à vista (boleto, PIX ou cartão). Quando o aluno pedir para dividir, ligue <b>"Oferecer também o parcelamento no cartão de crédito"</b> na coluna da direita e escolha até quantas vezes (2x a 12x). A proposta mostra o valor de cada parcela, o valor total não muda, e o aluno responde <b>PIX</b> ou <b>cartão</b>. A divisão é feita no link de pagamento do cartão, não é reparcelamento.</p>
       <h4>Reparcelamento</h4>
       <p>De 2x a 12x. Parcelas negativadas entram no reparcelamento como parcelas em atraso, com multa e juros normais (lance-as junto com as demais). Marque <b>"Há parcela negativada nesta dívida"</b> para a proposta avisar que a restrição é retirada em até 5 dias úteis depois do pagamento da 1ª parcela. Dívidas antigas podem receber % de desconto <b>só sobre os juros</b> do atraso, caso a caso. Vencimento padrão da 1ª parcela: hoje no 1º reparcelamento e amanhã no 2º. Normalmente oferecido a partir de 2 parcelas em atraso. <b>Limite de 2 reparcelamentos por dívida de cada produto</b>. O limite não é comentado com o aluno no 1º; no 2º, a proposta avisa que é o último e que, se uma parcela atrasar, não haverá novo parcelamento. Parcela do acordo paga com atraso tem multa e juros pelo Asaas.</p>
       <h4>2º reparcelamento: formalização</h4>
       <p>Após o aceite: enviar <b>formulário</b> de dados → montar <b>contrato de confissão de dívida e parcelamento</b> → enviar para <b>assinatura</b> → liberar o boleto da 1ª parcela.</p>
       <h4>Acesso e extensão</h4>
-      <p>Curso de 12 meses expira em liberação + 12 meses. Extensão concedida no pagamento, conforme o progresso do aluno. <b>Acima de 90 dias → análise do Francisco</b>. Na quitação parcial, a proposta não fala de prazo de acesso.</p>
+      <p>Curso de 12 meses expira em liberação + 12 meses. Extensão concedida no pagamento, conforme o progresso do aluno. <b>Acima de <span class="rg-ext">90</span> dias → análise do Francisco</b>. Na quitação parcial, a proposta não fala de prazo de acesso.</p>
       <h4>ONION (aplicativo)</h4>
       <p>Produto digital da <b>ONION - O Novo Inconsciente LTDA</b> (empresa própria, CNPJ diferente do IBFT). <b>Mesmos encargos</b> dos demais produtos (multa de 2% e juros de 2%/mês sobre o atraso) e mesma política de descontos. Acesso de <b>12 meses</b>, sem renovação automática. A proposta usa texto próprio de aplicativo (sem regras de produtos IBFT/CITRG) e <b>não se mistura</b> com cursos do IBFT na mesma proposta.</p>
     </div>
@@ -1134,6 +1298,15 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v44 · out/2026</h4>
+      <p><b>Desfazer e refazer em tudo.</b> <kbd>Ctrl</kbd>+<kbd>Z</kbd> volta a última alteração de qualquer campo e <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> ou <kbd>Ctrl</kbd>+<kbd>Y</kbd> refaz. A tecla <kbd>?</kbd> abre a <b>lista de todos os atalhos</b>. Novos: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> copia e já começa outra proposta; <kbd>Ctrl</kbd>+<kbd>.</kbd> leva ao próximo campo que falta; <kbd>Alt</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> pula de seção.</p>
+      <p><b>Resumo mais completo.</b> Os atalhos de data mostram o total em cada data ("Amanhã R$ 2.335,49 · + R$ 0,91"). O cronograma das parcelas abre no resumo, com aviso de data que não é dia útil. Quando há desconto, uma barra mostra <b>valor atual → proposta</b>. Na quitação com vários produtos, aparece o subtotal de cada um. Clique no total (ou no valor da parcela) para copiar só o número.</p>
+      <p><b>Tabela de parcelas.</b> Clique no valor da coluna <b>Atualizado</b> para ver o cálculo daquela parcela (dias, multa e juros). Rodapé com a soma do original e do atualizado. Coluna opcional de <b>dias de atraso</b> (laranja acima de 90, vermelho acima de 180). Com mais de 12 parcelas, as linhas ficam mais baixas. O Tab não para mais no botão de apagar (<kbd>Ctrl</kbd>+<kbd>Delete</kbd> apaga a linha).</p>
+      <p><b>Avisos de digitação.</b> Quantidade de parcelas fora do normal (mais de 24), vencimento com mais de 3 anos, parcela acima de R$ 10.000 e data incompleta ou impossível agora são avisados. Na prévia, o que ficou sem preencher, como "(DATA DE EXPIRAÇÃO)", aparece em vermelho.</p>
+      <p><b>Histórico.</b> Agrupado por dia (Hoje, Ontem…), com filtros por tipo, período e produto. Passe o mouse num item para ver o texto enviado. Em cada item: <b>copiar de novo</b> e <b>apagar</b> (com Desfazer). Setas ↑ ↓ andam pela lista e <kbd>Delete</kbd> apaga. Embaixo, quanto do espaço do navegador já foi usado.</p>
+      <p><b>Regras editáveis.</b> Na janela Regras, <b>Editar valores</b> muda juros, multa, piso da negativada, desconto máximo nas a vencer e o limite de extensão, só neste navegador. Enquanto estiverem diferentes do padrão, aparece "Regras personalizadas" no topo.</p>
+      <p><b>Confiabilidade.</b> Se algo der errado, a calculadora avisa e oferece <b>Copiar diagnóstico</b>. No rodapé, <b>Reportar problema</b> e <b>Sobre</b> (versão, data, testes, armazenamento). <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>D</kbd> mostra o cálculo detalhado. A checagem de nova versão agora roda a cada 10 minutos, e há aviso quando a internet cai.</p>
+      <p><b>Visual e celular.</b> O "i" fica preso à última palavra do rótulo. No celular, o seletor de tipo cabe na tela, tocar no "i" abre a dica, os botões pequenos têm área de toque de 44 px e o cabeçalho cabe numa linha. Contraste dos textos cinza revisado nos dois temas. Seção concluída ganha um brilho verde curto. Corrigido: três parágrafos do guia que tinham ido parar na janela Regras voltaram para Como usar.</p>
       <h4>v43 · out/2026</h4>
       <p><b>Rascunho automático.</b> A proposta em andamento é guardada sozinha neste navegador. Se a aba fechar, o computador reiniciar ou você sair sem querer, ao reabrir aparece "Rascunho de Carla · R$ 619,36 · há 12 min" com o botão <b>Retomar</b>. Depois de copiar a proposta, o rascunho some (ela já está no histórico).</p>
       <p><b>Tabela de parcelas mais rápida.</b> No valor de cada parcela, <kbd>Enter</kbd> ou as setas ↑ ↓ passam para a mesma coluna da linha de baixo ou de cima. Na data, <kbd>Enter</kbd> faz o mesmo. No fim da tabela, <kbd>Enter</kbd> segue para o próximo campo da proposta.</p>
@@ -1226,6 +1399,79 @@
     </div>
   </div>
 </div>
+
+<div class="overlay" id="atalhosOverlay" onclick="if(event.target===this)toggleAtalhos()">
+  <div class="ajuda-box" role="dialog" aria-modal="true" aria-labelledby="atalhosTit" tabindex="-1">
+    <div class="dlg-head"><h3 id="atalhosTit">Atalhos de teclado</h3><button type="button" class="dlg-x" onclick="toggleAtalhos()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <div class="dlg-body">
+      <h4>Proposta</h4>
+      <table class="tab-at">
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td><td>Copiar a proposta (de qualquer lugar)</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd></td><td>Copiar e já começar uma nova proposta</td></tr>
+        <tr><td><kbd>Alt</kbd>+<kbd>N</kbd></td><td>Nova proposta</td></tr>
+        <tr><td><kbd>Alt</kbd>+<kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd></td><td>1º reparcelamento, 2º reparcelamento, quitação</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd></td><td>Desfazer a última alteração (em qualquer campo, menos na edição manual do texto e nas buscas)</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> · <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Refazer</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>E</kbd></td><td>Editar o texto à mão / voltar à prévia</td></tr>
+      </table>
+      <h4>Navegação</h4>
+      <table class="tab-at">
+        <tr><td><kbd>Ctrl</kbd>+<kbd>K</kbd></td><td>Busca rápida (ações, produtos e histórico)</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>P</kbd></td><td>Buscar produto</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>H</kbd></td><td>Propostas de hoje</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>.</kbd></td><td>Ir ao próximo campo que falta</td></tr>
+        <tr><td><kbd>Alt</kbd>+<kbd>↑</kbd> <kbd>↓</kbd></td><td>Seção anterior / seguinte</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>Avançar para o próximo campo essencial</td></tr>
+        <tr><td><kbd>?</kbd></td><td>Esta lista</td></tr>
+        <tr><td><kbd>Esc</kbd></td><td>Fechar janela ou balão</td></tr>
+      </table>
+      <h4>Campos</h4>
+      <table class="tab-at">
+        <tr><td><kbd>H</kbd> · <kbd>A</kbd> · <kbd>+</kbd> <kbd>−</kbd></td><td>Em qualquer data: hoje, amanhã, um dia a mais ou a menos</td></tr>
+        <tr><td><kbd>Enter</kbd> · <kbd>↑</kbd> <kbd>↓</kbd></td><td>Na tabela de parcelas: linha de baixo / de cima</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Delete</kbd></td><td>Na tabela de parcelas: apagar a linha (com Desfazer)</td></tr>
+        <tr><td>Setas</td><td>Nas grades de parcelas e no seletor de tipo: escolher</td></tr>
+      </table>
+      <h4>Histórico</h4>
+      <table class="tab-at">
+        <tr><td><kbd>↑</kbd> <kbd>↓</kbd></td><td>Andar pela lista (a partir da busca, <kbd>↓</kbd> entra na lista)</td></tr>
+        <tr><td><kbd>Enter</kbd></td><td>Recuperar a proposta</td></tr>
+        <tr><td><kbd>Delete</kbd></td><td>Apagar a proposta do histórico (com Desfazer)</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>C</kbd></td><td>Copiar de novo o texto enviado</td></tr>
+      </table>
+      <h4>Diagnóstico</h4>
+      <table class="tab-at">
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>D</kbd></td><td>Cálculo detalhado da proposta na tela</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="diagOverlay" onclick="if(event.target===this)toggleDiag()">
+  <div class="ajuda-box" role="dialog" aria-modal="true" aria-labelledby="diagTit" tabindex="-1">
+    <div class="dlg-head"><h3 id="diagTit">Diagnóstico do cálculo</h3><button type="button" class="dlg-x" onclick="toggleDiag()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <div class="dlg-body">
+      <p class="lead">Como cada valor da proposta na tela foi calculado. Útil para conferir com o Asaas ou explicar um número.</p>
+      <pre class="diag-pre" id="diagPre"></pre>
+      <div class="dlg-bts"><button type="button" class="btn btn-secondary btn-sm" onclick="copiarDiagCalc()">Copiar este diagnóstico</button></div>
+    </div>
+  </div>
+</div>
+<div class="overlay" id="sobreOverlay" onclick="if(event.target===this)toggleSobre()">
+  <div class="ajuda-box" role="dialog" aria-modal="true" aria-labelledby="sobreTit" tabindex="-1">
+    <div class="dlg-head"><h3 id="sobreTit">Sobre a calculadora</h3><button type="button" class="dlg-x" onclick="toggleSobre()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
+    <div class="dlg-body">
+      <div class="sobre-l" id="sobreLista"></div>
+      <div class="dlg-bts">
+        <button type="button" class="btn btn-secondary btn-sm" onclick="toggleSobre();toggleNovidades()">Novidades</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="toggleSobre();toggleAtalhos()">Atalhos de teclado</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="toggleSobre();toggleDiag()">Diagnóstico do cálculo</button>
+        <button type="button" class="btn btn-secondary btn-sm" onclick="reportarProblema()">Reportar problema</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="calcPop" role="dialog" aria-label="Cálculo da parcela"></div>
+<div id="histPrev" aria-hidden="true"></div>
 
 <div class="overlay lado" id="hojeOverlay" onclick="if(event.target===this)toggleHoje()">
   <div class="ajuda-box" role="dialog" aria-modal="true" aria-labelledby="hojeTit" tabindex="-1">
@@ -1381,10 +1627,17 @@ const PRODUTOS=[
 
 const RASC='ibft_rascunho'; let rascTimer=null, rascTrava=false, rascCopiado=null;   // v43: rascunho automático
 const TITULO_BASE=document.title; let tituloCopiado=0;
+const pilhaU=[]; let posU=-1, tmU=null, toastU=null;   // v44: desfazer/refazer geral
+let mostrarDias=false; try{ mostrarDias=localStorage.getItem('ibft_dias')==='1'; }catch(e){}   // v44: coluna de dias de atraso
+let cronoAberto=false; const filtroH={tipo:''};   // v44: cronograma aberto; filtro de tipo do histórico
 let cartaoParc=3;   // v42: até quantas vezes no cartão (quitação parcial)
 let atrasos=[]; let parcelasEscolhidas=2; let editadoManual=false; let produtosExtra=[]; let historico=[];
 let vincValManual=false;   // vira true quando o atendente edita o valor da parcela a vencer (para o espelhamento parar)
-const JUROS_MES=0.02, MULTA=0.02, NEG_PISO=500;
+// regras: o padrão é a política vigente; podem ser personalizadas neste navegador (janela Regras)
+const REGRAS_PADRAO={juros:2,multa:2,piso:500,descVinc:10,ext:90};
+const REGRAS=Object.assign({},REGRAS_PADRAO);
+try{ const r=JSON.parse(localStorage.getItem('ibft_regras')||'null'); if(r) for(const k in REGRAS_PADRAO) if(isFinite(r[k]) && r[k]!==null && +r[k]>=0) REGRAS[k]=+r[k]; }catch(e){}
+let JUROS_MES=REGRAS.juros/100, MULTA=REGRAS.multa/100, NEG_PISO=REGRAS.piso;
 // produto principal selecionado (ou null) e suas regras
 function prodSel(){const i=parseInt(document.getElementById('produto').value);return i>=0?PRODUTOS[i]:null;}
 function ehApp(){return !!(prodSel()&&prodSel().app);}   // aplicativo (outra empresa) → texto próprio, sem mistura com produtos do IBFT
@@ -1404,7 +1657,7 @@ function addMonths(iso,n){
   const ty=base.getFullYear(), tm=base.getMonth();
   const ultimoDia=new Date(ty,tm+1,0).getDate();
   const dia=Math.min(diaPretendido,ultimoDia);
-  return ty+'-'+String(tm+1).padStart(2,'0')+'-'+String(dia).padStart(2,'0');
+  return String(ty).padStart(4,'0')+'-'+String(tm+1).padStart(2,'0')+'-'+String(dia).padStart(2,'0');
 }
 
 function refCalc(){const v=document.getElementById('dataVenc').value;return v||hojeISO();}
@@ -1518,7 +1771,7 @@ function onDuasOpcoes(){
   if(document.getElementById('duasOpcoes').checked){
     const el=id=>document.getElementById(id);
     const zerado=!el('retJuros').checked && !el('retMulta').checked && !(parseFloat(el('descVincPerc').value)>0) && !(parseFloat(el('descGeralPerc').value)>0);
-    if(zerado){ el('retJuros').checked=true; el('descVincPerc').value='10'; }   // padrão: sem os juros do atraso e 10% nas a vencer (só vale se houver)
+    if(zerado){ el('retJuros').checked=true; el('descVincPerc').value=String(Math.min(10,REGRAS.descVinc)); }   // padrão: sem os juros do atraso e 10% nas a vencer (só vale se houver)
   }
   render();
 }
@@ -1593,15 +1846,28 @@ function renderAtrasos(){
     tr.innerHTML=`
       <td><input type="text" inputmode="decimal" value="${escAtr(p.valor)}" oninput="maskMoeda(this);updValor(${i},this.value)" aria-label="Valor original da parcela ${i+1}"></td>
       <td><input type="date" value="${escAtr(p.venc)}" onchange="updVenc(${i},this.value)" aria-label="Vencimento da parcela ${i+1}"></td>
+      <td class="dias${(!p.negativada&&p.venc)?(diasAtraso(p.venc)>180?' d180':diasAtraso(p.venc)>90?' d90':''):''}" style="${mostrarDias?'':'display:none'}">${(!p.negativada&&p.venc)?diasAtraso(p.venc):'—'}</td>
       <td style="${multi?'':'display:none'}"><select class="sel-prod" onchange="updProdParcela(${i},this.value)" aria-label="Produto da parcela ${i+1}">${ps.map(k=>`<option value="${k}" ${prodDaParcela(p)===k?'selected':''}>${escAtr(nomeCurto(PRODUTOS[k]))}</option>`).join('')}</select></td>
       <td class="check" style="${showNeg?'':'display:none'}"><input type="checkbox" ${p.negativada?'checked':''} onchange="updAtraso(${i},'negativada',this.checked)" aria-label="Parcela ${i+1} negativada"></td>
-      <td class="val-atual" id="atual${i}">${atualCellHTML(p)}</td>
-      <td><button type="button" class="btn-x" onclick="apagarParcela(${i},this)" aria-label="Apagar parcela ${i+1}" title="Apagar parcela">${ICO.x}</button></td>`;
+      <td class="val-atual" id="atual${i}" data-i="${i}" title="Clique para ver o cálculo desta parcela">${atualCellHTML(p)}</td>
+      <td><button type="button" class="btn-x" tabindex="-1" onclick="apagarParcela(${i},this)" aria-label="Apagar parcela ${i+1}" title="Apagar parcela">${ICO.x}</button></td>`;
     if(i===nova) tr.classList.add('nova');
     tb.appendChild(tr);
   });
+  const tab=tb.closest('table'); tab.classList.toggle('denso',atrasos.length>12); tab.classList.toggle('com-dias',mostrarDias);
+  document.getElementById('thDias').style.display=mostrarDias?'':'none';
+  renderPeTabela();
   ajustarTabela();
 }
+// rodapé da tabela: soma do valor original e do atualizado (a partir de 2 parcelas)
+function renderPeTabela(){
+  const pe=document.getElementById('atrasoPe'); if(!pe) return;
+  const ls=atrasos.filter(p=>parseV(p.valor)>0); if(ls.length<2){ pe.innerHTML=''; return; }
+  const orig=ls.reduce((a,p)=>a+parseV(p.valor),0), atu=ls.reduce((a,p)=>a+valorAtualizado(p),0);
+  const esc=x=>x?'':' style="display:none"';
+  pe.innerHTML='<tr><td><b>'+brl(orig)+'</b></td><td>'+ls.length+' parcelas</td><td'+esc(mostrarDias)+'></td><td'+esc(multiProduto())+'></td><td class="check"'+esc(ehQuit())+'></td><td class="val-atual">'+brl(atu)+'</td><td></td></tr>';
+}
+function toggleDias(on){ mostrarDias=!!on; try{ localStorage.setItem('ibft_dias',on?'1':'0'); }catch(e){} const c=document.getElementById('mostrarDias'); if(c) c.checked=mostrarDias; renderAtrasos(); }
 // rolagem lateral só quando as colunas da tabela não cabem (senão os títulos fixos não acompanham a coluna)
 function ajustarTabela(){
   const w=document.querySelector(".tbl-wrap"), t=w&&w.querySelector("table"); if(!t) return;
@@ -1610,6 +1876,7 @@ function ajustarTabela(){
 // atualização leve: recalcula tudo SEM recriar os inputs da tabela (mantém o foco no campo)
 function renderLeve(){
   atrasos.forEach((p,i)=>{const c=document.getElementById('atual'+i);if(c)c.innerHTML=atualCellHTML(p);});
+  renderPeTabela();
   renderResumo();renderParcGrid();renderCartGrid();atualizarSaida();resumoSecoes();
 }
 
@@ -1659,7 +1926,7 @@ function quitModel(forcarTotal){   // forcarTotal: calcula como quitação total
   const el=id=>document.getElementById(id);
   // isenção de juros do atraso: permitida na quitação TOTAL e na PARCIAL; multa e demais descontos só na TOTAL
   const retJ=(comDesconto||parcialQ)&&el('retJuros')?.checked,retM=comDesconto&&el('retMulta')?.checked;
-  let dv=comDesconto?(parseFloat(el('descVincPerc')?.value)||0):0; dv=Math.min(Math.max(dv,0),10);
+  let dv=comDesconto?(parseFloat(el('descVincPerc')?.value)||0):0; dv=Math.min(Math.max(dv,0),REGRAS.descVinc);
   let dn=comDesconto?(parseFloat(el('descNegPerc')?.value)||0):0; dn=Math.min(Math.max(dn,0),100);
   const jurosRem=(A>0&&retJ)?atrasoJurosV():0;
   const multaRem=(A>0&&retM)?atrasoMultaV():0;
@@ -1806,13 +2073,17 @@ function renderResumo(){
     if(pNeg().length){ h+=lin(`${pNeg().length} negativada(s)`,negOriginal()+m.jurosNeg); if(m.jurosNeg>0) h+=sub('↳ juros',m.jurosNeg,RED); }
     if(pAtraso().length){h+=lin(`${pAtraso().length} ${lblAtraso}`,atrasoComEnc());h+=sub('↳ juros',atrasoJurosV(),RED);h+=sub('↳ multa',atrasoMultaV(),RED);}
     if(qtdVinc()) h+=lin(`${qtdVinc()} a vencer`,totalVinc());
+    if(multiProduto()){   // quitação com vários produtos: subtotal de cada um (valores cheios, antes dos descontos)
+      h+=`<div class="lin cab"><span>Por produto</span></div>`;
+      produtosDaProposta().forEach(k=>{ const v=pAtraso().filter(p=>prodDaParcela(p)===k).reduce((a,p)=>a+valorAtualizado(p),0)+pNeg().filter(p=>prodDaParcela(p)===k).reduce((a,p)=>a+parseV(p.valor),0);
+        if(v>0) h+=`<div class="lin sub pp"><span>${escAtr(nomeCurto(PRODUTOS[k]))}</span><b>${brl(v)}</b></div>`; }); }
     if(m.descTotal>0){
       h+=lin('Descontos aplicados',-m.descTotal,GREEN);
       if(m.jurosNeg>0) h+=sub('↳ juros isentos (negativada)',-m.jurosNeg,GREEN);
       if(m.jurosRem>0) h+=sub('↳ juros isentos',-m.jurosRem,GREEN);
       if(m.multaRem>0) h+=sub('↳ multa isenta',-m.multaRem,GREEN);
       if(m.vincDesc>0) h+=sub(`↳ ${m.dv}% nas parcelas a vencer`,-m.vincDesc,GREEN);
-      if(m.negDesc>0)  h+=sub(`↳ ${m.negPct}% na dívida negativada (mín. R$ 500,00)`,-m.negDesc,GREEN);
+      if(m.negDesc>0)  h+=sub(`↳ ${m.negPct}% na dívida negativada (mín. ${pisoTxt()})`,-m.negDesc,GREEN);
       if(m.geralDesc>0) h+=sub(`↳ ${m.dg}% de desconto adicional`,-m.geralDesc,GREEN);
     }
   }else{
@@ -1827,20 +2098,22 @@ function renderResumo(){
   if(ultimoTotal!==null && tg!==ultimoTotal) pulsoIni=Date.now();
   ultimoTotal=tg;
   const decorrido=Date.now()-pulsoIni, pulsando=decorrido<600;
-  h+=`<div class="lin tot${pulsando?' pulse':''}"${pulsando?` style="animation-delay:-${decorrido}ms"`:''}><span>Total</span><span id="resTot">${brl(tg)}</span></div>`;
+  h+=`<div class="lin tot${pulsando?' pulse':''}" data-v="${brl(tg)}" title="Clique para copiar o valor"${pulsando?` style="animation-delay:-${decorrido}ms"`:''}><span>Total</span><span id="resTot">${brl(tg)}</span></div>`;
   const economia = ehQuit()? quitModel().descTotal : descJurosTotal();
   const baseEcon = ehQuit()? quitModel().bruto : (atrasoComEnc()+totalVinc());
   const econPct = baseEcon>0?Math.round(economia/baseEcon*100):0;
   if(economia>0) h+=`<div class="lin econ"><span>Economia (${econPct}%)</span><span>${brl(economia)}</span></div>`;
+  if(economia>0 && baseEcon>0){ const pd=Math.max(2,Math.min(100,tg/baseEcon*100));   // antes → depois
+    h+=`<div class="antdep"><div class="ad-l"><span>Valor atual</span><i style="width:100%"></i><b>${brl(baseEcon)}</b></div><div class="ad-l n"><span>Proposta</span><i style="width:${pd.toFixed(1)}%"></i><b>${brl(tg)}</b></div></div>`; }
   if(!ehQuit() && parcelasEscolhidas>0 && totalGeral()>0)
     { const pp=planoParcelas(totalGeral(),parcelasEscolhidas);
-      h+=`<div class="lin parc"><span>${parcelasEscolhidas}x de</span><b id="resParc">${brl(pp.base)}</b></div>`;
+      h+=`<div class="lin parc" data-v="${brl(pp.base)}" title="Clique para copiar o valor"><span>${parcelasEscolhidas}x de</span><b id="resParc">${brl(pp.base)}</b></div>`;
       if(Math.abs(pp.ultima-pp.base)>0.001) h+=sub('↳ última parcela (ajuste de centavos)',pp.ultima); }
   if(cartaoOn() && totalGeral()>0){ const pc=planoParcelas(totalGeral(),cartaoParc);
-    h+=`<div class="lin parc"><span>Cartão · até ${cartaoParc}x de</span><b id="resCart">${brl(pc.base)}</b></div>`;
+    h+=`<div class="lin parc" data-v="${brl(pc.base)}" title="Clique para copiar o valor"><span>Cartão · até ${cartaoParc}x de</span><b id="resCart">${brl(pc.base)}</b></div>`;
     if(Math.abs(pc.ultima-pc.base)>0.001) h+=sub('↳ última parcela (ajuste de centavos)',pc.ultima); }
   if(duasOpcoes() && totalGeral()>0){ const q1=opcaoQuitacao();
-    h+=`<div class="lin opc1"><span>Opção 1 · à vista</span><b>${brl(q1.total)}</b></div>`;
+    h+=`<div class="lin opc1" data-v="${brl(q1.total)}" title="Clique para copiar o valor"><span>Opção 1 · à vista</span><b>${brl(q1.total)}</b></div>`;
     if(q1.descTotal>0) h+=sub('↳ desconto da opção 1',-q1.descTotal,GREEN); }
   // mini-gráfico da composição (mostra que a maior parte é o valor original, não juros)
   const cOrig=atrasoOriginal()+negOriginal()+totalVinc(), cMulta=atrasoMultaV(), cJuros=atrasoJurosV();
@@ -1851,6 +2124,7 @@ function renderResumo(){
     h+=`<div class="compo-leg"><span><i style="background:var(--c-orig)"></i>Original ${p(cOrig)}%</span><span><i style="background:var(--c-multa)"></i>Multa ${p(cMulta)}%</span><span><i style="background:var(--c-juros)"></i>Juros ${p(cJuros)}%</span></div>`;
   }
   trocarResumo(h);
+  renderCrono();
   rolarNumero('#resTot','tot',tg);
   if(!ehQuit() && parcelasEscolhidas>0 && tg>0) rolarNumero('#resParc','parc',planoParcelas(tg,parcelasEscolhidas).base); else if(numAnim.parc) numAnim.parc.val=NaN;
   if(cartaoOn() && tg>0) rolarNumero('#resCart','cart',planoParcelas(tg,cartaoParc).base); else if(numAnim.cart) numAnim.cart.val=NaN;
@@ -2114,8 +2388,11 @@ function aplicarStatus(){
     const card=document.getElementById(cardId),b=document.getElementById(badgeId);
     if(!card||!b)return;
     card.classList.remove('ok','falta'); b.classList.remove('show','badge-ok','badge-falta');
-    if(st==='ok'){card.classList.add('ok');b.classList.add('show','badge-ok');b.textContent='Pronta';}
+    if(st==='ok'){
+      if(card._st!=='ok' && card._st!==undefined && visPronto && !semMovimento()){ card.classList.remove('concluiu'); void card.offsetWidth; card.classList.add('concluiu'); setTimeout(()=>card.classList.remove('concluiu'),950); }   // seção acabou de ficar pronta
+      card.classList.add('ok');b.classList.add('show','badge-ok');b.textContent='Pronta';}
     else if(st==='falta'){card.classList.add('falta');b.classList.add('show','badge-falta');b.textContent='Falta preencher';}
+    card._st=st;
   }
   const parcial=quit&&!document.getElementById('quitTotal').checked;
   const prodOk=parseInt(document.getElementById('produto').value)>=0;
@@ -2233,6 +2510,14 @@ function renderCoerencia(){
   const mn=dv && dv>=hoje ? motivoNaoUtil(dv) : '';
   if(mn){ const prox=proximoDiaUtil(dv);
     av.push('O vencimento ('+dataBR(dv)+') cai em um '+mn+'. Os bancos não compensam boleto nesse dia. Próximo dia útil: '+DIAS_SEMANA[diaSemana(prox)]+', '+dataBR(prox)+'. <button type="button" class="link-btn" onclick="usarVencimento(\''+prox+'\')">Usar '+dataBR(prox).slice(0,5)+'</button> <span class="hint-inline">Os valores em atraso são recalculados até a nova data.</span>'); }
+  // v44: valores fora do normal (provável erro de digitação)
+  const comValor=atrasos.filter(p=>parseV(p.valor)>0);
+  if(comValor.length>24) av.push('São '+comValor.length+' parcelas em atraso, bem acima do normal. Confira a quantidade.');
+  const vAnt=atrasos.filter(p=>p.venc && !p.negativada).map(p=>p.venc).sort()[0];
+  if(vAnt && diasAtraso(vAnt,hoje)>3*365) av.push('A parcela mais antiga venceu em '+dataBR(vAnt)+', há mais de 3 anos. Confira o vencimento.');
+  if(vincQtdRaw()>36) av.push('São '+vincQtdRaw()+' parcelas a vencer, bem acima do normal. Confira a quantidade.');
+  const maiorV=Math.max(0,...comValor.map(p=>parseV(p.valor)),parseV(document.getElementById('vincVal').value));
+  if(maiorV>10000) av.push('Há parcela de '+brl(maiorV)+', valor fora do normal. Confira se não sobrou um dígito.');
   if(av.length){ el.innerHTML=av.join('<br>'); vis(el,true); }
   else{ vis(el,false);   // o texto some junto com o bloco (depois da animação de saída)
     if(el.style.display==='none') el.innerHTML=''; else setTimeout(()=>{ if(el.style.display==='none') el.innerHTML=''; },240); }
@@ -2387,7 +2672,7 @@ function render(){
   vis('tipoAcessoWrap',!parcial);   // acesso irrelevante na parcial
   renderProdutosExtra();
   const ext=parseInt(document.getElementById('extDias').value)||0;
-  document.getElementById('alertaExt').classList.toggle('show',ext>90);
+  document.getElementById('alertaExt').classList.toggle('show',ext>REGRAS.ext);
 
   if(quit){
     const total=ehQuitTotal();
@@ -2406,12 +2691,12 @@ function render(){
       g='<b>Quitação parcial</b> — soma as parcelas selecionadas com os valores cheios (juros e multa). Use para pagar parcelas do meio do parcelamento ou de produtos diferentes num único link. Se quiser, ligue <b>"Retirar os juros das parcelas em atraso"</b> abaixo para conceder essa isenção nesta quitação parcial.';
     }
     else if(!N&&!A&&!V) g='Adicione as parcelas para ver a estratégia sugerida.';
-    else if(N&&!A&&!V) g='Apenas parcelas <b>negativadas</b>. Conceda desconto até o piso de R$ 500,00.';
+    else if(N&&!A&&!V) g='Apenas parcelas <b>negativadas</b>. Conceda desconto até o piso de '+pisoTxt()+'.';
     else if(!N&&A&&!V) g='Apenas parcelas <b>em atraso</b>. 1ª oferta: valor cheio (com juros e multa). Se o aluno achar caro, ligue retirar juros e multa (cobra só o valor original).';
-    else if(!N&&!A&&V) g='Apenas parcelas <b>a vencer</b>. Conceda até 10% de desconto.';
-    else if(!N&&A&&V) g='Atraso + a vencer. Estratégia: retirar os juros do atraso e até 10% de desconto nas parcelas a vencer.';
+    else if(!N&&!A&&V) g='Apenas parcelas <b>a vencer</b>. Conceda até '+fmtP(REGRAS.descVinc)+' de desconto.';
+    else if(!N&&A&&V) g='Atraso + a vencer. Estratégia: retirar os juros do atraso e até '+fmtP(REGRAS.descVinc)+' de desconto nas parcelas a vencer.';
     else if(N&&A&&!V) g='Negativadas + atraso. Estratégia: retirar os juros do atraso (as negativadas permanecem no valor original).';
-    else g='Combinação: negativadas no valor original, retire os juros do atraso e até 10% nas parcelas a vencer.';
+    else g='Combinação: negativadas no valor original, retire os juros do atraso e até '+fmtP(REGRAS.descVinc)+' nas parcelas a vencer.';
     document.getElementById('quitGuide').innerHTML=g;
   }else if(opc){
     const A=pAtraso().length,V=qtdVinc();
@@ -2421,7 +2706,7 @@ function render(){
     vis('ctlNeg',false);
     vis('ctlGeral',true);
     document.getElementById('alertaNeg').classList.remove('show');
-    document.getElementById('quitGuide').innerHTML='<b>Opção 1 da proposta (quitação à vista).</b> Padrão: retirar os juros do atraso'+(V>0?' e 10% de desconto nas parcelas a vencer':'')+'. A opção 2 é o parcelamento, sem estes descontos.';
+    document.getElementById('quitGuide').innerHTML='<b>Opção 1 da proposta (quitação à vista).</b> Padrão: retirar os juros do atraso'+(V>0?' e '+fmtP(Math.min(10,REGRAS.descVinc))+' de desconto nas parcelas a vencer':'')+'. A opção 2 é o parcelamento, sem estes descontos.';
   }
 
   document.getElementById('lblSec2').textContent = quit ? 'Parcelas em atraso / Parcelas negativadas' : 'Parcelas em atraso';
@@ -2471,8 +2756,9 @@ function render(){
 function renderChips(){
   const h=hojeISO(), dv=document.getElementById('dataVenc').value, c=document.getElementById('vencChips');
   if(c && c._h!==h){ c._h=h;
-    c.innerHTML=[['Hoje',h],['Amanhã',somaDiasUTC(h,1)],['+7 dias',somaDiasUTC(h,7)]].map(([r,d])=>`<button type="button" class="chip-q" data-d="${d}" aria-pressed="false" onclick="usarVencimento('${d}')" title="${DIAS_SEMANA[diaSemana(d)]}, ${dataBR(d)}">${r} <small>${dataBR(d).slice(0,5)}</small></button>`).join(''); }
+    c.innerHTML=[['Hoje',h],['Amanhã',somaDiasUTC(h,1)],['+7 dias',somaDiasUTC(h,7)]].map(([r,d])=>`<button type="button" class="chip-q" data-d="${d}" aria-pressed="false" onclick="usarVencimento('${d}')" title="${DIAS_SEMANA[diaSemana(d)]}, ${dataBR(d)}"><span>${r} <small>${dataBR(d).slice(0,5)}</small></span><span class="ct"></span><span class="cd"></span></button>`).join(''); }
   if(c) c.querySelectorAll('.chip-q').forEach(b=>b.setAttribute('aria-pressed',b.dataset.d===dv?'true':'false'));
+  if(c) totaisChips(c);
   const ext=parseInt(document.getElementById('extDias').value)||0;
   document.querySelectorAll('#extChips .chip-q').forEach(b=>b.setAttribute('aria-pressed',parseInt(b.dataset.d)===ext?'true':'false'));
 }
@@ -2496,7 +2782,7 @@ function atualizarSaida(){
   marcarLinhas();
   mostrarVazio(vazio);
   textoAnterior = vazio ? null : novo;
-  agendarRascunho(); atualizarTitulo();
+  agendarRascunho(); atualizarTitulo(); agendarU();
   const hr=document.getElementById('waHora'); if(hr){ const d=new Date(); hr.textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
 }
 let textoAnterior=null, estavaVazio=null;
@@ -2631,7 +2917,7 @@ function mostrarSo(el,outro){ outro.style.display='none'; el.style.display='bloc
 function modoVer(){ var ta=document.getElementById('saida'),pv=document.getElementById('preview'),bb=document.getElementById('waBubble'); if(ta.style.display!=='none') mostrarSo(bb,ta); rotuloEdit(false); pv.innerHTML=previewHTML(ta.value); marcarLinhas(); }
 function regerar(){ editadoManual=false; document.getElementById('editNotice').style.display='none'; render(); modoVer(); }
 function toggleEdit(){ var ta=document.getElementById('saida'); if(ta.style.display==='none'){ mostrarSo(ta,document.getElementById('waBubble')); rotuloEdit(true); ta.focus(); } else { modoVer(); } }
-function renderPreview(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*(.+?)\*/g,'<b>$1</b>'); }
+function renderPreview(t){ return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\*(.+?)\*/g,'<b>$1</b>').replace(/\((DATA[^)]*)\)/g,'<mark class="pend">($1)</mark>'); }
 
 // avisos empilháveis embaixo, no centro (substituem alert/confirm)
 function showToast(msg,o){
@@ -2761,7 +3047,7 @@ function limparErrosResolvidos(){
   const ok={prodBusca:()=>!!prodSel(),genQtd:()=>totalGeral()>0||(parseInt(document.getElementById('genQtd').value)||0)>0,genVenc:()=>totalGeral()>0||!!document.getElementById('genVenc').value,genVal:()=>totalGeral()>0,dataVenc:()=>!!document.getElementById('dataVenc').value};
   document.querySelectorAll('.campo-erro').forEach(c=>{ if(ok[c.id]&&ok[c.id]()&&c._limparErro) c._limparErro(); });
 }
-function copiar(){
+function copiar(depois){   // depois===true: Ctrl+Shift+Enter, copia e já começa uma nova proposta
   // guarda-corpos: confere o essencial antes de copiar
   const probs=[], alvos=[];
   if(parseInt(document.getElementById('produto').value)<0){ probs.push('produto'); alvos.push(['card1','prodBusca']); }
@@ -2772,7 +3058,7 @@ function copiar(){
   if(probs.length){ showToast('Falta: '+probs.join(', '),{tipo:'aviso'}); irPara(alvos[0][0],alvos[0][1]); alvos.forEach(a=>avisarCampo(a[1])); return; }
   const txt=document.getElementById('saida').value;
   copiarTexto(txt).then(ok=>{
-    if(ok){ salvarHist(true,txt); bumpContador(); try{ rascCopiado=JSON.stringify(snapshot()); }catch(e){} descartarRascunho(); tituloCopiado=Date.now()+4000; atualizarTitulo(); setTimeout(atualizarTitulo,4100); feedbackCopiado(); }   // guarda a proposta copiada (com o texto enviado) e soma no dia
+    if(ok){ salvarHist(true,txt); bumpContador(); try{ rascCopiado=JSON.stringify(snapshot()); }catch(e){} descartarRascunho(); tituloCopiado=Date.now()+4000; atualizarTitulo(); setTimeout(atualizarTitulo,4100); feedbackCopiado(); if(depois===true) setTimeout(novaProposta,400); }   // guarda a proposta copiada (com o texto enviado) e soma no dia
     else showToast('Não foi possível copiar. Selecione o texto em Editar texto e use Ctrl+C.',{tipo:'erro',ms:8000});
   });
 }
@@ -2875,7 +3161,7 @@ function importarHist(input){
   r.readAsText(f);
 }
 function renderHist(){
-  const wrap=document.getElementById('histWrap'), lista=document.getElementById('histLista');
+  const lista=document.getElementById('histLista');
   const vazio=!historico.length;
   document.getElementById('histCorpo').hidden=vazio;
   document.getElementById('histVazio').hidden=!vazio;
@@ -2884,23 +3170,38 @@ function renderHist(){
   const termo=(document.getElementById('histSearch').value||'').toLowerCase();
   const esc=t=>String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   const p2=n=>('0'+n).slice(-2);
-  let o='';
+  // filtros: tipo (botões), período e produto (só os produtos que aparecem no histórico)
+  const per=document.getElementById('hfPer').value, selP=document.getElementById('hfProd'), prodF=selP.value;
+  const prods=[...new Set(historico.map(x=>parseInt(x.produto)).filter(k=>k>=0&&PRODUTOS[k]))].sort((a,b)=>nomeCurto(PRODUTOS[a]).localeCompare(nomeCurto(PRODUTOS[b])));
+  const optsP='<option value="">Todos os produtos</option>'+prods.map(k=>'<option value="'+k+'">'+esc(nomeCurto(PRODUTOS[k]))+'</option>').join('');
+  if(selP._o!==optsP){ selP._o=optsP; selP.innerHTML=optsP; selP.value=prods.indexOf(parseInt(prodF))>=0?prodF:''; }
+  const prodSelH=selP.value;
+  const h0=new Date(); h0.setHours(0,0,0,0); const lim=per===''?null:h0.getTime()-parseInt(per)*864e5;
+  document.querySelectorAll('#hfTipo .chip-q').forEach(b=>b.setAttribute('aria-pressed',b.dataset.t===filtroH.tipo?'true':'false'));
   // valores digitados sem formatação ("1234") também encontram "R$ 1.234,00"
   const dig=termo.replace(/\D/g,''), soNum=dig.length>=2 && /^[\d\s.,r$]+$/i.test(termo);
   const valoresDig=r=>(r.match(/R\$\s?[\d.,]+/g)||[]).map(v=>v.replace(/\D/g,''));
-  historico.forEach((s,i)=>{const r=(s._resumo||'');
-    const h=new Date(s._ts||Date.now());
-    const quando=p2(h.getDate())+'/'+p2(h.getMonth()+1)+' · '+p2(h.getHours())+':'+p2(h.getMinutes());
-    if(termo && (r+' '+quando+' '+(s.nomeAluno||'')).toLowerCase().indexOf(termo)<0 && !(soNum && valoresDig(r).some(v=>v.indexOf(dig)>=0)))return;
+  const icCopia='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
+  const icLixo='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg>';
+  let o='', diaAnt='', n=0;
+  historico.forEach((x,i)=>{const r=(x._resumo||'');
+    const h=new Date(x._ts||Date.now());
+    const hora=p2(h.getHours())+':'+p2(h.getMinutes()), quando=p2(h.getDate())+'/'+p2(h.getMonth()+1)+' · '+hora;
+    if(termo && (r+' '+quando+' '+(x.nomeAluno||'')).toLowerCase().indexOf(termo)<0 && !(soNum && valoresDig(r).some(v=>v.indexOf(dig)>=0)))return;
+    if(filtroH.tipo && tipoDe(x)!==filtroH.tipo) return;
+    if(lim!==null && (x._ts||0)<lim) return;
+    if(prodSelH!=='' && String(parseInt(x.produto))!==prodSelH) return;
+    const dia=rotuloDia(h); if(dia!==diaAnt){ o+='<div class="hist-dia">'+dia+'</div>'; diaAnt=dia; }
+    n++;
     // _resumo = "tipo · produto · valor[ · Nx] · venc dd/mm"
     const partes=r.split(' · '), tipo=partes[0]||'', prod=partes[1]||'', valor=partes[2]||'', resto=partes.slice(3).join(' · ');
-    o+=`<button type="button" class="hist-item" onclick="restaurarHist(${i})" title="${esc(r)}"><span class="hi-dt">${quando}</span><span class="hi-chip${tipo.indexOf('Quit')===0?' q':''}">${esc(tipo)}</span><span class="hi-prod">${s.nomeAluno?`<b>${esc(formatarNome(s.nomeAluno))}</b> · `:''}${esc(prod)}${resto?`<small>${esc(resto)}</small>`:''}</span><span class="hi-val">${esc(valor)}</span></button>`;
+    o+=`<div class="hist-row" data-i="${i}"><button type="button" class="hist-item" onclick="restaurarHist(${i})"${x._txt?'':` title="${esc(r)}"`}><span class="hi-dt">${hora}</span><span class="hi-chip${tipo.indexOf('Quit')===0?' q':''}">${esc(tipo)}</span><span class="hi-prod">${x.nomeAluno?`<b>${esc(formatarNome(x.nomeAluno))}</b> · `:''}${esc(prod)}${resto?`<small>${esc(resto)}</small>`:''}</span><span class="hi-val">${esc(valor)}</span></button><span class="hi-acts">${x._txt?`<button type="button" class="hi-b" data-a="copiar" tabindex="-1" title="Copiar de novo o texto enviado" aria-label="Copiar de novo o texto enviado">${icCopia}</button>`:''}<button type="button" class="hi-b del" data-a="apagar" tabindex="-1" title="Apagar do histórico" aria-label="Apagar do histórico">${icLixo}</button></span></div>`;
   });
-  lista.innerHTML = o || '<div class="hist-vazio">Nenhuma proposta com esse termo.</div>';
-  // altura de 5 propostas; as demais ficam na rolagem da lista
-  const its=lista.querySelectorAll('.hist-item'); let hMax=0; for(let k=0;k<Math.min(5,its.length);k++) hMax+=its[k].offsetHeight;
-  lista.style.maxHeight = (its.length>5 && hMax>0) ? (hMax+2)+'px' : '';
-  fadeHist();
+  lista.innerHTML = o || '<div class="hist-vazio">Nenhuma proposta com esses filtros.</div>';
+  // altura de 5 propostas (com os títulos de dia); as demais ficam na rolagem da lista
+  let hMax=0, k=0; for(const ch of lista.children){ hMax+=ch.offsetHeight; if(ch.classList.contains('hist-row') && ++k>=5) break; }
+  lista.style.maxHeight = (n>5 && hMax>0) ? (hMax+2)+'px' : '';
+  fadeHist(); usoHist();
 }
 // máscara de fade em cima/embaixo só quando há rolagem naquele sentido
 function fadeHist(){
@@ -3075,6 +3376,305 @@ document.getElementById('atrasoBody').addEventListener('keydown',e=>{
   if(prox){ prox.focus(); if(prox.type!=='date') try{ prox.select(); }catch(_){} return; }
   if(dir>0){ const p=proximoCampo('genVal'); if(p){ const card=p.closest('.card.col'); if(card && card.classList.contains('collapsed')){ const h=card.querySelector(':scope > h2'); if(h) toggleCard(h); } p.focus(); if(p.select && p.type!=='date') try{ p.select(); }catch(_){} } }
 });
+// ===== v44 =====
+const fmtP=n=>(Math.round(n*10000)/10000).toLocaleString('pt-BR',{maximumFractionDigits:4})+'%';
+const pisoTxt=()=>NEG_PISO===500?'R$ 500,00':brl(NEG_PISO);
+function campoTexto(a){ return !!a && (a.tagName==='TEXTAREA' || a.isContentEditable || (a.tagName==='INPUT' && ['checkbox','radio','button','submit','range','file'].indexOf(a.type)<0)); }
+
+// --- desfazer / refazer geral: um passo a cada pausa de digitação ---
+const chaveU=c=>JSON.stringify(c.snap)+'|'+(c.em?c.txt:'');
+function registrarU(){ tmU=null; let c; try{ c=capturar(); }catch(e){ return; } const k=chaveU(c);
+  if(posU>=0 && pilhaU[posU].k===k) return;
+  pilhaU.splice(posU+1); pilhaU.push({c,k}); if(pilhaU.length>80) pilhaU.shift(); posU=pilhaU.length-1; }
+function agendarU(){ clearTimeout(tmU); tmU=setTimeout(registrarU,450); }
+function passoU(d){
+  if(tmU){ clearTimeout(tmU); registrarU(); }
+  const n=posU+d;
+  if(n<0 || n>=pilhaU.length){ showToast(d<0?'Nada para desfazer':'Nada para refazer',{tipo:'aviso',ms:1600}); return false; }
+  posU=n; voltar(pilhaU[n].c); modoVer();
+  const c=capturar(); pilhaU[n]={c,k:chaveU(c)};   // o estado restaurado vira a referência (sem criar passo novo)
+  if(toastU) toastU.fechar();
+  toastU=showToast(d<0?'Alteração desfeita':'Alteração refeita',{tipo:'ok',ms:2600,acao:{rotulo:d<0?'Refazer':'Desfazer',fn:()=>passoU(-d)}});
+  return true;
+}
+
+// --- atalhos novos (rodam antes dos atalhos antigos) ---
+document.addEventListener('keydown',e=>{
+  const dlg=dlgAbertos[dlgAbertos.length-1], ctrl=e.ctrlKey||e.metaKey, ed=campoTexto(e.target), k=e.key||'';
+  if(ctrl && e.altKey && (k==='d'||k==='D') && (!dlg||dlg.id==='diagOverlay')){ e.preventDefault(); e.stopImmediatePropagation(); toggleDiag(); return; }
+  if(k==='?' && !ctrl && !e.altKey && !ed && (!dlg||dlg.id==='atalhosOverlay')){ e.preventDefault(); e.stopImmediatePropagation(); toggleAtalhos(); return; }
+  if(k==='Escape'){ const cp=document.getElementById('calcPop'); if(cp && cp.classList.contains('on')){ e.preventDefault(); e.stopImmediatePropagation(); fecharCalc(); return; } }
+  if(dlg) return;
+  if(ctrl && e.shiftKey && !e.altKey && k==='Enter'){ e.preventDefault(); e.stopImmediatePropagation(); copiar(true); return; }
+  const nativo=e.target && (['saida','histSearch','cmdBusca','prodBusca'].indexOf(e.target.id)>=0 || (e.target.closest && e.target.closest('.combo,.rg-form')));   // aí vale o desfazer do próprio campo
+  if(ctrl && !e.altKey && (k==='z'||k==='Z') && !nativo){ e.preventDefault(); e.stopImmediatePropagation(); passoU(e.shiftKey?1:-1); return; }
+  if(ctrl && !e.altKey && !e.shiftKey && (k==='y'||k==='Y') && !nativo){ e.preventDefault(); e.stopImmediatePropagation(); passoU(1); return; }
+  if(ctrl && !e.altKey && !e.shiftKey && k==='.'){ e.preventDefault(); e.stopImmediatePropagation(); irFaltando(); return; }
+  if(e.altKey && !ctrl && (k==='ArrowDown'||k==='ArrowUp')){ e.preventDefault(); e.stopImmediatePropagation(); pularSecao(k==='ArrowDown'?1:-1); return; }
+});
+function irFaltando(){
+  const el=id=>document.getElementById(id), parcial=ehQuit()&&!el('quitTotal').checked;
+  if(parseInt(el('produto').value)<0){ irPara('card1','prodBusca'); setTimeout(abrirProdutos,semMovimento()?0:360); return; }
+  if(totalGeral()<=0){ const q=el('genQtd').value.trim(), v=el('genVenc').value; irPara('card2', !q||q==='0'?'genQtd':(!v?'genVenc':'genVal')); return; }
+  if(!el('dataVenc').value){ irPara('cardResumo','dataVenc'); return; }
+  if(el('tipoAcesso').value==='12m' && !parcial && !el('dataLib').value){ irPara('cardAcesso','dataLib'); return; }
+  showToast('Nada faltando. Ctrl+Enter copia a proposta.',{tipo:'ok',ms:2500});
+}
+function pularSecao(d){
+  const cards=[...document.querySelectorAll('#colEsq > .card.col, #cardResumo, #cardProposta')].filter(c=>c.offsetParent!==null);
+  if(!cards.length) return;
+  const a=document.activeElement, atual=a&&a.closest&&a.closest('.card');
+  let i=cards.indexOf(atual);
+  if(i<0){ i=cards.findIndex(c=>c.getBoundingClientRect().bottom>90); if(i<0) i=0; if(d>0) i--; }
+  const alvo=cards[Math.max(0,Math.min(cards.length-1,i+d))];
+  const h=alvo.querySelector(':scope > h2'); if(h){ if(!h.hasAttribute('tabindex')) h.setAttribute('tabindex','-1'); h.focus({preventScroll:true}); }
+  alvo.scrollIntoView({behavior:semMovimento()?'auto':'smooth',block:'start'});
+}
+function toggleAtalhos(){ toggleDlg('atalhosOverlay'); }
+
+// --- tabela: Ctrl+Delete apaga a linha; clique no "Atualizado" mostra o cálculo ---
+document.getElementById('atrasoBody').addEventListener('keydown',e=>{
+  if(!(e.ctrlKey||e.metaKey) || e.key!=='Delete') return;
+  const tr=e.target.closest&&e.target.closest('tr'); if(!tr) return;
+  e.preventDefault(); e.stopPropagation();
+  const i=[...tr.parentNode.children].indexOf(tr), col=[...tr.querySelectorAll('input')].indexOf(e.target), btn=tr.querySelector('.btn-x');
+  apagarParcela(i,btn);
+  setTimeout(()=>{ const rs=document.querySelectorAll('#atrasoBody tr'), r=rs[Math.min(i,rs.length-1)]; const inp=r&&r.querySelectorAll('input')[Math.max(0,col)]; if(inp) inp.focus(); },semMovimento()?0:320);
+});
+document.getElementById('atrasoBody').addEventListener('click',e=>{ const td=e.target.closest('.val-atual'); if(td) mostrarCalc(td); });
+function fecharCalc(){ const p=document.getElementById('calcPop'); if(p){ p.classList.remove('on'); p._i=null; } }
+function mostrarCalc(td){
+  const i=+td.dataset.i, p=atrasos[i], pop=document.getElementById('calcPop'); if(!p||!pop) return;
+  if(pop.classList.contains('on') && pop._i===i){ fecharCalc(); return; }
+  const o=parseV(p.valor), ref=refCalc(), L=(a,b,c)=>'<div class="cp-l'+(c?' '+c:'')+'"><span>'+a+'</span><b>'+b+'</b></div>';
+  let h='<h5>Parcela '+(i+1)+(p.venc?' · venceu em '+dataBR(p.venc):'')+'</h5>';
+  if(p.negativada) h+=L('Valor original',brl(o))+L('Atualizado',brl(o),'t')+'<p>Negativada: entra pelo valor original, sem multa nem juros.</p>';
+  else if(!p.venc) h+=L('Valor original',brl(o))+'<p>Sem vencimento informado: sem multa nem juros.</p>';
+  else{ const d=diasAtraso(p.venc), mu=floor2(o*MULTA), jb=jurosParcelaBruto(p), dj=descJurosParcela(p);
+    h+=L('Dias de atraso até '+dataBR(ref).slice(0,5),String(d))+L('Valor original',brl(o))+L('Multa ('+fmtP(MULTA*100)+')',brl(mu))+L('Juros ('+fmtP(JUROS_MES*100)+' ao mês × '+d+' dias)',brl(jb));
+    if(dj>0) h+=L('Desconto nos juros ('+Math.round(jurosDescFrac()*100)+'%)','− '+brl(dj),'g');
+    h+=L('Atualizado',brl(valorAtualizado(p)),'t');
+    h+='<p>Juros de '+fmtP(JUROS_MES*100/30)+' do valor original por dia, contados até a data de pagamento. Centavos truncados, igual ao Asaas.</p>'; }
+  pop.innerHTML=h; pop._i=i;
+  const r=td.getBoundingClientRect(); pop.classList.add('on');
+  const w=pop.offsetWidth, hh=pop.offsetHeight;
+  let x=Math.max(8,Math.min(r.right-w,innerWidth-w-8)), y=r.bottom+6; if(y+hh>innerHeight-8) y=Math.max(8,r.top-hh-6);
+  pop.style.left=x+'px'; pop.style.top=y+'px';
+}
+document.addEventListener('mousedown',e=>{ const p=document.getElementById('calcPop'); if(p && p.classList.contains('on') && !p.contains(e.target) && !e.target.closest('.val-atual')) fecharCalc(); },true);
+document.addEventListener('scroll',e=>{ const p=document.getElementById('calcPop'); if(p && p.classList.contains('on') && !p.contains(e.target)) fecharCalc(); },true);
+
+// --- data impossível ou incompleta: avisa em vez de sumir calada ---
+function checarData(el){
+  const ano=parseInt((el.value||'').slice(0,4),10), anoRuim=!!el.value && (ano<2000 || ano>2100);
+  const ruim=!!(el.validity && el.validity.badInput) || anoRuim, box=el.parentNode;
+  let m=box.querySelector(':scope > .erro-msg.data-ruim');
+  if(ruim){ if(!m){ m=document.createElement('div'); m.className='erro-msg data-ruim'; m.setAttribute('role','alert');
+      m.innerHTML='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span>';
+      el.insertAdjacentElement('afterend',m); }
+    m.querySelector('span').textContent = anoRuim ? 'O ano ('+el.value.slice(0,4).replace(/^0+/,'')+') parece incompleto. Confira a data (dd/mm/aaaa).' : 'Data incompleta ou inválida. Use dd/mm/aaaa (ou H = hoje).';
+    el.classList.add('campo-erro'); }
+  else if(m){ m.remove(); el.classList.remove('campo-erro'); }
+}
+document.addEventListener('focusout',e=>{ if(e.target.matches && e.target.matches('input[type=date]')) checarData(e.target); });
+document.addEventListener('input',e=>{ const t=e.target; if(t.matches && t.matches('input[type=date]') && t.value && parseInt(t.value.slice(0,4),10)<1000) e.stopPropagation(); },true);   // o Chrome avisa a cada dígito do ano (0002, 0020, 0202…): espera o ano completo
+document.addEventListener('input',e=>{ if(e.target.matches && e.target.matches('input[type=date]') && !(e.target.validity&&e.target.validity.badInput)) checarData(e.target); },true);
+
+// --- atalhos de data: total de cada data (o custo de esperar) ---
+function totalNaData(iso){ const el=document.getElementById('dataVenc'), v=el.value; let t=0; el.value=iso; try{ t=totalGeral(); }catch(e){} el.value=v; return t; }
+function totaisChips(c){
+  const bs=[...c.querySelectorAll('.chip-q')]; if(!bs.length) return;
+  const base=totalGeral()>0 && parseInt(document.getElementById('produto').value)>=-1;
+  const vs=bs.map(b=>base?totalNaData(b.dataset.d):0), v0=vs[0];
+  bs.forEach((b,i)=>{ const ct=b.querySelector('.ct'), cd=b.querySelector('.cd'); if(!ct) return;
+    ct.textContent=vs[i]>0?brl(vs[i]):'';
+    const dif=vs[i]-v0; cd.textContent=(i>0 && vs[i]>0 && dif>0.004)?'+ '+brl(dif):'';
+    b.title=DIAS_SEMANA[diaSemana(b.dataset.d)]+', '+dataBR(b.dataset.d)+(vs[i]>0?' · total '+brl(vs[i])+(i>0&&dif>0.004?' ('+brl(dif)+' a mais que hoje)':''):''); });
+}
+
+// --- cronograma das parcelas no resumo ---
+function renderCrono(){
+  const box=document.getElementById('crono'); if(!box) return;
+  const t=totalGeral(), v=document.getElementById('dataVenc').value, n=parcelasEscolhidas;
+  if(ehQuit() || t<=0 || !v || n<2){ if(box.innerHTML) box.innerHTML=''; return; }
+  const pp=planoParcelas(t,n); let li='';
+  for(let i=0;i<n;i++){ const d=addMonths(v,i), nu=motivoNaoUtil(d);
+    li+='<li'+(nu?' class="nu" title="'+escAtr(nu)+'"':'')+'><span><b>'+(i+1)+'ª</b> · '+DIAS_SEMANA[diaSemana(d)].replace('-feira','').slice(0,3)+' '+dataBR(d)+'</span><b>'+brl(i===n-1?pp.ultima:pp.base)+'</b></li>'; }
+  const h='<details'+(cronoAberto?' open':'')+'><summary>'+(duasOpcoes()?'Opção 2 · ':'')+'Ver as '+n+' parcelas e datas</summary><ol>'+li+'</ol></details>';
+  if(box._h!==h){ box._h=h; box.innerHTML=h; box.querySelector('details').addEventListener('toggle',ev=>{ cronoAberto=ev.target.open; box._h=null; }); }
+}
+
+// --- resumo: clicar num valor copia só o valor ---
+document.getElementById('resumo').addEventListener('click',e=>{ const l=e.target.closest('.lin[data-v]'); if(!l) return;
+  const v=l.dataset.v; copiarTexto(v).then(ok=>showToast(ok?'Valor copiado: '+v:'Não foi possível copiar o valor.',{tipo:ok?'ok':'erro',ms:2200})); });
+
+// --- histórico: filtros, ações por item, teclado, prévia do texto, uso do espaço ---
+function rotuloDia(d){
+  const h=new Date(); h.setHours(0,0,0,0); const x=new Date(d); x.setHours(0,0,0,0); const dif=Math.round((h-x)/864e5);
+  if(dif===0) return 'Hoje'; if(dif===1) return 'Ontem';
+  const p2=n=>('0'+n).slice(-2), ds=['dom','seg','ter','qua','qui','sex','sáb'][x.getDay()];
+  return ds+', '+p2(x.getDate())+'/'+p2(x.getMonth()+1)+(x.getFullYear()!==h.getFullYear()?'/'+x.getFullYear():'');
+}
+document.getElementById('hfTipo').addEventListener('click',e=>{ const b=e.target.closest('.chip-q'); if(!b) return; filtroH.tipo=b.dataset.t; renderHist(); });
+function apagarHist(i){
+  const it=historico[i]; if(!it) return;
+  historico.splice(i,1); gravarHist(); renderHist(); renderContador(); escondePrev();
+  showToast('Proposta apagada do histórico',{tipo:'ok',acao:{rotulo:'Desfazer',fn:()=>{ historico.splice(Math.min(i,historico.length),0,it); gravarHist(); renderHist(); renderContador(); }}});
+}
+function copiarHist(i){
+  const x=historico[i]; if(!x||!x._txt) return;
+  copiarTexto(x._txt).then(ok=>showToast(ok?'Texto copiado de novo'+(x.nomeAluno?' ('+formatarNome(x.nomeAluno)+')':''):'Não foi possível copiar.',{tipo:ok?'ok':'erro'}));
+}
+function usoHist(){
+  const el=document.getElementById('histUso'); if(!el) return;
+  let b=0; try{ for(let k=0;k<localStorage.length;k++){ const c=localStorage.key(k); b+=(c.length+(localStorage.getItem(c)||'').length)*2; } }catch(e){ el.textContent=''; return; }
+  const mb=b/1048576, pct=Math.round(mb/5*100);
+  el.textContent=historico.length+(historico.length===1?' proposta':' propostas')+' guardadas neste navegador · '+(mb<0.1?(b/1024).toFixed(0)+' KB':mb.toFixed(1).replace('.',',')+' MB')+' de cerca de 5 MB ('+Math.max(pct,mb>0?1:0)+'%)'+(pct>=70?'. O espaço está acabando: use Exportar.':'');
+  el.classList.toggle('cheio',pct>=70);
+}
+(function(){
+  const l=document.getElementById('histLista'), busca=document.getElementById('histSearch'), prev=document.getElementById('histPrev');
+  const itens=()=>[...l.querySelectorAll('.hist-item')];
+  l.addEventListener('click',e=>{ const b=e.target.closest('.hi-b'); if(!b) return; e.stopPropagation(); const i=+b.closest('.hist-row').dataset.i; if(b.dataset.a==='apagar') apagarHist(i); else copiarHist(i); });
+  l.addEventListener('keydown',e=>{
+    const it=e.target.closest&&e.target.closest('.hist-item'); if(!it) return;
+    const lst=itens(), j=lst.indexOf(it), i=+it.closest('.hist-row').dataset.i;
+    if(e.key==='ArrowDown'||e.key==='ArrowUp'){ e.preventDefault(); const n=j+(e.key==='ArrowDown'?1:-1); if(n<0){ busca.focus(); return; } if(lst[n]){ lst[n].focus(); lst[n].scrollIntoView({block:'nearest'}); } }
+    else if(e.key==='Home'||e.key==='End'){ e.preventDefault(); const t=e.key==='Home'?lst[0]:lst[lst.length-1]; if(t){ t.focus(); t.scrollIntoView({block:'nearest'}); } }
+    else if(e.key==='Delete'){ e.preventDefault(); e.stopPropagation(); apagarHist(i); const nl=itens(); const t=nl[Math.min(j,nl.length-1)]; if(t) t.focus(); else busca.focus(); }
+    else if((e.ctrlKey||e.metaKey) && (e.key==='c'||e.key==='C') && !String(window.getSelection()).trim()){ e.preventDefault(); e.stopPropagation(); copiarHist(i); }
+  });
+  busca.addEventListener('keydown',e=>{ if(e.key==='ArrowDown'){ const f=itens()[0]; if(f){ e.preventDefault(); f.focus(); } } else if(e.key==='Escape' && busca.value){ e.preventDefault(); e.stopPropagation(); busca.value=''; renderHist(); } });
+  // prévia do texto enviado ao parar o mouse sobre um item
+  let tm=null, atual=null;
+  l.addEventListener('mouseover',e=>{
+    if(!matchMedia('(hover:hover)').matches) return;
+    const row=e.target.closest('.hist-row'); if(row===atual) return; atual=row; clearTimeout(tm); escondePrev(true);
+    if(!row || e.target.closest('.hi-acts')) return;
+    const x=historico[+row.dataset.i]; if(!x||!x._txt) return;
+    tm=setTimeout(()=>{ const r=row.getBoundingClientRect();
+      prev.innerHTML='<small>Texto enviado'+(x._cts?' em '+new Date(x._cts).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'')+'</small>'+renderPreview(x._txt);
+      prev.classList.add('on'); const w=prev.offsetWidth, h=prev.offsetHeight;
+      let px=r.left-w-12; if(px<8) px=Math.min(innerWidth-w-8,r.right+12); if(px<8) px=8;
+      let py=Math.max(8,Math.min(r.top-20,innerHeight-h-8));
+      prev.style.left=px+'px'; prev.style.top=py+'px'; },450);
+  });
+  l.addEventListener('mouseleave',()=>{ atual=null; clearTimeout(tm); escondePrev(); });
+  l.addEventListener('scroll',()=>escondePrev(),{passive:true});
+})();
+function escondePrev(){ const p=document.getElementById('histPrev'); if(p) p.classList.remove('on'); }
+
+// --- regras editáveis ---
+function regrasPersonalizadas(){ return Object.keys(REGRAS_PADRAO).some(k=>REGRAS[k]!==REGRAS_PADRAO[k]); }
+function aplicarTextosRegras(){
+  const put=(c,t)=>document.querySelectorAll('.'+c).forEach(x=>x.textContent=t);
+  const n=v=>String(v).replace('.',',');
+  put('rg-juros',n(REGRAS.juros)); put('rg-multa',n(REGRAS.multa)); put('rg-piso',pisoTxt()); put('rg-dv',n(REGRAS.descVinc)); put('rg-ext',n(REGRAS.ext));
+  const dv=document.getElementById('descVincPerc'); if(dv) dv.max=String(REGRAS.descVinc);
+  const vals=document.getElementById('rgVals');
+  if(vals) vals.innerHTML='<span>Juros <b>'+fmtP(REGRAS.juros)+'</b> ao mês</span><span>Multa <b>'+fmtP(REGRAS.multa)+'</b></span><span>Piso da negativada <b>'+pisoTxt()+'</b></span><span>Desconto nas a vencer até <b>'+fmtP(REGRAS.descVinc)+'</b></span><span>Extensão sem análise até <b>'+n(REGRAS.ext)+' dias</b></span>';
+  const p=regrasPersonalizadas();
+  document.getElementById('rgSelo').hidden=!p; document.getElementById('rgAviso').hidden=!p;
+}
+function editarRegras(on){
+  const f=document.getElementById('rgForm'), b=document.getElementById('rgEditar'); if(!f) return;
+  f.hidden=!on; b.hidden=!!on;
+  if(on){ const set=(id,v)=>document.getElementById(id).value=v;
+    set('rgJuros',REGRAS.juros); set('rgMulta',REGRAS.multa); set('rgPiso',REGRAS.piso); set('rgDv',REGRAS.descVinc); set('rgExt',REGRAS.ext);
+    setTimeout(()=>{ try{ document.getElementById('rgJuros').focus(); }catch(e){} },30); }
+}
+function gravarRegras(novas){
+  Object.assign(REGRAS,novas); JUROS_MES=REGRAS.juros/100; MULTA=REGRAS.multa/100; NEG_PISO=REGRAS.piso;
+  try{ if(regrasPersonalizadas()) localStorage.setItem('ibft_regras',JSON.stringify(REGRAS)); else localStorage.removeItem('ibft_regras'); }catch(e){}
+  aplicarTextosRegras(); render();
+}
+function salvarRegras(){
+  const g=(id,min,max)=>{ const v=parseFloat(String(document.getElementById(id).value).replace(',','.')); return isFinite(v)&&v>=min&&v<=max?Math.round(v*100)/100:null; };
+  const novas={juros:g('rgJuros',0,10),multa:g('rgMulta',0,10),piso:g('rgPiso',0,100000),descVinc:g('rgDv',0,100),ext:g('rgExt',0,365)};
+  const ruim=Object.keys(novas).find(k=>novas[k]===null);
+  if(ruim){ showToast('Confira os valores: algum ficou vazio ou fora do limite.',{tipo:'aviso'}); return; }
+  const antes=Object.assign({},REGRAS);
+  gravarRegras(novas); editarRegras(false);
+  showToast(regrasPersonalizadas()?'Regras salvas neste navegador. Os cálculos já usam os novos valores.':'Regras de volta ao padrão.',{tipo:'ok',acao:{rotulo:'Desfazer',fn:()=>gravarRegras(antes)}});
+}
+function restaurarRegras(){ const antes=Object.assign({},REGRAS); gravarRegras(Object.assign({},REGRAS_PADRAO)); editarRegras(false); showToast('Regras de volta ao padrão.',{tipo:'ok',acao:{rotulo:'Desfazer',fn:()=>gravarRegras(antes)}}); }
+aplicarTextosRegras();
+// "i" preso à última palavra do rótulo: quando o rótulo quebra, os dois descem juntos
+document.querySelectorAll('label > .info-i').forEach(i=>{ const t=i.previousSibling; if(!t||t.nodeType!==3) return;
+  const m=t.nodeValue.match(/^([\s\S]*?)(\S+)(\s*)$/); if(!m) return;
+  const sp=document.createElement('span'); sp.className='nw'; t.nodeValue=m[1]; sp.appendChild(document.createTextNode(m[2])); i.parentNode.insertBefore(sp,i); sp.appendChild(i); });
+{ const c=document.getElementById('mostrarDias'); if(c) c.checked=mostrarDias; }
+
+// --- diagnóstico: cálculo detalhado (Ctrl+Alt+D), erro inesperado e "Reportar problema" ---
+function textoDiag(){
+  const L=[], pad=(t,n)=>String(t).padEnd(n), pl=(t,n)=>String(t).padStart(n), q=ehQuit(), ref=refCalc();
+  const tp=document.getElementById('tipoProposta').value;
+  L.push('Calculadora IBFT '+VERSAO+' · '+new Date().toLocaleString('pt-BR'));
+  L.push('Tipo: '+(tp==='rep1'?'1º reparcelamento':tp==='rep2'?'2º reparcelamento':(ehQuitTotal()?'quitação':'quitação parcial'))+' · Produto: '+(prodSel()?prodSel().n:'—'));
+  L.push('Cálculo até: '+dataBR(ref)+(document.getElementById('dataVenc').value?' (data de pagamento)':' (sem data: usando hoje)'));
+  L.push('Regras: juros '+fmtP(REGRAS.juros)+' ao mês ('+fmtP(REGRAS.juros/30)+' ao dia) · multa '+fmtP(REGRAS.multa)+' · piso negativada '+pisoTxt()+' · desconto a vencer até '+fmtP(REGRAS.descVinc)+(regrasPersonalizadas()?'  [PERSONALIZADAS]':''));
+  L.push('');
+  L.push('Parcelas da tabela');
+  L.push(pad('#',3)+pad('Vencimento',12)+pl('Dias',5)+pl('Original',14)+pl('Multa',12)+pl('Juros',12)+pl('Desc. juros',13)+pl('Atualizado',14)+'  Obs.');
+  atrasos.forEach((p,i)=>{ const o=parseV(p.valor), c=!p.negativada&&!!p.venc;
+    L.push(pad(i+1,3)+pad(p.venc?dataBR(p.venc):'—',12)+pl(c?diasAtraso(p.venc):0,5)+pl(brl(o),14)+pl(brl(c?floor2(o*MULTA):0),12)+pl(brl(jurosParcelaBruto(p)),12)+pl(brl(descJurosParcela(p)),13)+pl(brl(valorAtualizado(p)),14)+'  '+[p.negativada?'negativada':'',multiProduto()?nomeCurto(PRODUTOS[prodDaParcela(p)]):''].filter(Boolean).join(' · ')); });
+  const nc=crossedVinc().length; if(nc) L.push('+ '+nc+' parcela(s) a vencer que vencem até a data de pagamento entram como atraso.');
+  L.push('');
+  L.push('Atraso: original '+brl(atrasoOriginal())+' · multa '+brl(atrasoMultaV())+' · juros '+brl(atrasoJurosV())+(descJurosTotal()>0?' · desconto nos juros − '+brl(descJurosTotal()):'')+' = '+brl(atrasoComEnc()));
+  if(pNeg().length) L.push('Negativadas (valor original): '+brl(negOriginal()));
+  L.push('A vencer: '+qtdVinc()+' parcela(s) = '+brl(totalVinc()));
+  if(q){ const m=quitModel(); L.push(''); L.push('Quitação '+(ehQuitTotal()?'total':'parcial'));
+    [['Valor atual da dívida',m.bruto],['Isenção dos juros',-m.jurosRem],['Isenção da multa',-m.multaRem],['Desconto a vencer ('+m.dv+'%)',-m.vincDesc],['Desconto negativada ('+m.negPct+'%)',-m.negDesc],['Juros da negativada isentos',-m.jurosNeg],['Desconto adicional ('+m.dg+'%)',-m.geralDesc]].forEach(([a,v])=>{ if(Math.abs(v)>0.001) L.push('  '+pad(a,32)+pl(brl(v),14)); });
+    L.push('  '+pad('TOTAL',32)+pl(brl(m.total),14)); }
+  else{ const t=totalGeral(), pp=planoParcelas(t,parcelasEscolhidas); L.push(''); L.push('Reparcelamento: '+brl(t)+' em '+parcelasEscolhidas+'x de '+brl(pp.base)+(Math.abs(pp.ultima-pp.base)>0.001?' (última '+brl(pp.ultima)+')':''));
+    if(duasOpcoes()) L.push('Opção 1 (à vista): '+brl(opcaoQuitacao().total)); }
+  if(cartaoOn()) L.push('Cartão: até '+cartaoParc+'x de '+brl(planoParcelas(totalGeral(),cartaoParc).base));
+  if(editadoManual) L.push('','Atenção: o texto da proposta foi editado à mão.');
+  return L.join('\n');
+}
+function toggleDiag(){ const ov=document.getElementById('diagOverlay'); if(!ov.classList.contains('in')) document.getElementById('diagPre').textContent=textoDiag(); toggleDlg('diagOverlay'); }
+function copiarDiagCalc(){ copiarTexto(textoDiag()).then(ok=>showToast(ok?'Diagnóstico copiado':'Não foi possível copiar.',{tipo:ok?'ok':'erro'})); }
+function diagnostico(extra){
+  let st=null; try{ st=snapshot(); delete st.nomeAluno; }catch(e){}
+  let tot=null; try{ tot=totalGeral(); }catch(e){}
+  return JSON.stringify(Object.assign({app:'calculadora-ibft',versao:VERSAO,quando:new Date().toISOString(),endereco:location.origin+location.pathname,navegador:navigator.userAgent,tela:innerWidth+'x'+innerHeight,online:navigator.onLine,regras:REGRAS,total:tot,historico:historico.length,estado:st},extra||{}),null,1);
+}
+function reportarProblema(){
+  copiarTexto(diagnostico({relato:true})).then(ok=>showToast(ok?'Diagnóstico copiado (sem o nome do aluno). Cole na conversa com o Francisco e conte o que aconteceu.':'Não foi possível copiar o diagnóstico.',{tipo:ok?'ok':'erro',ms:7000}));
+}
+let ultErro=0, mostrandoErro=false;
+function avisarErro(msg,pilha){
+  if(mostrandoErro || Date.now()-ultErro<8000 || /ResizeObserver/i.test(String(msg))) return;
+  ultErro=Date.now(); mostrandoErro=true;
+  try{ const d=diagnostico({erro:String(msg).slice(0,400),pilha:String(pilha||'').slice(0,1500)});
+    showToast('Algo deu errado na calculadora. A proposta continua na tela.',{tipo:'erro',ms:15000,acao:{rotulo:'Copiar diagnóstico',fn:()=>copiarTexto(d).then(ok=>showToast(ok?'Diagnóstico copiado. Envie para o Francisco.':'Não foi possível copiar.',{tipo:ok?'ok':'erro'}))}});
+  }catch(e){} mostrandoErro=false;
+}
+window.addEventListener('error',e=>avisarErro(e.message+(e.lineno?' (linha '+e.lineno+')':''),e.error&&e.error.stack));
+window.addEventListener('unhandledrejection',e=>{ const r=e.reason; avisarErro('Promessa: '+(r&&r.message||r),r&&r.stack); });
+
+// --- sem internet ---
+let toastOff=null;
+function avisarOffline(){ if(toastOff) return; toastOff=showToast('Sem internet. A calculadora continua funcionando; só o aviso de nova versão fica parado.',{tipo:'aviso',fixo:true}); }
+window.addEventListener('offline',avisarOffline);
+window.addEventListener('online',()=>{ if(toastOff){ toastOff.fechar(); toastOff=null; showToast('Internet de volta',{tipo:'ok',ms:2500}); } checarVersao(); });
+if(navigator.onLine===false) avisarOffline();
+
+// --- sobre ---
+function toggleSobre(){
+  const ov=document.getElementById('sobreOverlay');
+  if(!ov.classList.contains('in')){
+    const meta=n=>((document.querySelector('meta[name="'+n+'"]')||{}).content||'');
+    const dt=meta('versao-data'), ua=navigator.userAgent, nav=(ua.match(/Edg\/(\d+)/)?'Edge '+RegExp.$1:ua.match(/Chrome\/(\d+)/)?'Chrome '+RegExp.$1:ua.match(/Firefox\/(\d+)/)?'Firefox '+RegExp.$1:ua.match(/Version\/(\d+).*Safari/)?'Safari '+RegExp.$1:'outro');
+    let rasc='não'; try{ const r=lerRascunho(); if(r) rasc='sim, de '+haQuanto(r.ts)+' atrás'; }catch(e){}
+    usoHist();
+    const L=[['Versão',VERSAO],['Publicada em',dt?dataBR(dt):'—'],['Teste automático',meta('testes')||'—'],['Endereço',location.origin+location.pathname],
+      ['Regras',regrasPersonalizadas()?'personalizadas neste navegador':'padrão da política'],['Histórico',(document.getElementById('histUso').textContent||'vazio')],['Rascunho guardado',rasc],['Navegador',nav],['Internet',navigator.onLine?'conectada':'sem conexão']];
+    document.getElementById('sobreLista').innerHTML=L.map(([a,b])=>'<span>'+a+'</span><b>'+escAtr(b)+'</b>').join('');
+  }
+  toggleDlg('sobreOverlay');
+}
+
 // novidades: um aviso discreto, uma vez por versão (não aparece para quem abre pela primeira vez)
 try{ const visto=localStorage.getItem('ibft_visto');
   if(visto!==VERSAO){ if(visto!==null || historico.length) setTimeout(()=>showToast('Novidades da '+VERSAO+': veja o que mudou',{tipo:'ok',ms:9000,acao:{rotulo:'Ver',fn:toggleNovidades}}),1400);
@@ -3113,6 +3713,9 @@ function brilharLogo(){ const b=document.getElementById('logoBtn'); if(!b||semMo
 function recarregarMantendo(){ try{ sessionStorage.setItem('ibft_retomar',JSON.stringify(capturar())); sessionStorage.setItem('ibft_motivo','logo'); }catch(e){} location.reload(); }
 function atualizarVersao(){ try{sessionStorage.setItem('ibft_retomar',JSON.stringify(capturar()));}catch(e){} location.reload(); }
 setTimeout(checarVersao,20000);
+setInterval(checarVersao,10*60*1000);   // v44: quem deixa a aba aberta o dia todo também é avisado
+let ultChecagem=Date.now();
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible' && Date.now()-ultChecagem>3*60*1000){ ultChecagem=Date.now(); checarVersao(); } });
 setInterval(checarVersao,15*60000);
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'){ checarVersao(); renderContador(); saudacao(); } });
 // logo da barra fixa reaproveita a do header (sem duplicar o base64)
@@ -3193,6 +3796,10 @@ document.querySelectorAll('.stepper input').forEach(i=>i.addEventListener('anima
     if(!el){ if(alvo) esconder(); return; } tm=setTimeout(()=>mostrar(el), el.classList.contains('info-i')?60:350); });
   document.addEventListener('focusin',e=>{ const el=e.target.closest&&e.target.closest('header [data-tip]'); if(el && e.target.matches(':focus-visible')) mostrar(el); else if(alvo) esconder(); });
   ['scroll','mousedown','keydown'].forEach(ev=>document.addEventListener(ev,()=>{ if(alvo) esconder(); },true));
+  // v44: no celular/tablet não há "passar o mouse": tocar no "i" abre o balão (e ele some sozinho)
+  let tmT=null;
+  document.addEventListener('click',e=>{ const el=e.target.closest&&e.target.closest('.info-i[data-tip]'); if(!el) return;
+    e.preventDefault(); e.stopPropagation(); clearTimeout(tm); clearTimeout(tmT); mostrar(el); tmT=setTimeout(esconder,6000); },true);
 })();
 // ===== busca rápida (Ctrl+K): ações, produtos e propostas do histórico =====
 const ICS={
@@ -3228,6 +3835,22 @@ function acoesCmd(){
   if(ehQuit() && !el('quitTotal').checked) a.splice(5,0,{t:(el('cartOferta').checked?'Desligar':'Oferecer')+' parcelamento no cartão (quitação parcial)',ic:'duas',x:'cartão crédito parcelar dividir vezes quitação parcial',run:()=>{ el('cartOferta').checked=!el('cartOferta').checked; render(); }});
   if(!ehQuit()) a.splice(5,0,{t:(el('duasOpcoes').checked?'Desligar':'Ligar')+' proposta com 2 opções',ic:'duas',x:'duas opções à vista quitação',run:()=>{ el('duasOpcoes').checked=!el('duasOpcoes').checked; onDuasOpcoes(); }});
   if(dv && dv<hojeISO()) a.unshift({t:'Usar hoje (o vencimento já passou)',ic:'hoje',x:'atualizar data vencida hoje',run:atualizarParaHoje});
+  a.push(
+    {t:'Atalhos de teclado',k:['?'],ic:'ajuda',x:'teclas atalhos teclado lista',run:toggleAtalhos},
+    {t:'Desfazer a última alteração',k:['Ctrl','Z'],ic:'recarrega',x:'desfazer voltar undo',run:()=>passoU(-1)},
+    {t:'Refazer',k:['Ctrl','Y'],ic:'recarrega',x:'refazer redo',run:()=>passoU(1)},
+    {t:'Copiar e começar nova proposta',k:['Ctrl','Shift','Enter'],ic:'copia',x:'copiar nova próxima',run:()=>copiar(true)},
+    {t:'Ir ao próximo campo que falta',k:['Ctrl','.'],ic:'busca',x:'falta faltando obrigatório campo',run:irFaltando},
+    {t:'Limpar seção: aluno, tipo e produto',ic:'recarrega',x:'limpar seção 1 aluno produto',run:()=>limparSecao(limparCard1)},
+    {t:'Limpar seção: parcelas em atraso',ic:'recarrega',x:'limpar seção 2 atraso parcelas',run:()=>limparSecao(limparCard2)},
+    {t:'Limpar seção: parcelas a vencer',ic:'recarrega',x:'limpar seção 3 vencer',run:()=>limparSecao(limparCard3)},
+    {t:'Limpar seção: acesso e extensão',ic:'recarrega',x:'limpar seção acesso extensão',run:()=>limparSecao(limparCardAcesso)},
+    {t:(mostrarDias?'Ocultar':'Mostrar')+' coluna de dias de atraso',ic:'relogio',x:'dias atraso coluna tabela',run:()=>toggleDias(!mostrarDias)},
+    {t:'Editar regras (juros, multa, descontos)',ic:'regra',x:'regras editar juros multa piso desconto extensão',run:()=>{ toggleRegras(); setTimeout(()=>editarRegras(true),60); }},
+    {t:'Diagnóstico do cálculo',k:['Ctrl','Alt','D'],ic:'busca',x:'diagnóstico cálculo detalhado conferir asaas',run:toggleDiag},
+    {t:'Sobre a calculadora',ic:'ajuda',x:'sobre versão testes',run:toggleSobre},
+    {t:'Reportar problema',ic:'nov',x:'problema erro bug reportar',run:reportarProblema});
+  if(ehQuit()||duasOpcoes()) a.push({t:'Limpar seção: descontos',ic:'recarrega',x:'limpar seção descontos',run:()=>limparSecao(limparCardDesc)});
   ['1','1.1','1.25','1.5','1.75','2'].forEach(z=>a.push({t:'Zoom '+Math.round(z*100)+'%',ic:'zoom',x:'zoom tamanho tela',run:()=>aplicarZoom(z),so:true}));
   return a.map(x=>Object.assign({g:'Ações'},x));
 }

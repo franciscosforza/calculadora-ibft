@@ -4,6 +4,19 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v44 — out/2026
+- **Desfazer/Refazer geral** (Ctrl+Z, Ctrl+Shift+Z, Ctrl+Y): pilha de até 80 estados, um passo por pausa de digitação (`registrarU`, `passoU`). **Tecla ?** abre a lista de atalhos; **Ctrl+Shift+Enter** copia e abre nova proposta; **Ctrl+.** vai ao próximo campo que falta; **Alt+↑/↓** pula de seção; **Ctrl+Alt+D** mostra o cálculo detalhado (`textoDiag`).
+- **Resumo:** total em cada atalho de data (`totaisChips`), cronograma das parcelas (`renderCrono`), barra "valor atual → proposta", subtotal por produto na quitação multi-produto, clique no total/parcela copia só o valor, popover com o cálculo de cada parcela (`mostrarCalc`).
+- **Tabela:** rodapé com somas, coluna opcional de dias de atraso, linhas mais baixas com mais de 12 parcelas, Tab pula o botão de apagar, Ctrl+Delete apaga a linha.
+- **Avisos:** mais de 24 parcelas, vencimento com mais de 3 anos, parcela acima de R$ 10.000, data incompleta/impossível (`checarData`); pendências "(DATA …)" em vermelho na prévia.
+- **Histórico:** agrupado por dia, filtros de tipo/período/produto, prévia do texto enviado, copiar de novo e apagar por item (com Desfazer), setas/Delete, indicador de espaço usado.
+- **Regras editáveis** (`REGRAS`, `ibft_regras`): juros, multa, piso da negativada, desconto máximo nas a vencer e limite de extensão; selo "Regras personalizadas".
+- **Confiabilidade:** aviso de erro com "Copiar diagnóstico" (`avisarErro`), Reportar problema, janela Sobre (versão, data, testes), checagem de nova versão a cada 10 min e ao voltar à aba, aviso de internet caída.
+- **Celular/visual:** seletor de tipo compacto, toque no "i" abre a dica, alvos de 44 px, cabeçalho compacto, "i" preso à última palavra do rótulo, contraste AA nos cinzas, brilho verde ao concluir uma seção, theme-color.
+- **Correção:** ano de data ainda sendo digitado (0002, 0020, 0202) gerava data inválida em `addMonths` e travava o cálculo sem aviso (existia desde antes); `addMonths` devolve ano de 4 dígitos e o recálculo espera o ano completo.
+- **Correção:** três parágrafos do guia (cartão, prévia clicável, rascunho) estavam na janela Regras; voltaram para Como usar.
+- Nenhuma regra de cálculo mudou (76 cenários iguais; 21 resumos ganharam linhas novas; testes novos de desfazer, regras, avisos, cronograma, subtotais, histórico e datas).
+
 ## v43 — out/2026
 - **Rascunho automático:** a proposta em andamento é guardada no navegador (`ibft_rascunho`, 700 ms depois da última alteração) e oferecida com "Retomar" ao reabrir, se a tela estiver vazia e o rascunho tiver menos de 18 h. Some ao copiar e em Nova proposta (`salvarRascunho`, `lerRascunho`, `retomarRascunho`).
 - **Tabela de parcelas pelo teclado:** Enter e ↑ ↓ vão à mesma coluna da linha de baixo/cima; Enter na última linha segue o fluxo (`proximoCampo`).
