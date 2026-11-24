@@ -4,6 +4,11 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v49 — nov/2026
+- **Sombras neutras:** 39 sombras/halos coloridos (laranja, azul, verde, azul-marinho) em `box-shadow`, `text-shadow`, `drop-shadow` e nos tokens `--e1/--e2/--e3/--ring` passaram a `rgba(17,17,19,·)` com a mesma geometria; aviso (`.toast`) em `#111113`; restos do balão `#tip` removidos do CSS (achado do detector da Impeccable).
+- **Seleção com fundo próprio:** `.seg button[aria-checked="true"]` e `.parc-op.sel` levam o fundo escuro; as peças deslizantes (`.seg-ind`, `.parc-ind`) saem (contraste verificável, sem animação de deslize).
+- **Nenhuma regra de cálculo nem o texto da proposta mudou:** 76 cenários idênticos; 300 propostas aleatórias comparadas com a v48 sem diferença de texto, total ou erro.
+
 ## v48 — nov/2026
 - **Dicas removidas:** os 19 ícones "i" dos rótulos, o balão de dica próprio (`#tip`, `data-tip`) e os títulos de passar o mouse do cabeçalho saíram; os botões do cabeçalho mantêm `aria-label`. Os `title` nativos dos demais botões (Copiar, apagar parcela, Limpar etc.) continuam.
 - **Brilho colorido:** removida a sombra azul-marinho (`rgba(8,26,56,.45)`) do cabeçalho (achado do detector da Impeccable).

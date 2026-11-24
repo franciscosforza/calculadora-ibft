@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v49** | nov/2026 | Sem brilhos coloridos (todas as sombras antigas viram neutras) e item selecionado com fundo escuro próprio; texto da proposta e cálculos idênticos à v48. |
 | **v48** | nov/2026 | Tela sem dicas (ícones "i" e balões do cabeçalho saem) e cabeçalho sem a sombra azul; texto da proposta e cálculos idênticos à v47. |
 | **v47** | nov/2026 | Acabamento do visual: sem barras laterais antigas, textos de exemplo e vermelho mais legíveis, itens selecionados firmes no hover; texto da proposta e cálculos idênticos à v46. |
 | **v46** | nov/2026 | Visual mais limpo (cabeçalho enxuto, cartões planos, preto como única cor de ação, resumo escuro, menos textos fixos e animações); texto da proposta e cálculos idênticos à v45. |
