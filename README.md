@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v47** | nov/2026 | Acabamento do visual: sem barras laterais antigas, textos de exemplo e vermelho mais legíveis, itens selecionados firmes no hover; texto da proposta e cálculos idênticos à v46. |
 | **v46** | nov/2026 | Visual mais limpo (cabeçalho enxuto, cartões planos, preto como única cor de ação, resumo escuro, menos textos fixos e animações); texto da proposta e cálculos idênticos à v45. |
 | **v45** | nov/2026 | ONION passa a usar a data de expiração do acesso da plataforma (vale para quem tem meses extras); frases do ONION sem "12 meses"; correção de data com ano de 5 dígitos. |
 | **v44** | out/2026 | Pacote de 45 melhorias: Ctrl+Z/Ctrl+Shift+Z geral, tecla ? com todos os atalhos, Ctrl+Shift+Enter (copiar e nova), total em cada atalho de data, cronograma, "valor atual → proposta", subtotal por produto, cálculo de cada parcela, avisos de valores/datas fora do normal, histórico com filtros/apagar/prévia/uso de espaço, regras editáveis, aviso de erro com diagnóstico, checagem de versão a cada 10 min, ajustes de celular e contraste. Correção: ano de data pela metade (0202) travava o cálculo. Cálculos inalterados. |

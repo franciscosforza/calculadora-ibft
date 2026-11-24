@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v46">
+<meta name="versao" content="v47">
 <meta name="versao-data" content="2026-11-23">
-<meta name="testes" content="ok: 76 cenários de proposta, regras de texto, soma das parcelas, desfazer, regras, avisos, histórico, datas e expiração do ONION; v46 comparada com a v45 em 1.300 propostas aleatórias, texto e totais idênticos (23/11/2026)">
+<meta name="testes" content="ok: 76 cenários de proposta, regras de texto, soma das parcelas, desfazer, regras, avisos, histórico, datas e expiração do ONION; v47 comparada com a v46 em 300 propostas aleatórias, texto e totais idênticos; detector de design da Impeccable conferido (23/11/2026)">
 <meta name="theme-color" content="#0E2A55">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
@@ -34,7 +34,7 @@
     --on-sel:#FFFFFF;          /* texto sobre item selecionado */
     --sel-bg:var(--navy);      /* fundo do item selecionado (grade e segmentado) */
     /* semântica */
-    --pos:#157347; --pos-bg:#E6F6EE; --neg:#C83A3A; --neg-bg:#FDECEC;   /* um tom abaixo do briefing (#1F9D63 / #D64545) para passar AA em texto pequeno */
+    --pos:#157347; --pos-bg:#E6F6EE; --neg:#BE3434; --neg-bg:#FDECEC;   /* um tom abaixo do briefing (#1F9D63 / #D64545) para passar AA em texto pequeno */
     --warn:#9A6514; --warn-bg:#FFF6E6; --warn-line:#F1D29A;
     --info-bg:#EEF4FF; --info-line:#C9DAF6;
     /* elevação: sombras em camadas, luz vindo de cima */
@@ -245,7 +245,7 @@
   input[type=date]{accent-color:var(--accent);}
   .row{display:flex;gap:12px;}.row>div{flex:1;min-width:0;}
   .hint{font-size:12px;color:var(--text-muted);margin:6px 0 0;line-height:1.5;}
-  .gen-box{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r);padding:2px 14px 14px;margin-top:14px;}
+  .gen-box{margin-top:10px;}
   /* afixos (R$, %, dias) dentro do campo */
   .affix{position:relative;}
   .affix > .ax{position:absolute;top:0;bottom:0;display:flex;align-items:center;font-size:13px;font-weight:500;color:var(--text-faint);pointer-events:none;}
@@ -270,7 +270,7 @@
   .cb-opt .nm{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .cb-opt .nm small{color:var(--text-faint);font-size:11.5px;margin-left:6px;}
   .cb-opt.on{background:var(--info-bg);}
-  .cb-opt[aria-selected="true"]{box-shadow:inset 3px 0 0 var(--accent);}
+  .cb-opt[aria-selected="true"]{background:var(--surface-3);}
   .cb-opt[aria-selected="true"] .nm{font-weight:600;color:var(--heading);}
   .cb-chip{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--text-muted);border:1px solid var(--line);white-space:nowrap;}
   .cb-chip.v{background:var(--pos-bg);color:var(--pos);border-color:transparent;}
@@ -386,7 +386,6 @@
 
   /* ===== resumo ("ficha") ===== */
   .resumo{position:relative;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-lg);padding:4px 16px 12px 19px;overflow:hidden;}
-  .resumo::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--gold-2),var(--gold));}
   .resumo .lin{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:7px 0;font-size:13px;border-top:1px solid var(--line);}
   .resumo .lin:first-child{border-top:none;}
   .resumo .lin b{font-weight:600;font-size:14px;white-space:nowrap;}
@@ -646,7 +645,6 @@
   :root.dark[data-tipo="quit"]{--tipo:#5FD39A;}
   .fio{background:color-mix(in srgb,var(--tipo) 30%,transparent);}
   .fio-fill{background:linear-gradient(90deg,color-mix(in srgb,var(--tipo) 65%,#fff),var(--tipo));}
-  .resumo::before{background:linear-gradient(180deg,color-mix(in srgb,var(--tipo) 70%,#fff),var(--tipo));}
   .tipo-pill{display:inline-flex;align-items:center;gap:6px;margin-left:6px;padding:2px 9px 2px 8px;border-radius:999px;background:rgba(255,255,255,.55);color:#1A1203;font-size:11.5px;font-weight:700;line-height:1.5;}
   .tipo-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--tipo);box-shadow:0 0 0 2px rgba(255,255,255,.85);}
   .tipo-pill:empty{display:none;}
@@ -774,8 +772,8 @@
   /* contraste: cinza claro das dicas e legendas passa AA (4,5:1); placeholders seguem mais claros que valores */
   :root{--text-faint:#5F7086;}
   :root.dark{--text-faint:#8395AE;}
-  input::placeholder,textarea::placeholder{color:#8494AA;}
-  :root.dark input::placeholder,:root.dark textarea::placeholder{color:#6C7E98;}
+  input::placeholder,textarea::placeholder{color:#6F6F7A;}
+  :root.dark input::placeholder,:root.dark textarea::placeholder{color:#8A8A95;}
   /* "i" sempre na mesma linha do rótulo; nas linhas de campos, as caixas se alinham embaixo */
   .nw{white-space:nowrap;}
   .row{align-items:stretch;} .row>div{display:flex;flex-direction:column;justify-content:flex-end;}
@@ -1034,7 +1032,6 @@
 
   /* resumo financeiro: claro, sem faixa dourada; o total ganha o destaque */
   .resumo{background:var(--surface);border-radius:var(--r-lg);padding:4px 16px 12px 16px;}
-  .resumo::before{display:none;}
   .resumo .tot{margin:6px -16px 0 -16px;padding:12px 16px 6px 16px;}
   .resumo .lin{padding:6px 0;}
   .resumo .lin.sub{padding-left:8px;}
@@ -1061,7 +1058,6 @@
   .resumo .tot{background:none;}
   /* texto explicativo fixo some do cartão (já está em "Como usar" e nos "i") */
   .gen-box > .hint{display:none;}
-  .gen-box{background:transparent;border:0;padding:0;margin-top:10px;}
   /* linha de atalhos sob o botão Copiar sai (a tecla ? mostra todos) */
   p.atalhos{display:none;}
   .card.ok > h2 .num{color:transparent;}
@@ -1158,6 +1154,12 @@
 
   /* aviso (rascunho/desfazer) não cobre a barra fixa com o total */
   html.shell:has(.dock.on) .toasts{bottom:86px;}
+
+  /* v47: item selecionado mantém texto claro sobre fundo escuro também no hover */
+  .acc button[aria-checked="true"]:hover b,.acc button[aria-checked="true"] b{color:var(--on-sel);}
+  .seg button[aria-checked="true"]:hover{color:var(--on-sel);}
+  .chip-q[aria-pressed="true"]:hover{background:var(--sel-bg);border-color:var(--sel-bg);color:var(--on-sel);}
+  .parc-box .parc-op.sel:hover{background:var(--sel-bg);color:var(--on-sel);}
 </style>
 </head>
 <body>
@@ -1188,7 +1190,7 @@
 
 <div class="topbar" id="topbar">
   <div class="tb-in">
-    <span class="tb-logo"><img id="tbLogo" alt=""></span>
+    <span class="tb-logo"><img id="tbLogo" alt="" src="data:image/gif;base64,R0lGODlhAQABAAAAACwAAAAAAQABAAACAkQBADs="></span>
     <span class="tb-txt" id="progTxt2"></span>
     <button type="button" class="btn btn-primary btn-sm" id="btnCopiar2" onclick="copiar()" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span class="lbl">Copiar proposta</span></button>
   </div>
@@ -1415,7 +1417,7 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v46</a> · nov/2026 · <a href="#" onclick="toggleSobre();return false;">Sobre</a> · <a href="#" onclick="reportarProblema();return false;" title="Copia um diagnóstico (sem o nome do aluno) para enviar ao Francisco">Reportar problema</a></footer>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v47</a> · nov/2026 · <a href="#" onclick="toggleSobre();return false;">Sobre</a> · <a href="#" onclick="reportarProblema();return false;" title="Copia um diagnóstico (sem o nome do aluno) para enviar ao Francisco">Reportar problema</a></footer>
       <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
@@ -1515,6 +1517,8 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v47 · nov/2026</h4>
+      <p><b>Acabamento do visual.</b> Correções apontadas por uma revisão automática de design: a opção selecionada na lista de produtos usa fundo suave em vez de uma barra lateral, o resumo financeiro não tem mais a barra dourada antiga, os textos de exemplo dos campos e o vermelho dos valores ficaram mais legíveis, e os itens selecionados mantêm o texto claro quando o mouse passa por cima. <b>O texto da proposta e os cálculos não mudaram.</b></p>
       <h4>v46 · nov/2026</h4>
       <p><b>Visual mais limpo.</b> Cabeçalho enxuto, cartões planos e uma só cor de ação: o botão <b>Copiar proposta</b> é o único preto de destaque e <b>Nova proposta</b> passou a botão secundário. Saíram a saudação do cabeçalho, as animações decorativas, a barra colorida de composição, o papel de parede da prévia, a linha de atalhos sob o botão Copiar e vários textos explicativos fixos (as dicas <b>i</b> e o Como usar continuam). O zoom da tela segue no <kbd>Ctrl</kbd>+<kbd>K</kbd>. <b>O texto da proposta não mudou.</b></p>
       <p><b>Resumo em destaque.</b> O resumo financeiro virou um cartão escuro com o total em evidência. A grade de parcelamento só aparece quando há valor. O tipo de acesso usa o mesmo desenho do tipo de proposta.</p>
