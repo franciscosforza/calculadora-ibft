@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v48** | nov/2026 | Tela sem dicas (ícones "i" e balões do cabeçalho saem) e cabeçalho sem a sombra azul; texto da proposta e cálculos idênticos à v47. |
 | **v47** | nov/2026 | Acabamento do visual: sem barras laterais antigas, textos de exemplo e vermelho mais legíveis, itens selecionados firmes no hover; texto da proposta e cálculos idênticos à v46. |
 | **v46** | nov/2026 | Visual mais limpo (cabeçalho enxuto, cartões planos, preto como única cor de ação, resumo escuro, menos textos fixos e animações); texto da proposta e cálculos idênticos à v45. |
 | **v45** | nov/2026 | ONION passa a usar a data de expiração do acesso da plataforma (vale para quem tem meses extras); frases do ONION sem "12 meses"; correção de data com ano de 5 dígitos. |

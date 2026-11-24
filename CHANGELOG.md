@@ -4,6 +4,11 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v48 — nov/2026
+- **Dicas removidas:** os 19 ícones "i" dos rótulos, o balão de dica próprio (`#tip`, `data-tip`) e os títulos de passar o mouse do cabeçalho saíram; os botões do cabeçalho mantêm `aria-label`. Os `title` nativos dos demais botões (Copiar, apagar parcela, Limpar etc.) continuam.
+- **Brilho colorido:** removida a sombra azul-marinho (`rgba(8,26,56,.45)`) do cabeçalho (achado do detector da Impeccable).
+- **Nenhuma regra de cálculo nem o texto da proposta mudou:** 76 cenários idênticos; 300 propostas aleatórias comparadas com a v47 sem diferença de texto, total ou erro.
+
 ## v47 — nov/2026
 - **Acabamento do visual (achados do detector da Impeccable):** opção selecionada do combo de produtos sem barra lateral (fundo suave); removido o código da barra dourada de `.resumo::before` e da borda antiga de `.gen-box` (antes só escondidos por override); texto de exemplo (placeholder) e `--neg` com contraste ≥ 4,5:1; `<img id="tbLogo">` com `src` inicial; itens selecionados (`.acc`, `.seg`, `.chip-q`, `.parc-op`) mantêm texto claro no hover.
 - **Nenhuma regra de cálculo nem o texto da proposta mudou:** 76 cenários idênticos; 300 propostas aleatórias comparadas com a v46 sem diferença de texto, total ou erro.
