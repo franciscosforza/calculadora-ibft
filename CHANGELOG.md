@@ -4,6 +4,13 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v46 — nov/2026
+- **Visual limpo (só aparência):** cabeçalho enxuto sem gradiente nem saudação; cartões planos, sem barra lateral colorida nem selo "Pronta"; preto como única cor de ação (azul/laranja saem da interface; verde/âmbar/vermelho só para status); sem animações decorativas; resumo financeiro em cartão escuro com o total em destaque; tipo de acesso no mesmo desenho do tipo de proposta; grade de parcelamento só com valor; tema escuro alinhado.
+- **Menos ruído:** saíram o aviso fixo "Antes de enviar, revise", a etiqueta de tipo no botão Copiar, o papel de parede da prévia, a barra de composição, a linha de atalhos sob o Copiar, o zoom do cabeçalho (fica no Ctrl+K), o uso de espaço do histórico e quatro textos explicativos fixos.
+- **Avisos:** acesso expirado aparece como aviso âmbar com ícone; a nota da negativada só com o interruptor ligado; plurais certos no resumo ("6 parcelas").
+- **Acessibilidade/celular:** foco de teclado com anel escuro (também em itens selecionados), dicas "i" legíveis, botões do cabeçalho descem para uma 2ª linha no celular (antes ficavam cortados); `rolarNumero` mostra o valor final na hora (a contagem animada travava com a aba em segundo plano); rodapé com o mês certo.
+- **Nenhuma regra de cálculo nem o texto da proposta mudou:** 76 cenários com `txt` e total idênticos (só o resumo da tela ganhou plural); comparação v45 × v46 em 1.300 propostas aleatórias sem diferença de texto, total ou erro.
+
 ## v45 — nov/2026
 - **ONION usa a data de expiração da plataforma:** com o ONION selecionado, a seção 5 mostra "Data de expiração do acesso" (campo `dataExp`) no lugar da data de liberação; `expBase()` devolve a data digitada, valendo para quem tem meses extras. Dias restantes, extensão, avisos e progresso partem dela. Demais produtos: liberação + 12 meses, como antes.
 - **Textos do ONION:** acesso expirado diz só "se encerrou em dd/mm" (sem "12 meses previstos em contrato") e a frase do acordo financeiro deixa de citar "12 meses".

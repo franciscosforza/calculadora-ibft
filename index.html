@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v45">
+<meta name="versao" content="v46">
 <meta name="versao-data" content="2026-11-23">
-<meta name="testes" content="ok: 76 cenários de proposta, regras de texto, soma das parcelas, desfazer, regras, avisos, histórico, datas e expiração do ONION (23/11/2026)">
+<meta name="testes" content="ok: 76 cenários de proposta, regras de texto, soma das parcelas, desfazer, regras, avisos, histórico, datas e expiração do ONION; v46 comparada com a v45 em 1.300 propostas aleatórias, texto e totais idênticos (23/11/2026)">
 <meta name="theme-color" content="#0E2A55">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
@@ -942,6 +942,222 @@
     .btn-primary.copied .i-ok path,.toast.t-ok .t-ic path,.toast.t-ok .t-ic circle{stroke-dashoffset:0 !important;}
     .toast .t-barra{display:none;}
   }
+
+
+  /* ===== v46 · visual limpo =====
+     Direção: neutro, plano, uma cor de ação (preto). Menos camadas, menos brilho, menos movimento.
+     Tudo aqui sobrescreve o que vem antes; nenhuma regra de cálculo ou de texto muda. */
+  :root{
+    --bg:#F6F6F7; --surface:#FFFFFF; --surface-2:#FAFAFB; --surface-3:#F1F1F3;
+    --line:#E8E8EB; --line-strong:#D4D4DA;
+    --text:#111113; --text-muted:#5B5B65; --text-faint:#6F6F7A; --heading:#111113;
+    --navy:#111113; --navy-deep:#111113; --navy-mid:#2A2A30;
+    --sel-bg:#111113; --on-sel:#FFFFFF;
+    --fio:#111113; --fio-2:#111113;
+    --e1:none; --e2:0 8px 24px -12px rgba(17,17,19,.18); --e3:0 24px 48px -16px rgba(17,17,19,.28);
+    --ring:0 0 0 3px rgba(17,17,19,.14);
+    --r-sm:8px; --r:10px; --r-lg:14px; --r-xl:14px;
+    --display:var(--font);
+    --d1:90ms; --d2:140ms; --d3:200ms;
+  }
+  :root.dark{
+    --bg:#0B0B0D; --surface:#141417; --surface-2:#101013; --surface-3:#1B1B1F;
+    --line:#26262B; --line-strong:#35353C;
+    --text:#EDEDEF; --text-muted:#A1A1AB; --text-faint:#8A8A95; --heading:#F4F4F5;
+    --navy:#0B0B0D; --navy-deep:#0B0B0D; --navy-mid:#1B1B1F;
+    --sel-bg:#F4F4F5; --on-sel:#111113;
+    --fio:#F4F4F5; --fio-2:#F4F4F5;
+    --e1:none; --e2:0 8px 24px -12px rgba(0,0,0,.6); --e3:0 24px 48px -16px rgba(0,0,0,.7);
+    --ring:0 0 0 3px rgba(244,244,245,.22);
+  }
+  /* sem fundo decorado e sem animações decorativas (as de transição curtas ficam) */
+  body::before,body::after{display:none !important;}
+  *,*::before,*::after{animation:none !important;}
+  ::selection{background:rgba(17,17,19,.16);}
+  :focus-visible{outline:2px solid var(--text);outline-offset:2px;}
+
+  /* cabeçalho enxuto: uma faixa só, sem gradiente, sem saudação */
+  header{background:#111113;box-shadow:none;}
+  :root.dark header{background:#0B0B0D;border-bottom:1px solid var(--line);}
+  header::before{display:none;}
+  .hdr-in{padding:10px 24px 12px;gap:14px;flex-wrap:nowrap;}
+  .logo-ibft{height:34px !important;width:auto;}
+  .logo-btn:hover .logo-ibft,.logo-btn:focus-visible .logo-ibft{transform:none;filter:none;}
+  .logo-btn::after{display:none;}
+  .ttl h1{font-family:var(--font);font-size:15px;font-weight:600;letter-spacing:0;}
+  .ttl p{display:none;}
+  .hdr-acoes{gap:6px;flex-wrap:nowrap;}
+  .hdr-cont,.hb,.hdr-sel{background:transparent;border:1px solid transparent;color:rgba(255,255,255,.78);height:32px;border-radius:8px;font-weight:500;}
+  .hb:hover,.hdr-cont:hover,.hdr-sel:hover{background:rgba(255,255,255,.1);border-color:transparent;color:#fff;}
+  .hb:focus-visible,.hdr-sel:focus{box-shadow:0 0 0 2px rgba(255,255,255,.5);}
+  .hb.ico{width:32px;}
+  .hdr-zoom .ic{display:none;}
+  .hdr-sel{padding:0 24px 0 10px;font-size:12px;}
+  .fio{height:2px;background:rgba(255,255,255,.14);}
+  .fio-fill{background:#fff;}
+  .fio-fill::after{display:none;}
+  .topbar .fio{background:var(--line);}
+  .topbar .fio-fill{background:var(--text);}
+  .tb-logo{background:#111113;}
+  :root.dark .tb-logo{background:#0B0B0D;}
+
+  /* linha de progresso: só texto */
+  .prog-line{margin-top:14px;}
+  .prog-line.done #progTxt{color:var(--text-muted);font-weight:500;}
+  #progPct{display:none;}
+
+  /* cartões planos, sem barra colorida, sem selo verde */
+  .card{border-radius:var(--r-lg);padding:16px 20px 18px;margin-bottom:14px;box-shadow:none;}
+  .card::before{display:none;}
+  .card h2{font-size:14.5px;font-weight:600;}
+  .card h2 .num{background:var(--surface-3);color:var(--text-muted);box-shadow:none;border-radius:50%;width:22px;height:22px;font-size:11.5px;font-weight:600;}
+  .card.ok > h2 .num{background:var(--text);color:var(--surface);}
+  .card.falta > h2 .num{background:var(--surface-3);color:var(--neg);box-shadow:inset 0 0 0 1.5px var(--neg);}
+  .badge-sec,.badge-sec.show{display:none !important;}
+  .info-i{opacity:.55;border-width:1px;width:15px;height:15px;font-size:9.5px;font-weight:600;}
+  .info-i:hover{opacity:1;color:var(--text);}
+  .card.col.collapsed > h2 .sec-res{color:var(--text-muted);}
+
+  /* controles: bordas finas, foco neutro */
+  input[type=text],input[type=number],input[type=date],select,textarea{border-radius:var(--r);box-shadow:none;}
+  input:focus,select:focus,textarea:focus{border-color:var(--text);box-shadow:var(--ring);outline:none;}
+  label{font-weight:600;font-size:12.5px;color:var(--text);}
+  .hint{color:var(--text-muted);}
+
+  /* botão principal = preto (igual aos protótipos); sem laranja, sem brilho */
+  .btn-primary{background:var(--text);color:var(--surface);border-color:var(--text);box-shadow:none;}
+  .btn-primary:hover{filter:none;background:#2A2A30;box-shadow:none;}
+  :root.dark .btn-primary:hover{background:#D8D8DC;}
+  .btn-primary:focus-visible{box-shadow:var(--ring);}
+  .btn-primary.copied{background:var(--pos);border-color:var(--pos);color:#fff;box-shadow:none;}
+  .btn-ghost,.btn-sec,.btn-outline{box-shadow:none;}
+
+  /* resumo financeiro: claro, sem faixa dourada; o total ganha o destaque */
+  .resumo{background:var(--surface);border-radius:var(--r-lg);padding:4px 16px 12px 16px;}
+  .resumo::before{display:none;}
+  .resumo .tot{margin:6px -16px 0 -16px;padding:12px 16px 6px 16px;}
+  .resumo .lin{padding:6px 0;}
+  .resumo .lin.sub{padding-left:8px;}
+
+  /* chips e seletores: sem sombra */
+  .seg{background:var(--surface-3);}
+  .seg-ind{box-shadow:none;}
+  .chip-q{box-shadow:none;}
+
+  /* tabelas e avisos mais quietos */
+  .alerta,.hint-box,.nota{box-shadow:none;}
+  /* acertos para quando não há animação (mesmos do modo "menos movimento") */
+  .btn-primary.copied .i-ok path,.toast.t-ok .t-ic path,.toast.t-ok .t-ic circle{stroke-dashoffset:0 !important;}
+  .toast .t-barra{display:none;}
+  .tick-up,.tick-down{color:inherit;}
+  .overlay,.ajuda-box,.toast,.topbar{transition:opacity 120ms linear !important;}
+  /* uma só cor de ação: preto/branco; azul sai da interface (status continua verde/âmbar/vermelho) */
+  :root{--accent:#111113;--accent-2:#5B5B65;--info-bg:#F3F3F5;--info-line:#DCDCE1;}
+  :root.dark{--accent:#F4F4F5;--accent-2:#A1A1AB;--info-bg:#1B1B1F;--info-line:#35353C;}
+  /* resumo dentro do cartão, sem caixa dentro de caixa; barra de composição sai (juros e multa já estão nas linhas) */
+  .resumo{background:transparent;border:0;border-radius:0;padding:0;overflow:visible;}
+  .resumo .tot{margin:6px 0 0;padding:12px 0 6px;}
+  .compo-bar,.compo-leg{display:none;}
+  .resumo .tot{background:none;}
+  /* texto explicativo fixo some do cartão (já está em "Como usar" e nos "i") */
+  .gen-box > .hint{display:none;}
+  .gen-box{background:transparent;border:0;padding:0;margin-top:10px;}
+  /* linha de atalhos sob o botão Copiar sai (a tecla ? mostra todos) */
+  p.atalhos{display:none;}
+  .card.ok > h2 .num{color:transparent;}
+  .card.ok > h2 .num::after{background:var(--surface);}
+
+  /* ===== distill: o que não ganha o lugar, sai ou recolhe ===== */
+  /* aviso fixo "Antes de enviar, revise…": o cartão de conferência já aparece ao copiar */
+  #cardProposta .revise{display:none;}
+  /* o tipo já está no seletor; o botão Copiar diz só o que faz */
+  .tipo-pill{display:none !important;}
+  /* prévia: sem papel de parede do WhatsApp; o balão continua para mostrar como chega ao aluno */
+  .wa,:root.dark .wa{background-color:var(--surface-2);background-image:none;border-color:var(--line);}
+  /* tipo de acesso: preenche sozinho pelo produto, então vira uma linha compacta de três opções */
+  .acc{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;}
+  .acc button{min-height:36px;padding:6px 10px;align-items:center;justify-content:center;}
+  .acc button span{display:none;}
+  .acc button b{font-size:13px;}
+  .acc button[aria-checked="true"]{background:var(--sel-bg);border-color:var(--sel-bg);box-shadow:none;}
+  .acc button[aria-checked="true"] b{color:var(--on-sel);}
+  .acc button:hover{background:var(--surface-3);border-color:var(--line-strong);}
+  .acc button[aria-checked="true"]:hover{background:var(--sel-bg);}
+  .acc-auto .cb-chip:not(.m){display:none;}
+  @media(max-width:520px){.acc{grid-template-columns:repeat(3,minmax(0,1fr));}.acc button{min-height:44px;}}
+  /* zoom fica na busca rápida (Ctrl+K → Zoom) e no zoom do navegador */
+  .hdr-zoom{display:none;}
+  /* uso de espaço do histórico: informação de manutenção, não de atendimento */
+  #histUso{display:none;}
+  /* uma só ação principal por tela: Copiar. Nova proposta vira secundária */
+  .btn-nova,:root.dark .btn-nova{background:var(--surface);color:var(--text);border-color:var(--line-strong);box-shadow:none;}
+  .btn-nova:hover,:root.dark .btn-nova:hover{background:var(--surface-3);border-color:var(--line-strong);filter:none;}
+
+  /* ===== crítica: correções ===== */
+  /* [P1] celular: as ações do cabeçalho descem para uma segunda linha em vez de sumirem */
+  @media (max-width:640px){
+    .hdr-in{flex-wrap:wrap;row-gap:6px;}
+    .hdr-acoes{width:100%;margin-left:0;justify-content:flex-end;flex-wrap:wrap;}
+  }
+  /* [P1] foco de teclado: anel escuro com afastamento (≥3:1), inclusive em itens selecionados */
+  :root,:root.dark{--ring:0 0 0 2px var(--surface),0 0 0 4px var(--text);}
+  .seg button:focus-visible,.acc button:focus-visible,.acc button[aria-checked="true"]:focus-visible,
+  .parc-op:focus-visible,.parc-box .parc-op.sel:focus-visible,.chip-q:focus-visible,.card.col > h2:focus-visible,
+  .btn:focus-visible,.btn-primary:focus-visible{outline:none;box-shadow:var(--ring) !important;}
+  input:focus,select:focus,textarea:focus{border-color:var(--text);box-shadow:0 0 0 3px color-mix(in srgb,var(--text) 14%,transparent);}
+  /* [P1] tema escuro sem sobras do visual antigo */
+  .resumo .tot,:root.dark .resumo .tot{background:none;background-image:none;}
+  .card.ok > h2 .num,:root.dark .card.ok > h2 .num{background:var(--text);color:transparent;box-shadow:none;}
+  .card.ok > h2 .num::after,:root.dark .card.ok > h2 .num::after{background:var(--surface);}
+  :root.dark .toast,:root.dark #tip{background:#1B1B1F;}
+  :root.dark input::placeholder,:root.dark textarea::placeholder{color:#8A8A95;}
+  :root.dark .btn-primary.copied,:root.dark .vz-passos .ok .vz-n,:root.dark .cmd-it.on .cmd-ic{color:#0B0B0D;}
+
+  /* [P1] resumo escuro: o número que a atendente fala para o aluno ganha a âncora da tela */
+  #resumo{
+    --text:#F4F4F5; --heading:#FFFFFF; --text-muted:#A9A9B2; --text-faint:#8F8F99;
+    --line:rgba(255,255,255,.10); --line-strong:rgba(255,255,255,.18);
+    --neg:#FF9B9B; --pos:#7BE0AE; --warn:#F4CF85; --warn-line:rgba(244,207,133,.35);
+    --surface:#1D1D21; --surface-2:#1D1D21; --surface-3:#2A2A30; --accent:#F4F4F5;
+    --vermelho:#FF9B9B; --verde:#7BE0AE; --suave:#A9A9B2; --texto:#F4F4F5; --borda:rgba(255,255,255,.10); --alerta:#F4CF85;
+    background:#111113; color:var(--text); border-radius:var(--r-lg); padding:6px 18px 12px; margin-bottom:14px;
+  }
+  :root.dark #resumo{background:#1F1F23;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);}
+  #resumo:empty{display:none;}
+  #resumo .tot{padding:14px 0 4px;font-size:30px;}
+  #resumo .tot span:first-child{font-size:12.5px;}
+
+  /* [P1] estado que muda a proposta aparece como aviso, não como dica */
+  #acessoInfo.st-alerta{display:flex;align-items:flex-start;gap:8px;margin-top:10px;padding:8px 10px;border:1px solid var(--warn-line);border-radius:var(--r);background:var(--warn-bg);color:var(--warn);font-weight:600;font-size:12.5px;}
+  #acessoInfo.st-alerta::before{content:"";width:15px;height:15px;flex:none;margin-top:1px;background:currentColor;
+    -webkit-mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/><path d='M12 9v4M12 17h.01'/></svg>") center/contain no-repeat;
+            mask:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z'/><path d='M12 9v4M12 17h.01'/></svg>") center/contain no-repeat;}
+  #notaConclusao.st-alerta{color:var(--warn);font-weight:500;}
+  /* textos explicativos fixos saem (estão nas dicas "i" e em Como usar); a nota da negativada só com o interruptor ligado */
+  .hint.fixa{display:none;}
+  #negInfoWrap:not(:has(#temNegativada:checked)) #negInfoHint{display:none;}
+
+  /* [P2] dicas "i" legíveis (AA), na fonte da interface */
+  .info-i{opacity:1;color:var(--text-muted);font-family:var(--font);font-style:normal;font-size:10px;font-weight:700;border-width:1.25px;}
+  .info-i:hover{color:var(--text);}
+
+  /* [P2] tipo de acesso no mesmo desenho do tipo de proposta (trilho cinza, item preto) */
+  .acc{background:var(--surface-3);border:1px solid var(--line);border-radius:var(--r);padding:4px;gap:4px;}
+  .acc button{border:0;background:transparent;border-radius:9px;min-height:34px;}
+  .acc button b{color:var(--text-muted);}
+  .acc button:hover{background:transparent;}
+  .acc button:hover b{color:var(--text);}
+  .acc button[aria-checked="true"],.acc button[aria-checked="true"]:hover{background:var(--sel-bg);}
+
+  /* [P2] escala tipográfica: menos degraus de meio pixel */
+  .hint,.sec-res,.prog-line,.tb-txt,.chip-q,.btn-sm{font-size:12.5px;}
+  label{font-size:13px;}
+  .card h2{font-size:15px;}
+  .resumo .lin,.resumo .lin b{font-size:13.5px;}
+  .resumo .lin.sub,.resumo .lin.sub b,.resumo .lin.cross{font-size:12.5px;}
+
+  /* aviso (rascunho/desfazer) não cobre a barra fixa com o total */
+  html.shell:has(.dock.on) .toasts{bottom:86px;}
 </style>
 </head>
 <body>
@@ -1005,7 +1221,7 @@
         </div>
         <div id="quitTotalWrap" style="display:none">
           <label class="chk-line"><input type="checkbox" id="quitTotal" checked onchange="render()"> Quita toda a dívida (encerra o parcelamento)</label>
-          <p class="hint">Desligue para <b>quitação parcial</b>: pagar só algumas parcelas (do meio do parcelamento ou de produtos diferentes) num único link, mantendo o restante do parcelamento ativo.</p>
+          <p class="hint fixa">Desligue para <b>quitação parcial</b>: pagar só algumas parcelas (do meio do parcelamento ou de produtos diferentes) num único link, mantendo o restante do parcelamento ativo.</p>
         </div>
         <label for="prodBusca">Produto / curso<span class="info-i" title="Digite parte do nome para buscar. Os produtos que você mais negociou nos últimos 90 dias aparecem primeiro. Ao escolher, o tipo de acesso ajusta sozinho.">i</span></label>
         <select id="produto" class="sr-only" tabindex="-1" aria-hidden="true" onchange="onProdutoChange()"></select>
@@ -1061,7 +1277,7 @@
         <div id="descJurosWrap" style="display:none">
           <label for="descJurosPerc">Desconto nos juros das parcelas em atraso (opcional)</label>
           <div class="affix suf w220"><input type="number" id="descJurosPerc" min="0" max="100" step="1" value="0" oninput="render()"><span class="ax">%</span></div>
-          <p class="hint">Para negociar dívidas antigas com juros altos. Incide só sobre os juros (não sobre a multa nem o valor original).</p>
+          <p class="hint fixa">Para negociar dívidas antigas com juros altos. Incide só sobre os juros (não sobre a multa nem o valor original).</p>
         </div>
       </div></div>
     </div>
@@ -1074,7 +1290,7 @@
           <div><label for="vincVal">Valor unitário<span class="info-i" title="Preenche sozinho com o valor da parcela em atraso. Edite se as parcelas a vencer tiverem valor diferente. Aceita vírgula.">i</span></label><div class="affix pre"><span class="ax">R$</span><input type="text" inputmode="decimal" id="vincVal" value="0" oninput="maskMoeda(this);vincValManual=true;render()"></div></div>
           <div id="vincVencWrap" style="display:none"><label for="vincVenc">Venc. da 1ª a vencer<span class="info-i" title="Aparece quando o pagamento é futuro. Se uma parcela a vencer cair antes do pagamento, vira atraso automaticamente.">i</span></label><input type="date" id="vincVenc" oninput="render()"></div>
         </div>
-        <p class="hint">Sem juros enquanto não vencem.</p>
+        <p class="hint fixa">Sem juros enquanto não vencem.</p>
         <div class="alerta" id="warnCross">A data de pagamento é futura e há parcelas a vencer. Informe o <b>vencimento da próxima parcela a vencer</b> (campo que apareceu acima) para que as que vencem antes do pagamento passem para "em atraso" automaticamente.</div>
       </div></div>
     </div>
@@ -1100,7 +1316,7 @@
         <div id="ctlGeral" style="display:none">
           <label for="descGeralPerc">Desconto adicional sobre o total (opcional)</label>
           <div class="affix suf w220"><input type="number" id="descGeralPerc" min="0" max="100" step="1" value="0" oninput="render()"><span class="ax">%</span></div>
-          <p class="hint">Desconto extra concedido sobre o valor total da quitação, além dos itens acima.</p>
+          <p class="hint fixa">Desconto extra concedido sobre o valor total da quitação, além dos itens acima.</p>
         </div>
       </div></div>
     </div>
@@ -1199,7 +1415,7 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v45</a> · out/2026 · <a href="#" onclick="toggleSobre();return false;">Sobre</a> · <a href="#" onclick="reportarProblema();return false;" title="Copia um diagnóstico (sem o nome do aluno) para enviar ao Francisco">Reportar problema</a></footer>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v46</a> · nov/2026 · <a href="#" onclick="toggleSobre();return false;">Sobre</a> · <a href="#" onclick="reportarProblema();return false;" title="Copia um diagnóstico (sem o nome do aluno) para enviar ao Francisco">Reportar problema</a></footer>
       <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
@@ -1299,6 +1515,10 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v46 · nov/2026</h4>
+      <p><b>Visual mais limpo.</b> Cabeçalho enxuto, cartões planos e uma só cor de ação: o botão <b>Copiar proposta</b> é o único preto de destaque e <b>Nova proposta</b> passou a botão secundário. Saíram a saudação do cabeçalho, as animações decorativas, a barra colorida de composição, o papel de parede da prévia, a linha de atalhos sob o botão Copiar e vários textos explicativos fixos (as dicas <b>i</b> e o Como usar continuam). O zoom da tela segue no <kbd>Ctrl</kbd>+<kbd>K</kbd>. <b>O texto da proposta não mudou.</b></p>
+      <p><b>Resumo em destaque.</b> O resumo financeiro virou um cartão escuro com o total em evidência. A grade de parcelamento só aparece quando há valor. O tipo de acesso usa o mesmo desenho do tipo de proposta.</p>
+      <p><b>Avisos e leitura.</b> Quando o acesso já expirou, aparece um aviso âmbar com ícone (a proposta continua assumindo curso concluído, como antes). Os valores do resumo e da barra fixa aparecem na hora, sem contagem animada. Plurais certos ("6 parcelas"). Dicas <b>i</b> mais legíveis e foco de teclado bem visível. No celular, os botões do cabeçalho descem para uma segunda linha em vez de ficarem cortados. O tema escuro foi alinhado ao novo visual.</p>
       <h4>v45 · nov/2026</h4>
       <p><b>ONION: informe a data de expiração.</b> Ao escolher o ONION, a seção 5 pede a <b>data de expiração do acesso como está na plataforma</b> (já inclui os meses extras de quem comprou no lançamento), em vez da data de liberação. Dali saem os dias que faltam, a extensão e os avisos. Nos demais produtos nada muda: continua a data de liberação + 12 meses.</p>
       <p><b>Textos do ONION.</b> Quando o acesso já expirou, a proposta diz só "se encerrou em dd/mm" e a frase do acordo financeiro não fala mais em "12 meses", que ficaria errado para quem tem meses extras. Propostas de ONION salvas antes da v45 voltam com a expiração em branco.</p>
@@ -2058,7 +2278,7 @@ function rolarNumero(sel,chave,para){
   const st=numAnim[chave]||(numAnim[chave]={val:para,raf:0});
   cancelAnimationFrame(st.raf);
   const de=st.val;
-  if(semMovimento()||!isFinite(de)||Math.abs(de-para)<0.005){ st.val=para; el0.textContent=brl(para); return; }
+  st.val=para; el0.textContent=brl(para); return;   // v46: sem contagem animada (valor final na hora)
   const t0=performance.now(), dur=420;
   el0.textContent=brl(Math.round(de*100)/100);
   const passo=t=>{ const k=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-k,3); st.val=de+(para-de)*e;
@@ -2093,10 +2313,10 @@ function renderResumo(){
       if(m.geralDesc>0) h+=sub(`↳ ${m.dg}% de desconto adicional`,-m.geralDesc,GREEN);
     }
   }else{
-    h+=lin(`${qtdAtraso()} parcela(s) ${lblAtraso}`,atrasoComEnc());
+    h+=lin(`${qtdAtraso()} ${qtdAtraso()===1?'parcela':'parcelas'} ${lblAtraso}`,atrasoComEnc());
     h+=sub('↳ juros',atrasoJurosV(),RED);h+=sub('↳ multa',atrasoMultaV(),RED);
     if(descJurosTotal()>0) h+=sub(`↳ desconto nos juros (${Math.round(jurosDescFrac()*100)}%)`,-descJurosTotal(),GREEN);
-    if(qtdVinc()) h+=lin(`${qtdVinc()} parcela(s) a vencer`,totalVinc());
+    if(qtdVinc()) h+=lin(`${qtdVinc()} ${qtdVinc()===1?'parcela':'parcelas'} a vencer`,totalVinc());
   }
   if(nCross>0) h+=`<div class="lin cross"><span>${nCross} parcela(s) que estava(m) "a vencer" passou(aram) a contar como atraso, pois vence(m) até a data de pagamento escolhida.</span></div>`;
   // pulso suave no total só quando o valor realmente muda (o resumo é recriado a cada tecla: o atraso negativo continua o pulso sem reiniciar)
@@ -2733,6 +2953,7 @@ function render(){
     nota.textContent = (exp&&expirou&&ext===0)
       ? 'Acesso expirado e sem extensão → a proposta assume curso concluído e remove a parte de liberação de acesso.'
       : 'A proposta inclui a liberação de acesso após o pagamento.';
+    info.classList.toggle('st-alerta', !!(exp&&expirou)); nota.classList.toggle('st-alerta', !!(exp&&expirou&&ext===0)); nota.hidden = !(exp&&expirou&&ext===0);
   }
 
   const tp=document.getElementById('tipoProposta').value;
@@ -2740,7 +2961,7 @@ function render(){
   const nv=nomeVenc(); document.getElementById('lblVenc').textContent = nv.charAt(0).toUpperCase()+nv.slice(1)+(ehQuit()?'':' do acordo');
   const dvH=document.getElementById('dataVenc').value, hj=hojeISO();
   const diaH = !dvH ? '' : '<span class="vh-dia'+(dvH<hj||motivoNaoUtil(dvH)?' ruim':'')+'">'+(DIAS_SEMANA[diaSemana(dvH)].charAt(0).toUpperCase()+DIAS_SEMANA[diaSemana(dvH)].slice(1))+', '+dataBR(dvH)+(dvH===hj?' (hoje)':dvH===somaDiasUTC(hj,1)?' (amanhã)':'')+'</span>. ';
-  document.getElementById('vencHint').innerHTML = diaH+(vEmpty?'<span style="color:var(--vermelho);font-weight:700">⚠ Defina o '+nv+' (obrigatório). </span>':'')+(tp==='rep1'?'Padrão: hoje (1º reparcelamento). ':tp==='rep2'?'Padrão: amanhã (2º reparcelamento). ':'Padrão: hoje. ')+'<b>Os valores em atraso são atualizados até esta data de vencimento (o campo logo acima).</b>';
+  document.getElementById('vencHint').innerHTML = diaH+(vEmpty?'<span style="color:var(--vermelho);font-weight:700">⚠ Defina o '+nv+' (obrigatório). </span>':'');
 
   // campo de venc. das vincendas só aparece quando é relevante (pagamento futuro + há parcelas a vencer)
   const futuro = refCalc()>hojeISO();
@@ -2750,7 +2971,7 @@ function render(){
   document.getElementById('warnCross').classList.toggle('show', futuro && semData);
 
   renderResumo();renderParcGrid();renderCartGrid();aplicarStatus();atualizarProgresso();renderCoerencia();resumoSecoes();limparErrosResolvidos();
-  vis('parcWrap',!quit);
+  vis('parcWrap',!quit && totalGeral()>0);
   vis('cartWrap',parcial);
   vis('cartAcoes',cartaoOn());
   posicionarInd(false);
