@@ -40,6 +40,7 @@ A versão atual aparece no rodapé da ferramenta (clique nela para ver a tela **
 
 | Versão | Data | Resumo |
 |---|---|---|
+| **v45** | nov/2026 | ONION passa a usar a data de expiração do acesso da plataforma (vale para quem tem meses extras); frases do ONION sem "12 meses"; correção de data com ano de 5 dígitos. |
 | **v44** | out/2026 | Pacote de 45 melhorias: Ctrl+Z/Ctrl+Shift+Z geral, tecla ? com todos os atalhos, Ctrl+Shift+Enter (copiar e nova), total em cada atalho de data, cronograma, "valor atual → proposta", subtotal por produto, cálculo de cada parcela, avisos de valores/datas fora do normal, histórico com filtros/apagar/prévia/uso de espaço, regras editáveis, aviso de erro com diagnóstico, checagem de versão a cada 10 min, ajustes de celular e contraste. Correção: ano de data pela metade (0202) travava o cálculo. Cálculos inalterados. |
 | **v43** | out/2026 | Rascunho automático com "Retomar", Enter e setas na tabela de parcelas, atalhos H/A/+/− nos campos de data, campos de valor selecionam tudo ao entrar, a roda do mouse não altera números por acidente e o título da aba mostra total e aluno. Cálculos inalterados. |
 | **v42** | out/2026 | Quitação parcial com opção de dividir no cartão de crédito (2x a 12x, sem acréscimo; o à vista segue como padrão). Conferência ao copiar (total, forma de pagamento e vencimento com avisos), prévia clicável (a linha leva ao campo), dia da semana sob a data de pagamento e valor do cartão que rola. Cálculos inalterados. |

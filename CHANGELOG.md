@@ -4,6 +4,12 @@ Registro do que mudou em cada versão da ferramenta. A versão em produção apa
 
 > Os números de versão são criados no Cowork. Algumas versões foram publicadas no GitHub em lote, então uma tag pode reunir versões intermediárias — indicado abaixo com *(inclui …)*.
 
+## v45 — nov/2026
+- **ONION usa a data de expiração da plataforma:** com o ONION selecionado, a seção 5 mostra "Data de expiração do acesso" (campo `dataExp`) no lugar da data de liberação; `expBase()` devolve a data digitada, valendo para quem tem meses extras. Dias restantes, extensão, avisos e progresso partem dela. Demais produtos: liberação + 12 meses, como antes.
+- **Textos do ONION:** acesso expirado diz só "se encerrou em dd/mm" (sem "12 meses previstos em contrato") e a frase do acordo financeiro deixa de citar "12 meses".
+- **Correção:** ano de data com 5 dígitos (20262) ou fora de 2000–2100 travava `gerarTexto` (`Invalid time value`); `checarData`, a trava de entrada, `addDays` e `expBase` agora tratam o caso.
+- Nenhuma regra de valores mudou (76 cenários iguais; 5 cenários de ONION com a frase nova; testes novos da expiração do ONION e do ano de 5 dígitos).
+
 ## v44 — out/2026
 - **Desfazer/Refazer geral** (Ctrl+Z, Ctrl+Shift+Z, Ctrl+Y): pilha de até 80 estados, um passo por pausa de digitação (`registrarU`, `passoU`). **Tecla ?** abre a lista de atalhos; **Ctrl+Shift+Enter** copia e abre nova proposta; **Ctrl+.** vai ao próximo campo que falta; **Alt+↑/↓** pula de seção; **Ctrl+Alt+D** mostra o cálculo detalhado (`textoDiag`).
 - **Resumo:** total em cada atalho de data (`totaisChips`), cronograma das parcelas (`renderCrono`), barra "valor atual → proposta", subtotal por produto na quitação multi-produto, clique no total/parcela copia só o valor, popover com o cálculo de cada parcela (`mostrarCalc`).

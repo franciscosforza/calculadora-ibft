@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="versao" content="v44">
-<meta name="versao-data" content="2026-10-30">
-<meta name="testes" content="ok: 76 cenários de proposta, regras de texto, soma das parcelas, desfazer, regras, avisos, histórico e datas (30/10/2026)">
+<meta name="versao" content="v45">
+<meta name="versao-data" content="2026-11-23">
+<meta name="testes" content="ok: 76 cenários de proposta, regras de texto, soma das parcelas, desfazer, regras, avisos, histórico, datas e expiração do ONION (23/11/2026)">
 <meta name="theme-color" content="#0E2A55">
 <title>Financeiro IBFT - Calculadora de Propostas</title>
 <link rel="icon" type="image/png" sizes="any" href="favicon.png">
@@ -1010,7 +1010,7 @@
         <label for="prodBusca">Produto / curso<span class="info-i" title="Digite parte do nome para buscar. Os produtos que você mais negociou nos últimos 90 dias aparecem primeiro. Ao escolher, o tipo de acesso ajusta sozinho.">i</span></label>
         <select id="produto" class="sr-only" tabindex="-1" aria-hidden="true" onchange="onProdutoChange()"></select>
         <div id="prodComboHost"></div>
-        <p class="hint" id="appHint" style="display:none"><b>Aplicativo ONION</b> (ONION - O Novo Inconsciente LTDA): multa de 2% e juros de 2%/mês sobre o atraso, como os demais produtos. Acesso de 12 meses. A proposta usa texto próprio de aplicativo. Faça proposta separada dos cursos do IBFT.</p>
+        <p class="hint" id="appHint" style="display:none"><b>Aplicativo ONION</b> (ONION - O Novo Inconsciente LTDA): multa de 2% e juros de 2%/mês sobre o atraso, como os demais produtos. Acesso de 12 meses. Na seção 5, informe a <b>data de expiração que consta na plataforma</b> (inclui meses extras de quem comprou no lançamento). A proposta usa texto próprio de aplicativo. Faça proposta separada dos cursos do IBFT.</p>
         <div id="produtosExtraWrap" style="display:none">
           <div id="produtosExtra"></div>
           <div class="acts"><button type="button" class="btn btn-text" onclick="addProdutoExtra()">+ Adicionar outro produto</button></div>
@@ -1106,10 +1106,11 @@
     </div>
 
     <div class="card col" id="cardAcesso">
-      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num" id="numAcesso">5</span><span>Acesso e extensão</span><span class="info-i" title="Informe a data de liberação do acesso para calcular a expiração dos 12 meses. Se for conceder extensão, informe os dias (acima de 90 → análise do Francisco).">i</span><span class="sec-res" aria-hidden="true"></span><span class="h-sp"></span><span class="badge-sec" id="badge5"></span><button type="button" class="limpar-sec" tabindex="-1" onclick="event.stopPropagation();limparSecao(limparCardAcesso)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
+      <h2 onclick="toggleCard(this)" tabindex="0" aria-expanded="true"><span class="num" id="numAcesso">5</span><span>Acesso e extensão</span><span class="info-i" title="Informe a data de liberação do acesso para calcular a expiração dos 12 meses (no ONION, informe direto a data de expiração da plataforma). Se for conceder extensão, informe os dias (acima de 90 → análise do Francisco).">i</span><span class="sec-res" aria-hidden="true"></span><span class="h-sp"></span><span class="badge-sec" id="badge5"></span><button type="button" class="limpar-sec" tabindex="-1" onclick="event.stopPropagation();limparSecao(limparCardAcesso)" title="Limpar esta seção"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12a9 9 0 1 0 2.6-6.4L3 8"/><path d="M3 3v5h5"/></svg>Limpar</button><span class="caret" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></h2>
       <div class="card-body"><div class="card-body-in"><div class="cb-sep"></div>
         <div class="row">
-          <div><label for="dataLib">Data de liberação do acesso<span class="info-i" title="Data em que o aluno recebeu o acesso. A expiração é calculada como liberação + 12 meses.">i</span></label><input type="date" id="dataLib" oninput="render()"></div>
+          <div id="wrapLib"><label for="dataLib">Data de liberação do acesso<span class="info-i" title="Data em que o aluno recebeu o acesso. A expiração é calculada como liberação + 12 meses.">i</span></label><input type="date" id="dataLib" oninput="render()"></div>
+          <div id="wrapExp" style="display:none"><label for="dataExp">Data de expiração do acesso<span class="info-i" title="Data em que o acesso expira na plataforma (já inclui os meses extras do aluno, se houver). Os dias que faltam e a extensão partem dela.">i</span></label><input type="date" id="dataExp" oninput="render()"></div>
           <div><label for="extDias">Extensão<span class="info-i" title="Dias extras de acesso concedidos no pagamento. Acima de 90 dias → análise do Francisco. Deixe 0 se não houver extensão.">i</span></label><div class="affix suf dias"><input type="number" id="extDias" min="0" value="0" oninput="render()"><span class="ax">dias</span></div></div>
         </div>
         <div class="chips" id="extChips" role="group" aria-label="Extensão rápida"><button type="button" class="chip-q" data-d="30" aria-pressed="false" onclick="setExt(30)">+30 dias</button><button type="button" class="chip-q" data-d="60" aria-pressed="false" onclick="setExt(60)">+60 dias</button><button type="button" class="chip-q" data-d="90" aria-pressed="false" onclick="setExt(90)">+90 dias</button></div>
@@ -1198,7 +1199,7 @@
           <p class="hint" id="histVazio" hidden>Nenhuma proposta copiada ainda neste navegador. As propostas que você copiar ficam salvas aqui. Para trazer o histórico de outro computador, use Importar.</p>
         </div>
       </div>
-      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v44</a> · out/2026 · <a href="#" onclick="toggleSobre();return false;">Sobre</a> · <a href="#" onclick="reportarProblema();return false;" title="Copia um diagnóstico (sem o nome do aluno) para enviar ao Francisco">Reportar problema</a></footer>
+      <footer class="rodape">Financeiro IBFT · Calculadora de Propostas · <a href="#" onclick="toggleNovidades();return false;" title="Ver o que mudou em cada versão">v45</a> · out/2026 · <a href="#" onclick="toggleSobre();return false;">Sobre</a> · <a href="#" onclick="reportarProblema();return false;" title="Copia um diagnóstico (sem o nome do aluno) para enviar ao Francisco">Reportar problema</a></footer>
       <div class="dock" id="dock" aria-hidden="true"><div class="dock-info"><small>Total</small><b id="dockTot">R$ 0,00</b><span id="dockSub"></span></div><button type="button" class="btn btn-primary btn-sm" id="btnCopiar3" onclick="copiar()" tabindex="-1" title="Copiar proposta (Ctrl+Enter)"><svg class="ic i-copy" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><svg class="ic i-ok" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg><span class="lbl">Copiar proposta</span></button></div>
     </div>
   </div>
@@ -1286,7 +1287,7 @@
       <h4>2º reparcelamento: formalização</h4>
       <p>Após o aceite: enviar <b>formulário</b> de dados → montar <b>contrato de confissão de dívida e parcelamento</b> → enviar para <b>assinatura</b> → liberar o boleto da 1ª parcela.</p>
       <h4>Acesso e extensão</h4>
-      <p>Curso de 12 meses expira em liberação + 12 meses. Extensão concedida no pagamento, conforme o progresso do aluno. <b>Acima de <span class="rg-ext">90</span> dias → análise do Francisco</b>. Na quitação parcial, a proposta não fala de prazo de acesso.</p>
+      <p>Curso de 12 meses expira em liberação + 12 meses. <b>No ONION</b>, digite direto a data de expiração que consta na plataforma (vale para quem ganhou meses extras). Extensão concedida no pagamento, conforme o progresso do aluno. <b>Acima de <span class="rg-ext">90</span> dias → análise do Francisco</b>. Na quitação parcial, a proposta não fala de prazo de acesso.</p>
       <h4>ONION (aplicativo)</h4>
       <p>Produto digital da <b>ONION - O Novo Inconsciente LTDA</b> (empresa própria, CNPJ diferente do IBFT). <b>Mesmos encargos</b> dos demais produtos (multa de 2% e juros de 2%/mês sobre o atraso) e mesma política de descontos. Acesso de <b>12 meses</b>, sem renovação automática. A proposta usa texto próprio de aplicativo (sem regras de produtos IBFT/CITRG) e <b>não se mistura</b> com cursos do IBFT na mesma proposta.</p>
     </div>
@@ -1298,6 +1299,10 @@
     <div class="dlg-head"><h3 id="novTit">Novidades da calculadora</h3><button type="button" class="dlg-x" onclick="toggleNovidades()" aria-label="Fechar" title="Fechar (Esc)"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button></div>
     <div class="dlg-body">
       <p class="lead">O que mudou em cada versão. A mais recente fica no topo.</p>
+      <h4>v45 · nov/2026</h4>
+      <p><b>ONION: informe a data de expiração.</b> Ao escolher o ONION, a seção 5 pede a <b>data de expiração do acesso como está na plataforma</b> (já inclui os meses extras de quem comprou no lançamento), em vez da data de liberação. Dali saem os dias que faltam, a extensão e os avisos. Nos demais produtos nada muda: continua a data de liberação + 12 meses.</p>
+      <p><b>Textos do ONION.</b> Quando o acesso já expirou, a proposta diz só "se encerrou em dd/mm" e a frase do acordo financeiro não fala mais em "12 meses", que ficaria errado para quem tem meses extras. Propostas de ONION salvas antes da v45 voltam com a expiração em branco.</p>
+      <p><b>Correção.</b> Data digitada com ano de 5 dígitos (ex.: 20262) travava o cálculo; agora o campo avisa e espera o ano correto.</p>
       <h4>v44 · out/2026</h4>
       <p><b>Desfazer e refazer em tudo.</b> <kbd>Ctrl</kbd>+<kbd>Z</kbd> volta a última alteração de qualquer campo e <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd> ou <kbd>Ctrl</kbd>+<kbd>Y</kbd> refaz. A tecla <kbd>?</kbd> abre a <b>lista de todos os atalhos</b>. Novos: <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> copia e já começa outra proposta; <kbd>Ctrl</kbd>+<kbd>.</kbd> leva ao próximo campo que falta; <kbd>Alt</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd> pula de seção.</p>
       <p><b>Resumo mais completo.</b> Os atalhos de data mostram o total em cada data ("Amanhã R$ 2.335,49 · + R$ 0,91"). O cronograma das parcelas abre no resumo, com aviso de data que não é dia útil. Quando há desconto, uma barra mostra <b>valor atual → proposta</b>. Na quitação com vários produtos, aparece o subtotal de cada um. Clique no total (ou no valor da parcela) para copiar só o número.</p>
@@ -1648,7 +1653,7 @@ const floor2=v=>Math.floor(v*100)/100;   // trunca centavos, igual ao Asaas (ex.
 function parseV(v){v=String(v==null?'':v).trim();if(v==='')return 0;if(v.indexOf(',')>=0)v=v.replace(/\./g,'').replace(',','.');const n=parseFloat(v);return isNaN(n)?0:n;}   // aceita vírgula (pt-BR) e ponto
 function maskMoeda(el){var d=el.value.replace(/\D/g,'');if(d===''){el.value='';return;}d=String(parseInt(d,10));while(d.length<3)d='0'+d;el.value=d.slice(0,-2).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+','+d.slice(-2);}   // máscara de moeda (centavos da direita p/ esquerda)
 function dataBR(iso){if(!iso)return 'xxxx';const[a,m,d]=iso.split('-');return `${d}/${m}/${a}`;}
-function addDays(iso,n){const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
+function addDays(iso,n){const d=new Date(iso+'T00:00:00'); if(isNaN(d)) return iso; d.setDate(d.getDate()+n);return d.toISOString().slice(0,10);}
 function addMonths(iso,n){
   // avança n meses mantendo o DIA pretendido; se o mês-alvo não tiver esse dia, usa o último dia do mês
   // (ex.: 31/03 → 30/04 → 31/05 → 30/06; nunca dois vencimentos no mesmo mês)
@@ -1811,7 +1816,7 @@ function limparCard1(){document.getElementById('nomeAluno').value='';document.ge
 function limparCard2(){atrasos=[];document.getElementById('genQtd').value='';document.getElementById('genVenc').value=hojeISO();document.getElementById('genVal').value='0';var dj=document.getElementById('descJurosPerc');if(dj)dj.value='0';render();}
 function limparCard3(){vincValManual=false;document.getElementById('vincQtd').value='0';document.getElementById('vincVal').value=document.getElementById('genVal').value;document.getElementById('vincVenc').value='';render();}
 function limparCardDesc(){document.getElementById('retJuros').checked=false;document.getElementById('retMulta').checked=false;document.getElementById('descVincPerc').value='0';document.getElementById('descNegPerc').value='0';document.getElementById('descGeralPerc').value='0';document.getElementById('isentarJurosNeg').checked=true;render();}
-function limparCardAcesso(){document.getElementById('dataLib').value='';document.getElementById('extDias').value='0';render();}
+function limparCardAcesso(){document.getElementById('dataLib').value='';document.getElementById('dataExp').value='';document.getElementById('extDias').value='0';render();}
 // estado completo para o "Desfazer" (snapshot + o que ele não guarda: espelhamento e edição manual do texto)
 function capturar(){return {snap:snapshot(),vm:vincValManual,em:editadoManual,txt:document.getElementById('saida').value};}
 function voltar(c){
@@ -1972,7 +1977,8 @@ function renderCartGrid(){
 }
 function totalGeral(){return ehQuit()?quitModel().total:(totalAtraso()+totalVinc());}
 
-function expBase(){const l=document.getElementById('dataLib').value;return l?addMonths(l,12):null;}
+function dataAcesso(){return document.getElementById(ehApp()?'dataExp':'dataLib').value;}   // v45: ONION usa a data de expiração da plataforma
+function expBase(){ if(ehApp()){ const e=document.getElementById('dataExp').value, y=parseInt(e.split('-')[0],10); return (e && y>=2000 && y<=2100) ? e : null; } const l=document.getElementById('dataLib').value;return l?addMonths(l,12):null; }
 
 function renderParcGrid(){
   const total=totalGeral(),g=document.getElementById('parcGrid');g.innerHTML='';
@@ -2327,7 +2333,7 @@ function gerarTexto(){
     const venceAntes = exp && !expirou && vencISO && exp<vencISO;   // expira antes da data de pagamento
     let a = app ? `📱 *Seu acesso*\n` : `🎓 *Seu acesso*\n`;
     if(!exp) a+=`Seu acesso ${onde} vai até *(DATA DE EXPIRAÇÃO)*.`;
-    else if(expirou) a+=`Seu acesso ${onde} se encerrou em *${dataBR(exp)}*, ao fim dos 12 meses previstos em contrato.`;
+    else if(expirou) a+=`Seu acesso ${onde} se encerrou em *${dataBR(exp)}*${app?'':', ao fim dos 12 meses previstos em contrato'}.`;
     else{
       const d=Math.round((new Date(exp+'T00:00:00')-new Date(hoje+'T00:00:00'))/864e5);
       a+= d===0 ? `Seu acesso ${onde} vai até hoje, *${dataBR(exp)}*.` : `Você ainda tem *${qtd(d,'dia','dias')}* de acesso ${onde}, até ${dataBR(exp)}.`;
@@ -2344,7 +2350,7 @@ function gerarTexto(){
     if(ext>0) a+= app ? ` Assim você segue a sua jornada no ${nomeApp} com mais tranquilidade.`
                       : ` Isso te dá mais tempo para ${obj||'concluir sua formação com tranquilidade'}.`;
     a+= (expirou && ext===0) ? `\nEste acordo é exclusivamente financeiro e não altera esse prazo.`
-      : app ? `\nEste acordo é exclusivamente financeiro e não altera o prazo de 12 meses de acesso ao aplicativo previsto em contrato.`
+      : app ? `\nEste acordo é exclusivamente financeiro e não altera o prazo de acesso ao aplicativo previsto em contrato.`
             : `\nEste acordo é exclusivamente financeiro e não altera o prazo de 12 meses previsto em contrato.`;
     t+=a+'\n\n';
   }else if(tipoAc==='vital'){
@@ -2422,7 +2428,7 @@ function aplicarStatus(){
   let s5='';
   if(document.getElementById('tipoAcesso').value==='12m' && !parcial){
     const ext5=parseInt(document.getElementById('extDias').value)||0;
-    s5 = document.getElementById('dataLib').value ? 'ok' : (ext5>0 ? 'falta' : '');   // vermelho só se mexeu na seção (extensão) sem a data
+    s5 = dataAcesso() ? 'ok' : (ext5>0 ? 'falta' : '');   // vermelho só se mexeu na seção (extensão) sem a data
   }
   setSec('cardAcesso','badge5',s5);
 }
@@ -2488,7 +2494,7 @@ function atualizarParaHoje(){
 function renderCoerencia(){
   const el=document.getElementById('coerencia'); if(!el)return;
   const hoje=hojeISO(), av=[];
-  const dl=document.getElementById('dataLib').value;
+  const dl=ehApp()?'':document.getElementById('dataLib').value;
   if(dl && dl>hoje) av.push('Data de liberação do acesso está no futuro.');
   if(atrasos.some(p=>!p.negativada && p.venc && p.venc>hoje)) av.push('Há parcela em "em atraso" com vencimento futuro (ainda não venceu).');
   const ex=expBase(), dv=document.getElementById('dataVenc').value, parcialC=ehQuit()&&!document.getElementById('quitTotal').checked;
@@ -2527,7 +2533,7 @@ function atualizarProgresso(){
   const valOk=totalGeral()>0;
   const parcial=ehQuit()&&!document.getElementById('quitTotal').checked;
   const precisaAcesso=(document.getElementById('tipoAcesso').value==='12m' && !parcial);
-  const acessoOk=!!document.getElementById('dataLib').value;
+  const acessoOk=!!dataAcesso();
   const vencOk=!!document.getElementById('dataVenc').value;
   const etapas=[prodOk,valOk,vencOk]; if(precisaAcesso) etapas.push(acessoOk);
   const done=etapas.filter(Boolean).length, total=etapas.length, pct=Math.round(done/total*100);
@@ -2541,7 +2547,7 @@ function atualizarProgresso(){
   if(!prodOk) falta.push('produto');
   if(!valOk) falta.push('valores das parcelas');
   if(!vencOk) falta.push(nomeVenc());
-  if(precisaAcesso && !acessoOk) falta.push('data de liberação do acesso');
+  if(precisaAcesso && !acessoOk) falta.push(ehApp()?'data de expiração do acesso':'data de liberação do acesso');
   const txtProg = falta.length===0 ? 'Tudo preenchido. Proposta pronta para copiar' : 'Falta: '+falta.join(', ');
   document.getElementById('progTxt').textContent = txtProg;
   document.getElementById('progLine').classList.toggle('done',falta.length===0);
@@ -2643,7 +2649,7 @@ function resumoSecoes(){
     if(m.negDesc>0) d.push(m.negPct+'% negativada'); if(m.jurosNeg>0) d.push('juros da negativada isentos'); if(m.geralDesc>0) d.push('+'+m.dg+'% adicional');
     pr('cardDesconto', d.length ? d.join(' · ')+' · economia de '+brl(m.descTotal) : 'sem desconto'); }
   const ex=expBase(), ext=parseInt(document.getElementById('extDias').value)||0;
-  pr('cardAcesso', !ex ? 'data de liberação não informada' : (ex<hojeISO()?'expirou em ':'expira em ')+dataBR(ex)+(ext>0?' · +'+ext+' dias':''));
+  pr('cardAcesso', !ex ? (ehApp()?'data de expiração não informada':'data de liberação não informada') : (ex<hojeISO()?'expirou em ':'expira em ')+dataBR(ex)+(ext>0?' · +'+ext+' dias':''));
 }
 function render(){
   renderAtrasos();
@@ -2664,6 +2670,7 @@ function render(){
     : 'Só serve para a proposta avisar que a negativação é retirada após o pagamento. <b>Não muda nenhum valor</b>: as parcelas continuam com multa e juros normais, como parcelas em atraso.';
   vis('opcAcoes',opc);
   vis('appHint',ehApp());
+  vis('wrapLib',!ehApp()); vis('wrapExp',ehApp());
   // desconto nos juros: só no reparcelamento
   vis('descJurosWrap',!quit);
   // multi-produto: só na quitação parcial (o ONION, outra empresa, não se mistura com produtos do IBFT)
@@ -2722,7 +2729,7 @@ function render(){
       info.textContent = expirou
         ? `Acesso já expirou em ${dataBR(exp)}.${ext>0?' Extensão será contada a partir do pagamento.':''}`
         : `Expira em ${dataBR(exp)}.${ext>0?` Com extensão: ${dataBR(addDays(exp,ext))}.`:''}`;
-    } else info.textContent='Informe a data de liberação para calcular a expiração.';
+    } else info.textContent = ehApp() ? 'Informe a data de expiração que consta na plataforma.' : 'Informe a data de liberação para calcular a expiração.';
     nota.textContent = (exp&&expirou&&ext===0)
       ? 'Acesso expirado e sem extensão → a proposta assume curso concluído e remove a parte de liberação de acesso.'
       : 'A proposta inclui a liberação de acesso após o pagamento.';
@@ -2808,7 +2815,7 @@ function grupoDoFoco(el){
   if(id==='cartOferta'||em('#cartAcoes')) return 'cart';
   if(em('#parcGrid')) return 'parc';
   if(id==='duasOpcoes'||em('#opcAcoes')) return 'opc';
-  if(id==='dataLib'||id==='extDias'||em('#extChips')||em('#accTipo')) return 'acesso';
+  if(id==='dataLib'||id==='dataExp'||id==='extDias'||em('#extChips')||em('#accTipo')) return 'acesso';
   return null;
 }
 // bloco de cada linha do texto, pelo emoji/abertura que inicia o bloco
@@ -2845,7 +2852,7 @@ function linhasDoGrupo(g,linhas){
 // ordem: do mais específico ao mais geral (a primeira que contém a linha vence)
 const GRUPOS_CLIQUE=['cart','opc','venc','parc','desc','neg','vinc','atraso','acesso','quitTotal','prod','nome','tipo'];
 const ALVO_GRUPO={nome:['#nomeAluno'],prod:['#prodBusca'],tipo:['#segTipo [aria-checked="true"]'],quitTotal:['#quitTotal'],atraso:['#genQtd'],vinc:['#vincQtd'],
-  desc:['#cardDesconto input:not([type=hidden])','#descJurosPerc'],venc:['#dataVenc'],parc:['#parcGrid .sel'],opc:['#duasOpcoes'],acesso:['#dataLib','#tipoAcesso'],neg:['#temNegativada'],cart:['#cartGrid .sel','#cartOferta']};
+  desc:['#cardDesconto input:not([type=hidden])','#descJurosPerc'],venc:['#dataVenc'],parc:['#parcGrid .sel'],opc:['#duasOpcoes'],acesso:['#dataLib','#dataExp','#tipoAcesso'],neg:['#temNegativada'],cart:['#cartGrid .sel','#cartOferta']};
 function ligarLinhas(pv){
   if(editadoManual) return;   // texto editado à mão: as linhas já não correspondem aos campos
   const L=document.getElementById('saida').value.split('\n'), dono={};
@@ -3070,7 +3077,7 @@ function snapshot(){
     genQtd:g('genQtd'),genVenc:g('genVenc'),genVal:g('genVal'),vincQtd:g('vincQtd'),vincVal:g('vincVal'),vincVenc:g('vincVenc'),
     retJuros:document.getElementById('retJuros').checked,retMulta:document.getElementById('retMulta').checked,
     descVincPerc:g('descVincPerc'),descNegPerc:g('descNegPerc'),descJurosPerc:g('descJurosPerc'),descGeralPerc:g('descGeralPerc'),quitTotal:document.getElementById('quitTotal').checked,isentarJurosNeg:document.getElementById('isentarJurosNeg').checked,
-    dataLib:g('dataLib'),extDias:g('extDias'),dataVenc:g('dataVenc'),
+    dataLib:g('dataLib'),dataExp:g('dataExp'),extDias:g('extDias'),dataVenc:g('dataVenc'),
     atrasos:JSON.parse(JSON.stringify(atrasos)),parcelasEscolhidas,produtosExtra:[...produtosExtra],nomeAluno:g('nomeAluno'),duasOpcoes:document.getElementById('duasOpcoes').checked,cartOferta:document.getElementById('cartOferta').checked,cartaoParc,temNegativada:document.getElementById('temNegativada').checked};
 }
 function restore(s){
@@ -3078,7 +3085,7 @@ function restore(s){
   set('tipoProposta',s.tipoProposta);set('produto',s.produto);set('tipoAcesso',s.tipoAcesso);
   set('genQtd',s.genQtd);set('genVenc',s.genVenc);set('genVal',s.genVal);set('vincQtd',s.vincQtd);set('vincVal',s.vincVal);set('vincVenc',s.vincVenc);
   document.getElementById('retJuros').checked=s.retJuros;document.getElementById('retMulta').checked=s.retMulta;
-  set('descVincPerc',s.descVincPerc);set('descNegPerc',s.descNegPerc);set('dataLib',s.dataLib);set('extDias',s.extDias);set('dataVenc',s.dataVenc);
+  set('descVincPerc',s.descVincPerc);set('descNegPerc',s.descNegPerc);set('dataLib',s.dataLib);set('dataExp',s.dataExp||'');set('extDias',s.extDias);set('dataVenc',s.dataVenc);
   if(s.descJurosPerc!==undefined)set('descJurosPerc',s.descJurosPerc);
   if(s.descGeralPerc!==undefined)set('descGeralPerc',s.descGeralPerc);
   if(s.quitTotal!==undefined)document.getElementById('quitTotal').checked=s.quitTotal;
@@ -3274,6 +3281,7 @@ function novaProposta(){
   document.getElementById('descVincPerc').value='0';
   document.getElementById('descNegPerc').value='0';
   document.getElementById('dataLib').value='';
+  document.getElementById('dataExp').value='';
   document.getElementById('extDias').value='0';
   document.getElementById('descJurosPerc').value='0';
   document.getElementById('descGeralPerc').value='0';
@@ -3417,7 +3425,7 @@ function irFaltando(){
   if(parseInt(el('produto').value)<0){ irPara('card1','prodBusca'); setTimeout(abrirProdutos,semMovimento()?0:360); return; }
   if(totalGeral()<=0){ const q=el('genQtd').value.trim(), v=el('genVenc').value; irPara('card2', !q||q==='0'?'genQtd':(!v?'genVenc':'genVal')); return; }
   if(!el('dataVenc').value){ irPara('cardResumo','dataVenc'); return; }
-  if(el('tipoAcesso').value==='12m' && !parcial && !el('dataLib').value){ irPara('cardAcesso','dataLib'); return; }
+  if(el('tipoAcesso').value==='12m' && !parcial && !dataAcesso()){ irPara('cardAcesso',ehApp()?'dataExp':'dataLib'); return; }
   showToast('Nada faltando. Ctrl+Enter copia a proposta.',{tipo:'ok',ms:2500});
 }
 function pularSecao(d){
@@ -3466,18 +3474,18 @@ document.addEventListener('scroll',e=>{ const p=document.getElementById('calcPop
 
 // --- data impossível ou incompleta: avisa em vez de sumir calada ---
 function checarData(el){
-  const ano=parseInt((el.value||'').slice(0,4),10), anoRuim=!!el.value && (ano<2000 || ano>2100);
+  const ano=parseInt((el.value||'').split('-')[0],10), anoRuim=!!el.value && (ano<2000 || ano>2100);
   const ruim=!!(el.validity && el.validity.badInput) || anoRuim, box=el.parentNode;
   let m=box.querySelector(':scope > .erro-msg.data-ruim');
   if(ruim){ if(!m){ m=document.createElement('div'); m.className='erro-msg data-ruim'; m.setAttribute('role','alert');
       m.innerHTML='<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><span></span>';
       el.insertAdjacentElement('afterend',m); }
-    m.querySelector('span').textContent = anoRuim ? 'O ano ('+el.value.slice(0,4).replace(/^0+/,'')+') parece incompleto. Confira a data (dd/mm/aaaa).' : 'Data incompleta ou inválida. Use dd/mm/aaaa (ou H = hoje).';
+    m.querySelector('span').textContent = anoRuim ? 'O ano ('+el.value.split('-')[0].replace(/^0+/,'')+') parece incorreto. Confira a data (dd/mm/aaaa).' : 'Data incompleta ou inválida. Use dd/mm/aaaa (ou H = hoje).';
     el.classList.add('campo-erro'); }
   else if(m){ m.remove(); el.classList.remove('campo-erro'); }
 }
 document.addEventListener('focusout',e=>{ if(e.target.matches && e.target.matches('input[type=date]')) checarData(e.target); });
-document.addEventListener('input',e=>{ const t=e.target; if(t.matches && t.matches('input[type=date]') && t.value && parseInt(t.value.slice(0,4),10)<1000) e.stopPropagation(); },true);   // o Chrome avisa a cada dígito do ano (0002, 0020, 0202…): espera o ano completo
+document.addEventListener('input',e=>{ const t=e.target; if(t.matches && t.matches('input[type=date]') && t.value && (parseInt(t.value.split('-')[0],10)<1000 || parseInt(t.value.split('-')[0],10)>2100)) e.stopPropagation(); },true);   // o Chrome avisa a cada dígito do ano (0002, 0020, 0202…): espera o ano completo
 document.addEventListener('input',e=>{ if(e.target.matches && e.target.matches('input[type=date]') && !(e.target.validity&&e.target.validity.badInput)) checarData(e.target); },true);
 
 // --- atalhos de data: total de cada data (o custo de esperar) ---
@@ -3915,7 +3923,7 @@ window.addEventListener('resize',fadeHist);
 // "modo rápido": Enter leva ao próximo campo essencial (nome → produto → tipo → parcelas → acesso → vencimento → copiar)
 function visivel(el){ return !!(el && el.offsetParent!==null && !el.disabled); }
 function proximoCampo(id){
-  const ord=['nomeAluno','prodBusca','segTipo','genQtd','genVenc','genVal','dataLib','extDias','dataVenc','btnCopiar'];
+  const ord=['nomeAluno','prodBusca','segTipo','genQtd','genVenc','genVal','dataLib','dataExp','extDias','dataVenc','btnCopiar'];
   for(let i=ord.indexOf(id)+1;i<ord.length;i++){
     if(ord[i]==='segTipo'){ const b=document.querySelector('#segTipo button[aria-checked="true"]'); if(visivel(b)) return b; continue; }
     const el=document.getElementById(ord[i]); if(visivel(el)) return el; }
@@ -3924,7 +3932,7 @@ function proximoCampo(id){
 function avancarCampo(e){
   const a=document.activeElement; if(!a) return false;
   let id=a.id; if(a.closest && a.closest('#segTipo')) id='segTipo';
-  if(['nomeAluno','segTipo','genQtd','genVenc','genVal','dataLib','extDias','dataVenc'].indexOf(id)<0) return false;
+  if(['nomeAluno','segTipo','genQtd','genVenc','genVal','dataLib','dataExp','extDias','dataVenc'].indexOf(id)<0) return false;
   const prox=proximoCampo(id); if(!prox) return false;
   e.preventDefault();
   if(id==='nomeAluno') ajustarNome();

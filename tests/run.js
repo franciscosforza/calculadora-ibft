@@ -280,11 +280,36 @@ if (w.eval(`typeof passoU==='function'`)) {
     novaProposta(); historico=[]; monta(); salvarHist(true,'texto'); const n0=historico.length;
     apagarHist(0); if(historico.length!==n0-1) ruins.push('apagar do histórico não apagou');
     // ano ainda sendo digitado (0202) não pode quebrar o cálculo
-    novaProposta(); monta(); for(const y of ['0002','0020','0202','2025']){ set('dataLib',y+'-12-12'); try{ render(); }catch(e){ ruins.push('data com ano '+y+' quebrou o cálculo: '+e.message); } }
+    novaProposta(); monta(); for(const y of ['0002','0020','0202','2025','20262']){ set('dataLib',y+'-12-12'); try{ set('produto','20'); onProdutoChange(); set('dataExp',y+'-12-12'); render(); set('produto','0'); onProdutoChange(); }catch(e){ ruins.push('ONION com expiração de ano '+y+' quebrou o cálculo: '+e.message); } try{ render(); }catch(e){ ruins.push('data com ano '+y+' quebrou o cálculo: '+e.message); } }
     set('genVenc','0202-05-02'); try{ gerarParcelas(); render(); }catch(e){ ruins.push('vencimento com ano 0202 quebrou: '+e.message); }
     novaProposta(); return ruins;
   })()`);
   v44.forEach(x => falha('v44', x));
+}
+
+// ---------- v45: ONION usa a data de expiração da plataforma ----------
+{
+  const v45 = w.eval(`(()=>{
+    const ruins=[], H=hojeISO(), $=id=>document.getElementById(id), set=(id,v)=>{$(id).value=v;};
+    novaProposta(); setTipo('rep1'); set('produto','20'); onProdutoChange(); set('genQtd','2'); set('genVenc',addDays(H,-40)); set('genVal','97,00'); gerarParcelas(); render();
+    if(!ehApp()) ruins.push('produto 20 deveria ser o ONION');
+    if($('wrapExp').style.display==='none') ruins.push('ONION: campo de expiração não aparece');
+    if($('wrapLib').style.display!=='none') ruins.push('ONION: campo de liberação deveria sumir');
+    if(!$('progTxt').textContent.includes('data de expiração do acesso')) ruins.push('ONION: progresso não pede a data de expiração');
+    const alvo=addDays(H,60); set('dataExp',alvo); render();
+    if(expBase()!==alvo) ruins.push('ONION: expiração não é a data digitada (veio '+expBase()+')');
+    if(!$('saida').value.includes('Você ainda tem *60 dias*')) ruins.push('ONION: texto não diz 60 dias de acesso');
+    const s=snapshot(); set('dataExp',''); restore(s); if($('dataExp').value!==alvo) ruins.push('ONION: expiração não volta no desfazer/rascunho');
+    set('dataExp',addDays(H,-10)); render();
+    const t=$('saida').value;
+    if(!t.includes('se encerrou em *'+dataBR(addDays(H,-10))+'*.') || t.includes('previstos em contrato')) ruins.push('ONION expirado: a frase deveria ser só "se encerrou em", sem falar dos 12 meses');
+    limparCardAcesso(); if($('dataExp').value) ruins.push('Limpar da seção não limpou a expiração');
+    set('produto','0'); onProdutoChange(); render();
+    if($('wrapLib').style.display==='none' || $('wrapExp').style.display!=='none') ruins.push('curso do IBFT: deveria mostrar só a data de liberação');
+    set('dataLib',addMonths(H,-6)); render(); if(expBase()!==addMonths(addMonths(H,-6),12)) ruins.push('curso do IBFT: expiração deveria ser liberação + 12 meses');
+    novaProposta(); return ruins;
+  })()`);
+  v45.forEach(x => falha('v45', x));
 }
 
 // ---------- confere com o resultado aprovado ----------
